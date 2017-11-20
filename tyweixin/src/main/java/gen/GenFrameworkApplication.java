@@ -2,11 +2,11 @@ package gen;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
-@SpringBootApplication
-@EnableAspectJAutoProxy
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+//@EnableAspectJAutoProxy
 public class GenFrameworkApplication {
 
 	public static void main(String[] args) {

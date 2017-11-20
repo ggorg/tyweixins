@@ -16,10 +16,10 @@ import gen.framework.common.config.DatabaseContextHolder;
  * @author gen
  *
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class AspectCommon {
-		@Pointcut("execution(* com.tuandai.services.*.*(..))")  
+		@Pointcut("execution(* gen.services.*.*(..))")  
 		public void pointCut(){}; 
 		@Before(value = "pointCut()")
 		 public void before(JoinPoint point){

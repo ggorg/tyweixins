@@ -23,7 +23,7 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 import gen.framework.common.interceptor.MybatisInterceptor;
 
-@Configuration
+//@Configuration
 public class SpringContextConfig {
 
     @Autowired
