@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="gen.framework.common.dao.CommonMapper">
+<mapper namespace="com.gen.framework.common.dao.CommonMapper">
 
   	
   	
@@ -16,7 +16,7 @@
 		CommonChildBean ... childConditions //子表条件 new CommonChildBean(String "子表表名",String "子表主键",String "所关联的主表外键",Object "自定义条件（格式跟上述一样）")
 	)
   	 -->
-  	<select id="selectCount"   parameterType="gen.framework.common.beans.CommonCountBean" resultType="java.lang.Long">
+  	<select id="selectCount"   parameterType="com.com.gen.framework.common.beans.CommonCountBean" resultType="java.lang.Long">
 
 		SELECT COUNT(0) FROM 
 		<choose>
@@ -88,7 +88,7 @@
 		CommonChildBean ... childConditions //子表条件 new CommonChildBean(String "子表表名",String "子表主键",String "所关联的主表外键",Object "自定义条件（格式跟上述一样）")
 	)
   	 -->
-  	<select id="selectObjects"   parameterType="gen.framework.common.beans.CommonSearchBean"  resultType="java.util.HashMap" >
+  	<select id="selectObjects"   parameterType="com.com.gen.framework.common.beans.CommonSearchBean"  resultType="java.util.HashMap" >
 
 		SELECT 
 		<choose>
@@ -159,7 +159,7 @@
 			limit #{startNum },#{endNum}
 		</if>
   	</select>
-  	<insert id="insertObject" parameterType="gen.framework.common.beans.CommonInsertBean">
+  	<insert id="insertObject" parameterType="com.com.gen.framework.common.beans.CommonInsertBean">
   			insert into ${tablename} 
   			<foreach collection="params" item="value"  index="key" open="(" close=")" separator=",">
   				${key}
@@ -169,7 +169,7 @@
   				#{value}
   			</foreach>
   	</insert>
-  	<update id="updateObject" parameterType="gen.framework.common.beans.CommonUpdateBean">
+  	<update id="updateObject" parameterType="com.com.gen.framework.common.beans.CommonUpdateBean">
   		update ${tablename} 
   		  	<foreach collection="params" item="value"  index="key" open="set " separator=",">
   				${key}=#{value}
