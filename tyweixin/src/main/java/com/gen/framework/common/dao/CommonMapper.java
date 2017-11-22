@@ -9,7 +9,7 @@ import com.gen.framework.common.beans.CommonInsertBean;
 import com.gen.framework.common.beans.CommonSearchBean;
 import com.gen.framework.common.beans.CommonUpdateBean;
 @SuppressWarnings("rawtypes")
-//@Mapper
+@Mapper
 public interface CommonMapper {
 	long selectCount(CommonCountBean commonCountBean);
 	List selectObjects(CommonSearchBean commonSearchBean);

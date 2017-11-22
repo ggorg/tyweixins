@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+@SpringBootApplication
 //@EnableAspectJAutoProxy
 public class GenFrameworkApplication {
 
