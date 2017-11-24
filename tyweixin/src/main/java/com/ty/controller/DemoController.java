@@ -13,9 +13,8 @@ public class DemoController {
 		// TODO Auto-generated constructor stub
 	}
 	@GetMapping
-	@ResponseBody
 	public String demo(){
-		return "test";
+		return "pages/manager/table_complete";
 	}
 
 }
