@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+      <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+	</head>
+	<body>
+		<!-- Begin page -->
+
+		<!-- end page -->
+
+        <th:block th:include="pages/manager/common/header::sysheader"></th:block>
+		<div class="admin">
+          <th:block th:include="pages/manager/common/menus::sysmenus"></th:block>
+
+		<div class="content-page" >
+			<!-- Start content -->
+			<div class="content">
+				<div class="card-box">
+					<!-- Row start -->
+					<div class="am-g">
+						<div class="am-u-sm-12 am-u-md-6">
+				          <div class="am-btn-toolbar">
+				            <div class="am-btn-group am-btn-group-xs">
+				              <button type="button" class="am-btn am-btn-default js-modal-toggle" data-am-modal="{target: '#your-modal'}"><span class="am-icon-plus"></span> 新增</button>
+				              <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
+				              <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
+				              <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+				            </div>
+				          </div>
+				        </div>	
+				        
+						<div class="am-u-sm-12 am-u-md-3">
+				          <div class="am-input-group am-input-group-sm">
+				            <input type="text" class="am-form-field">
+				          <span class="am-input-group-btn">
+				            <button class="am-btn am-btn-default" type="button">搜索</button>
+				          </span>
+				          </div>
+				        </div>
+				      </div>
+					  <!-- Row end -->
+					  
+					  <!-- Row start -->
+					  	<div class="am-g">
+        <div class="am-u-sm-12">
+          <form class="am-form">
+            <table class="am-table am-table-striped am-table-hover table-main">
+              <thead>
+              <tr>
+                <th class="table-check"><input type="checkbox" /></th><th class="table-title">用户名</th><th class="table-type">所属角色</th><th class="table-author am-hide-sm-only">创建时间</th><th class="table-set">操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td>1</td>
+                <td><a href="#">Business management</a></td>
+                <td>default</td>
+                <td class="am-hide-sm-only">2014年9月4日 7:28:47</td>
+                <td>
+                  <div class="am-btn-toolbar">
+                    <div class="am-btn-group am-btn-group-xs">
+                      <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
+                      <button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button>
+                      <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+            <div class="am-cf">
+              共 15 条记录
+              <div class="am-fr">
+                <ul class="am-pagination">
+                  <li class="am-disabled"><a href="#">«</a></li>
+                  <li class="am-active"><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">4</a></li>
+                  <li><a href="#">5</a></li>
+                  <li><a href="#">»</a></li>
+                </ul>
+              </div>
+            </div>
+            <hr />
+            <p>注：.....</p>
+          </form>
+        </div>
+
+      </div>
+					  <!-- Row end -->
+					  
+					</div>
+				
+				
+				
+				
+				</div>
+			
+
+			</div>
+
+		</div>
+		<!-- end right Content here -->
+		<!--</div>-->
+		</div>
+		</div>
+
+        <div class="am-modal am-modal-no-btn" tabindex="-1" id="your-modal">
+          <div class="am-modal-dialog">
+            <div class="am-modal-hd" >
+              <h4 class="am-popup-title" style="text-align: left">新建用户</h4>
+              <span data-am-modal-close
+                    class="am-close">&times;</span>
+            </div>
+            <div class="am-modal-bd">
+              <form class="am-form am-text-sm" data-am-validator>
+                <div class="am-form-group">
+                  <div class="am-g">
+                    <label class="am-u-md-2 am-md-text-right am-padding-left-0" for="doc-ipt-text-1">　用户名</label>
+                    <input class="am-u-md-10 form-control" id="doc-ipt-text-1" minlength="3" placeholder="输入用户名（至少 3 个字符）" required="" >
+                  </div>
+                </div>
+
+                <div class="am-form-group">
+                  <div class="am-g">
+                    <label class="am-u-md-2 am-md-text-right" for="doc-select-1">角色</label>
+                    <select id="doc-select-1" >
+                      <option value="option1">选项一...</option>
+                      <option value="option2">选项二.....</option>
+                      <option value="option3">选项三........</option>
+                    </select>
+                    <span class="am-form-caret"></span>
+                  </div>
+                </div>
+                <button type="submit" class="am-btn am-btn-primary">提交</button>
+                <button type="" class="am-btn am-btn-default">取消</button>
+
+              </form>
+            </div>
+          </div>
+        </div>
+		<!-- navbar -->
+		<a href="admin-offcanvas" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"><!--<i class="fa fa-bars" aria-hidden="true"></i>--></a>
+        <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
+	</body>
+	
+</html>
