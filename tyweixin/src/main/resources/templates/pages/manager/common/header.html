@@ -2,27 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body th:fragment="sysheader">
-<header class="am-topbar am-topbar-fixed-top">
-	<div class="am-topbar-left am-hide-sm-only">
-		<a href="index.html" class="logo">翼支付后台管理</a>
-	</div>
+<div class="topheader">
+	<div class="left">
+		<h1 class="logo">Ama.<span>Admin</span></h1>
+		<span class="slogan">后台管理系统</span>
 
-	<div class="contain">
-		<ul class="am-nav am-navbar-nav am-navbar-left">
+		<div class="search">
+			<form action="" method="post">
+				<input type="text" name="keyword" id="keyword" value="Enter keyword(s)" />
+				<button class="submitbutton"></button>
+			</form>
+		</div><!--search-->
 
-			<li><h4 class="page-title">基本表格</h4></li>
-		</ul>
+		<br clear="all" />
 
-		<ul class="am-nav am-navbar-nav am-navbar-right">
-			<li class="inform"><i class="am-icon-bell-o" aria-hidden="true"></i></li>
-			<li class="hidden-xs am-hide-sm-only">
-				<form role="search" class="app-search">
-					<input type="text" placeholder="Search..." class="form-control" />
-					<a href=""><img src="/sysframe/assets/img/search.png" /></a>
-				</form>
-			</li>
-		</ul>
-	</div>
-</header>
+	</div><!--left-->
+
+	<div class="right">
+		<!--<div class="notification">
+            <a class="count" href="notifications.html"><span>9</span></a>
+        </div>
+        -->
+		<div class="userinfo">
+			<img src="/sysframe2/images/thumbs/avatar.png" alt="" />
+			<span>Juan Dela Cruz</span>
+		</div><!--userinfo-->
+
+		<div class="userinfodrop">
+			<div class="avatar">
+				<a href=""><img src="/sysframe2/images/thumbs/avatarbig.png" alt="" /></a>
+				<div class="changetheme">
+					Change theme: <br />
+					<a class="default"></a>
+					<a class="blueline"></a>
+					<a class="greenline"></a>
+					<a class="contrast"></a>
+					<a class="custombg"></a>
+				</div>
+			</div><!--avatar-->
+			<div class="userdata">
+				<h4>Juan Dela Cruz</h4>
+				<span class="email">youremail@yourdomain.com</span>
+				<ul>
+					<li><a href="editprofile.html">Edit Profile</a></li>
+					<li><a href="accountsettings.html">Account Settings</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="index.html">Sign Out</a></li>
+				</ul>
+			</div><!--userdata-->
+		</div><!--userinfodrop-->
+	</div><!--right-->
+</div>
 </body>
 </html>
