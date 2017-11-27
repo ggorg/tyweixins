@@ -11,6 +11,9 @@ public class ResponseVO {
         this.data = data;
     }
 
+    public ResponseVO() {
+    }
+
     public Integer getReCode() {
         return reCode;
     }

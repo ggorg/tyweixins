@@ -1,11 +1,16 @@
 package com.gen.framework.common.services;
 
 import com.gen.framework.common.beans.CommonCountBean;
+import com.gen.framework.common.beans.CommonInsertBean;
 import com.gen.framework.common.beans.CommonSearchBean;
+import com.gen.framework.common.beans.SysUserBean;
 import com.gen.framework.common.dao.CommonMapper;
+import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,8 +47,23 @@ public class SysManagerService {
         return page;
     }
     @Transactional(propagation = Propagation.REQUIRED)
-    public ResponseVO saveUser(){
-        return null;
+    public ResponseVO saveUser(SysUserBean sysUserBean){
+        ResponseVO vo=new ResponseVO();
+        if(StringUtils.isBlank(sysUserBean.getUname())){
+            vo.setReCode(-2);
+            vo.setReMsg("用户名为空");
+            return vo;
+        }
+        if(StringUtils.isBlank(sysUserBean.getUpassword())){
+            vo.setReCode(-2);
+            vo.setReMsg("密码为空");
+            return vo;
+        }
+        Map params= BeanToMapUtil.beanToMap(sysUserBean);
+        this.commonMapper.insertObject(new CommonInsertBean("baseUser",params));
+        vo.setReCode(1);
+        vo.setReMsg("创建成功");
+        return vo ;
     }
 
 }
