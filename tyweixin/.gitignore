@@ -60,7 +60,7 @@ local.properties
 .idea/dictionaries
 
 # Sensitive or high-churn files:
-.idea
+.idea/*
 .idea/**/dataSources/
 .idea/**/dataSources.ids
 .idea/**/dataSources.xml
@@ -68,6 +68,8 @@ local.properties
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
+.idea/inspectionProfiles
+
 tyweixin.iml
 
 # Gradle:
