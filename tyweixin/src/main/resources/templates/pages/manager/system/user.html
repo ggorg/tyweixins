@@ -11,11 +11,13 @@
                 layui.use(['laypage', 'layer'],function(){
                     var laypage = layui.laypage
                     var layer = layui.layer;
-                    laypage({
-                        cont: 'pages',
-                        skip: true,
-                        pages:  5000,//总页数
 
+                    laypage.render({
+                        elem: 'pages',
+                        skip: true,
+                        count: 1000,
+                        theme: '#fb9337',
+                        layout: ['prev','page','next', 'skip','count'],
                         curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
                             var page = location.search.match(/pageNum=(\d+)/);
                             return page ? page[1] : 1;
@@ -26,24 +28,18 @@
                             }
                         }
                     });
-                    jQuery(".edit").click(function(){
+                    jQuery(".edit,#createBtn").click(function(){
+
                         var idvalue=this.id;
+
                         layer.open({
                             type: 2,
-                            area: ['70%','300px'],
+                            area: ['400px','280px'],
 
                             content: 'edit?id='+idvalue //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
                         });
                     })
-                    jQuery("#btnadd").click(function(){
-                        var idvalue=this.id;
-                        layer.open({
-                            type: 2,
-                            area: ['70%','200px'],
 
-                            content: '/pages/toEditUser' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
-                        });
-                    })
                 })
 
             })
@@ -72,7 +68,7 @@
                     <h3>Table with Action</h3>
                 </div><!--contenttitle-->
                 <div class="tableoptions">
-                    <button class="deletebutton radius3" title="table2">Delete Selected</button> &nbsp;
+                    <button class="radius3" id="createBtn" title="table2">新建</button> &nbsp;
                     <!-- <select class="radius3">
                          <option value="">Show All</option>
                          <option value="">Rendering Engine</option>
@@ -83,7 +79,7 @@
                 </div><!--tableoptions-->
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
                     <colgroup>
-                        <col class="con0" style="width: 4%" />
+                        <!--<col class="con0" style="width: 4%" />-->
                         <col class="con1" />
                         <col class="con0" />
                         <col class="con1" />
@@ -92,7 +88,7 @@
                     </colgroup>
                     <thead>
                     <tr>
-                        <th class="head0"><input type="checkbox" class="checkall" /></th>
+                       
                         <th class="head1">用户名</th>
                         <th class="head0">角色</th>
                         <th class="head1">创建时间</th>
@@ -103,45 +99,14 @@
 
                     <tbody>
                     <tr>
-                        <td align="center"><input type="checkbox" /></td>
+                       
                         <td>Trident</td>
                         <td>Internet Explorer 4.0</td>
                         <td>Win 95+</td>
 
-                        <td class="center"><a href="" class="edit">Edit</a> &nbsp; <a href="" class="delete">Delete</a></td>
+                        <td class="center"><a href="javascript:void(0)" class="edit">Edit</a> &nbsp; <a href="javascript:void(0)" class="delete">Delete</a></td>
                     </tr>
-                    <tr>
-                        <td align="center"><input type="checkbox" /></td>
-                        <td>Trident</td>
-                        <td>Internet Explorer 5.0</td>
-                        <td>Win 95+</td>
 
-                        <td class="center"><a href="" class="edit">Edit</a> &nbsp; <a href="" class="delete">Delete</a></td>
-                    </tr>
-                    <tr>
-                        <td align="center"><input type="checkbox" /></td>
-                        <td>Trident</td>
-                        <td>Internet  Explorer 5.5</td>
-                        <td>Win 95+</td>
-
-                        <td class="center"><a href="" class="edit">Edit</a> &nbsp; <a href="" class="delete">Delete</a></td>
-                    </tr>
-                    <tr>
-                        <td align="center"><input type="checkbox" /></td>
-                        <td>Trident</td>
-                        <td>Internet Explorer 6</td>
-                        <td>Win 98+</td>
-
-                        <td class="center"><a href="" class="edit">Edit</a> &nbsp; <a href="" class="delete">Delete</a></td>
-                    </tr>
-                    <tr>
-                        <td align="center"><input type="checkbox" /></td>
-                        <td>Trident</td>
-                        <td>Internet Explorer 7</td>
-                        <td>Win XP SP2+</td>
-
-                        <td class="center"><a href="javascript:void(0)" class="edit">Edit</a> &nbsp; <a href="" class="delete">Delete</a></td>
-                    </tr>
                     </tbody>
 
                 </table>
