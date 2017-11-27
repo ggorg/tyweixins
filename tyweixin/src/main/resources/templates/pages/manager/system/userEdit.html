@@ -9,28 +9,19 @@
 <script type="text/javascript" src="/layui/layui.js"></script>
 </head>
 <body style="padding:40px 60px 10px 10px">
-<form class="layui-form" action="">
+<form class="layui-form" >
   <div class="layui-form-item">
     <label class="layui-form-label">用户名</label>
     <div class="layui-input-block">
-      <input type="text" name="title" required="required"  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" />
+      <input type="text" name="uname" required="required"  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" />
     </div>
   </div>
-
   <div class="layui-form-item">
-    <label class="layui-form-label">角色</label>
+    <label class="layui-form-label">密　码</label>
     <div class="layui-input-block">
-      <select name="city" lay-verify="required">
-        <option value=""></option>
-        <option value="0">北京</option>
-        <option value="1">上海</option>
-        <option value="2">广州</option>
-        <option value="3">深圳</option>
-        <option value="4">杭州</option>
-      </select>
+      <input type="password" name="upassword" required="required"  lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input" />
     </div>
   </div>
-
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
@@ -41,7 +32,16 @@
 <script type="text/javascript">
 layui.use('form', function(){
   var form = layui.form;
+    $(".layui-form").submit(function(){
+        $.post("do-create-user",$(".layui-form").serializeArray(),function(data){
+            alert(data.reMsg);
+            if(data.reCode==1){
+                top.location.href=window.parent.location.href;
+            }
 
+        });
+        return false;
+    });
   //各种基于事件的操作，下面会有进一步介绍
 });
 </script>

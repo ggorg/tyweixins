@@ -7,7 +7,6 @@
             jQuery(function(){
                 var isLogin=false;
                 /* <![CDATA[*/
-
                 layui.use(['laypage', 'layer'],function(){
                     var laypage = layui.laypage
                     var layer = layui.layer;
@@ -15,7 +14,7 @@
                     laypage.render({
                         elem: 'pages',
                         skip: true,
-                        count: 1000,
+                        count: /*[[${userPage!=null?userPage.total:0}]]*/ ,//总页数,
                         theme: '#fb9337',
                         layout: ['prev','page','next', 'skip','count'],
                         curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
@@ -35,18 +34,14 @@
                         layer.open({
                             type: 2,
                             area: ['400px','280px'],
-
-                            content: 'edit?id='+idvalue //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                            title:"创建系统用户",
+                            content: 'to-edit?id='+idvalue //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
                         });
                     })
 
                 })
 
             })
-
-
-
-
             /* ]]>*/
         </script>
 	</head>
@@ -65,7 +60,7 @@
 
             <div id="contentwrapper" class="contentwrapper">
                 <div class="contenttitle2">
-                    <h3>Table with Action</h3>
+                    <h3>用户列表</h3>
                 </div><!--contenttitle-->
                 <div class="tableoptions">
                     <button class="radius3" id="createBtn" title="table2">新建</button> &nbsp;
@@ -90,21 +85,25 @@
                     <tr>
                        
                         <th class="head1">用户名</th>
-                        <th class="head0">角色</th>
+                        <th class="head0">状态</th>
                         <th class="head1">创建时间</th>
 
-                        <th class="head0">&nbsp;</th>
+                        <th class="head0">操作</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    <tr>
+                    <tr th:each="obj:${userPage?.result}">
                        
-                        <td>Trident</td>
-                        <td>Internet Explorer 4.0</td>
-                        <td>Win 95+</td>
+                        <td th:text="${obj['uName']}">Trident</td>
+                        <td th:text="${obj['isDelete']>0?'已禁用':'已启用'}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['createTime']}">Win 95+</td>
 
-                        <td class="center"><a href="javascript:void(0)" class="edit">Edit</a> &nbsp; <a href="javascript:void(0)" class="delete">Delete</a></td>
+                        <td class="center">
+                            <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" >修 改</button>
+                            <button  th:class="'layui-btn layui-btn-sm '+${obj['isDelete']>0?'':'layui-btn-danger'}" th:text="${obj['isDelete']>0?'启 用':'禁 用'}"></button>
+                            </div>
                     </tr>
 
                     </tbody>
