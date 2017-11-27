@@ -1,16 +1,14 @@
 package com.ty.dao;
 
 import com.ty.entity.ShakeRecord;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 微信摇一摇
  * @author Jacky
  *
  */
-@Repository
-@Transactional
+@Mapper
 public interface ShakeRecordMapper {
 	
 	int insert(ShakeRecord shakeRecord);

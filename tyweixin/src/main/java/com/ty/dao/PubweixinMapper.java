@@ -1,9 +1,8 @@
 package com.ty.dao;
 
 import com.ty.entity.Pubweixin;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,8 +11,7 @@ import java.util.List;
  * @author Jacky
  *
  */
-@Repository
-@Transactional
+@Mapper
 public interface PubweixinMapper {
 	
 	Pubweixin selectByAppid(@Param("appid") String appid);

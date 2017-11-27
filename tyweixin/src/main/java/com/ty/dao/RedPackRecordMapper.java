@@ -2,16 +2,14 @@ package com.ty.dao;
 
 
 import com.ty.entity.RedPackRecord;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 红包发送记录
  * @author Jacky
  *
  */
-@Repository
-@Transactional
+@Mapper
 public interface RedPackRecordMapper {
 	int insert(RedPackRecord redPackRecord);
 }

@@ -2,8 +2,7 @@ package com.ty.dao;
 
 
 import com.ty.entity.UserAnalysis;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -12,8 +11,7 @@ import java.util.List;
  * @author Jacky
  *
  */
-@Repository
-@Transactional
+@Mapper
 public interface UserAnalysisMapper {
 	
 	int insert(UserAnalysis entity);

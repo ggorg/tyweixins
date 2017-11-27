@@ -1,8 +1,7 @@
 package com.ty.dao;
 
 import com.ty.entity.Msg;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -12,8 +11,7 @@ import java.util.List;
  * @author Jacky
  * 
  */
-@Repository
-@Transactional
+@Mapper
 public interface MsgMapper {
     /** 消息入库 */
     public int save(Msg msg);
