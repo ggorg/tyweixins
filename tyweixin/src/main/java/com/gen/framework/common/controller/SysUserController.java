@@ -37,10 +37,27 @@ public class SysUserController {
             return new ResponseVO(-1,"创建失败",null);
         }
 
-
     }
+
     @GetMapping("/user/to-edit")
     public String toUserEdit(){
         return "pages/manager/system/userEdit";
+    }
+
+
+
+    @GetMapping("/role/to-edit")
+    public String toRoleEdit(){
+        return "pages/manager/system/roleEdit";
+    }
+
+    @GetMapping("/role/to-list")
+    public String toRoleList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
+        try {
+            model.addAttribute("rolePage",this.sysManagerService.getRoleList(pageNo));
+        }catch (Exception e){
+            logger.error("SysUserController->toRoleList",e);
+        }
+        return "pages/manager/system/role";
     }
 }

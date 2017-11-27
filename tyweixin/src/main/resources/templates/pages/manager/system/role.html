@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+        <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+        <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
+        <script type="text/javascript"  th:inline="javascript">
+            jQuery(function(){
+                var isLogin=false;
+                /* <![CDATA[*/
+                layui.use(['laypage', 'layer'],function(){
+                    var laypage = layui.laypage
+                    var layer = layui.layer;
+
+                    laypage.render({
+                        elem: 'pages',
+                        skip: true,
+                        count: /*[[${userPage!=null?userPage.total:0}]]*/ ,//总页数,
+                        theme: '#fb9337',
+                        layout: ['prev','page','next', 'skip','count'],
+                        curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
+                            var page = location.search.match(/pageNum=(\d+)/);
+                            return page ? page[1] : 1;
+                        }(),
+                        jump: function(e, first){ //触发分页后的回调
+                            if(!first){ //一定要加此判断，否则初始时会无限刷新
+                                location.href = '?pageNum='+e.curr;
+                            }
+                        }
+                    });
+                    jQuery(".edit,#createBtn").click(function(){
+
+                        var idvalue=this.id;
+
+                        layer.open({
+                            type: 2,
+                            area: ['400px','280px'],
+                            title:"创建系统用户",
+                            content: 'to-edit?id='+idvalue //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        });
+                    })
+
+                })
+
+            })
+            /* ]]>*/
+        </script>
+	</head>
+    <body class="withvernav">
+    <div class="bodywrapper">
+
+        <th:block th:include="pages/manager/common/header::sysheader"></th:block>
+        <th:block th:include="pages/manager/common/menus::sysmenus"></th:block>
+       <div class="centercontent tables">
+
+           <!-- <div class="pageheader notab">
+           <h1 class="pagetitle">Tables</h1>
+           <span class="pagedesc">This is a sample description of a page</span>
+
+       </div>--><!--pageheader-->
+
+            <div id="contentwrapper" class="contentwrapper">
+                <div class="contenttitle2">
+                    <h3>角色列表</h3>
+                </div><!--contenttitle-->
+                <div class="tableoptions">
+                    <button class="radius3" id="createBtn" title="table2">新建</button> &nbsp;
+                    <!-- <select class="radius3">
+                         <option value="">Show All</option>
+                         <option value="">Rendering Engine</option>
+                         <option value="">Platform</option>
+                     </select> &nbsp;
+                     <button class="radius3">Apply Filter</button>
+                     <input class="radius3" style="padding: 6px 5px 6px 5px;margin-left:10px;"/>-->
+                </div><!--tableoptions-->
+                <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
+                    <colgroup>
+                        <!--<col class="con0" style="width: 4%" />-->
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+
+                        <col class="con0" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                       
+                        <th class="head1">角色名</th>
+                        <th class="head0">角色别称</th>
+                        <th class="head1">创建时间</th>
+
+                        <th class="head0">操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="obj:${rolePage?.result}">
+                       
+                        <td th:text="${obj['uName']}">Trident</td>
+                        <td th:text="${obj['isDelete']>0?'已禁用':'已启用'}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['createTime']}">Win 95+</td>
+
+                        <td class="center">
+                            <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" >修 改</button>
+                            <button  th:class="'layui-btn layui-btn-sm '+${obj['isDelete']>0?'':'layui-btn-danger'}" th:text="${obj['isDelete']>0?'启 用':'禁 用'}"></button>
+                            </div>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+                <div id="pages"></div>
+            </div>
+        </div>
+
+    </div>
+
+	</body>
+	
+</html>

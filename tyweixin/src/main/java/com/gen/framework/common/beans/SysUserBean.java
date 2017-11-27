@@ -1,30 +1,30 @@
 package com.gen.framework.common.beans;
 
 public class SysUserBean {
-    private String uname;
-    private String upassword;
+    private String uName;
+    private String uPassword;
 
-    public String getUname() {
-        return uname;
+    public String getuName() {
+        return uName;
     }
 
-    public void setUname(String uname) {
-        this.uname = uname;
+    public void setuName(String uName) {
+        this.uName = uName;
     }
 
-    public String getUpassword() {
-        return upassword;
+    public String getuPassword() {
+        return uPassword;
     }
 
-    public void setUpassword(String upassword) {
-        this.upassword = upassword;
+    public void setuPassword(String uPassword) {
+        this.uPassword = uPassword;
     }
 
     @Override
     public String toString() {
         return "SysUserBean{" +
-                "uname='" + uname + '\'' +
-                ", upassword='" + upassword + '\'' +
+                "uName='" + uName + '\'' +
+                ", uPassword='" + uPassword + '\'' +
                 '}';
     }
 }
