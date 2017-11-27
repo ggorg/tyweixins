@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,9 @@ public class SysManagerService {
 
         return page;
     }
+    public Map getUserById(String uid){
+        return null;
+    }
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO saveUser(SysUserBean sysUserBean){
         ResponseVO vo=new ResponseVO();
@@ -60,6 +64,9 @@ public class SysManagerService {
             return vo;
         }
         Map params= BeanToMapUtil.beanToMap(sysUserBean);
+        params.put("createTime",new Date());
+        params.put("updatetime",new Date());
+        params.put("isDelete",false);
         this.commonMapper.insertObject(new CommonInsertBean("baseUser",params));
         vo.setReCode(1);
         vo.setReMsg("创建成功");
