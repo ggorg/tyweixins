@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ty.dao.UserInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.ty.entity.UserInfo">
+        <id property="openid" column="openid"/>
+        <result property="nickname" column="nickname"/>
+        <result property="sex" column="sex"/>
+        <result property="language" column="language"/>
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="headimgid" column="headimgid"/>
+        <result property="subscribe" column="subscribe"/>
+        <result property="subscribeTime" column="subscribe_time"/>
+        <result property="unionid" column="unionid"/>
+        <result property="remark" column="remark"/>
+        <result property="groupid" column="groupid"/>
+        <result property="fakeid" column="fakeid"/>
+        <result property="publicopenid" column="publicopenid"/>
+        <result property="create_date" column="create_date"/>
+        <result property="update_date" column="update_date"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        openid,
+        nickname,
+        (CASE when sex='1' THEN '男性' WHEN sex='2' THEN '女性' else '未知' END) sex,
+        language,
+        country,
+        province,
+        city,
+        headimgid,
+        (CASE when subscribe='1' THEN '关注' else '未关注' END) subscribe,
+        subscribe_time,
+        unionid,
+        remark,
+        groupid,
+        publicopenid,
+        a.create_date,
+        a.update_date,
+        f.id AS "sysfile.id",
+        f.name AS "sysfile.name",
+        f.path AS "sysfile.path"
+    </sql>
+
+    <sql id="sysFileJoins">
+        LEFT JOIN sys_file f ON f.id = a.headimgid
+    </sql>
+
+    <insert id="insert" parameterType="com.ty.entity.UserInfo">
+        insert into weixin_user
+        (openid,nickname,sex,language,country,province,city,headimgid,subscribe,subscribe_time,unionid,remark,groupid,publicopenid,create_date,update_date)
+        values(
+        #{userInfo.openid, jdbcType=VARCHAR},
+        #{userInfo.nickname, jdbcType=VARCHAR},
+        #{userInfo.sex, jdbcType=INTEGER},
+        #{userInfo.language, jdbcType=VARCHAR},
+        #{userInfo.country, jdbcType=VARCHAR},
+        #{userInfo.province, jdbcType=VARCHAR},
+        #{userInfo.city, jdbcType=VARCHAR},
+        #{userInfo.headimgid, jdbcType=INTEGER},
+        #{userInfo.subscribe, jdbcType=VARCHAR},
+        #{userInfo.subscribeTime, jdbcType=TIMESTAMP},
+        #{userInfo.unionid, jdbcType=VARCHAR},
+        #{userInfo.remark, jdbcType=VARCHAR},
+        #{userInfo.groupid, jdbcType=INTEGER},
+        #{userInfo.publicopenid, jdbcType=VARCHAR},
+        now(),now()
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ty.entity.UserInfo">
+        update weixin_user
+         <set >
+		      <if test="nickname != null" >
+		       nickname=#{nickname, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="sex != null" >
+		       sex=#{sex, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="language != null" >
+		        language=#{language, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="country != null" >
+		        country=#{country, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="province != null" >
+		        province=#{province, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="city != null" >
+		        city=#{city, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="headimgid != null" >
+		        headimgid=#{headimgid, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="subscribe != null" >
+		        subscribe=#{subscribe, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="subscribeTime != null" >
+		        subscribe_time=#{subscribeTime, jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="unionid != null" >
+		        unionid=#{unionid, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="remark != null" >
+		        remark=#{remark, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="groupid != null" >
+		        groupid=#{groupid, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="publicopenid != null" >
+		        publicopenid=#{publicopenid, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="update_date != null" >
+		        update_date=now(), 
+		      </if>
+		    </set>
+        where openid =  #{openid,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByopenid" resultMap="BaseResultMap" parameterType="com.ty.entity.UserInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from weixin_user a
+        <include refid="sysFileJoins"/>
+        where openid = #{openid,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 分页查询用户信息 -->
+    <select id="findList" resultType="com.ty.entity.UserInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM weixin_user a
+        <include refid="sysFileJoins"/>
+        WHERE 1=1 
+        <if test="nickname != null and nickname != ''">
+            AND upper(a.nickname)  LIKE
+            <if test="dbName == 'oracle'">'%'||upper(#{nickname})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{nickname})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{nickname}), '%')</if>
+        </if>
+        <if test="openid != null and openid != ''">
+            AND a.openid  LIKE
+            <if test="dbName == 'oracle'">'%'||#{openid}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{openid}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{openid}, '%')</if>
+        </if>
+        <if test="remark != null and remark != ''">
+            AND a.remark  LIKE
+            <if test="dbName == 'oracle'">'%'||#{remark}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{remark}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{remark}, '%')</if>
+        </if>
+        <if test="country != null and country != ''">
+            AND a.country  LIKE
+            <if test="dbName == 'oracle'">'%'||#{country}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{country}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{country}, '%')</if>
+        </if>
+        <if test="province != null and province != ''">
+            AND a.province  LIKE
+            <if test="dbName == 'oracle'">'%'||#{province}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{province}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{province}, '%')</if>
+        </if>
+        <if test="city != null and city != ''">
+            AND a.city  LIKE
+            <if test="dbName == 'oracle'">'%'||#{city}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{city}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{city}, '%')</if>
+        </if>
+        <if test="subscribe != null and subscribe != ''">
+            AND a.subscribe  = #{subscribe}
+        </if>
+        <if test="sex != null and sex != ''">
+            AND a.sex  = #{sex}
+        </if>
+        <!-- 数据范围过滤 -->
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.subscribe_time desc
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="findOpenidList" parameterType="java.lang.String" resultType="java.util.HashMap">
+    	select openid
+    	FROM weixin_user
+    	where publicopenid = #{appid}
+    </select>
+</mapper>

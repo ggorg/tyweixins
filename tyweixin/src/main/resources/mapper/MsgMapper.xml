@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ty.dao.MsgMapper">
+
+    <resultMap id="BaseResultMap" type="com.ty.entity.Msg">
+        <id property="id" column="id"/>
+        <result property="appid" column="appid"/>
+        <result property="openid" column="openid"/>
+        <result property="collect" column="collect"/>
+        <result property="msgtype" column="msgtype"/>
+        <result property="reply" column="reply"/>
+        <result property="official" column="official"/>
+        <result property="content" column="content"/>
+        <result property="fileid" column="fileid"/>
+        <result property="remark" column="remark"/>
+        <result property="createDate" column="create_date"/>
+        <result property="userInfo.nickname" column="userInfo.nickname"/>
+        <result property="userInfo.sex" column="userInfo.sex"/>
+        <result property="userInfo.remark" column="userInfo.remark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        a.id,
+        a.appid,
+        a.openid,
+        collect,
+        official,
+        msgtype,
+        reply,
+        content,
+        a.fileid,
+        a.remark,
+        a.create_date,
+        ms.is_zy AS member,
+        u.nickname AS "userInfo.nickname",
+		u.sex AS "userInfo.sex",
+        u.subscribe AS "userInfo.subscribe",
+		u.country AS "userInfo.country",
+		u.province AS "userInfo.province",
+		u.city AS "userInfo.city",
+		u.remark AS "userInfo.remark"
+    </sql>
+
+    <sql id="baseJoins">
+        LEFT JOIN weixin_user u ON u.openid = a.openid
+    </sql>
+
+    <insert id="save" parameterType="com.ty.entity.Msg">
+        insert into weixin_msg
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+		      <if test="appid != null" >
+		        appid,
+		      </if>
+		      <if test="openid != null" >
+		        openid,
+		      </if>
+		      <if test="collect != null" >
+		        collect,
+		      </if>
+		      <if test="msgtype != null" >
+		        msgtype,
+		      </if>
+		      <if test="reply != null" >
+		        reply,
+		      </if>
+		      <if test="official != null" >
+		        official,
+		      </if>
+		      <if test="content != null" >
+		        content,
+		      </if>
+		      <if test="fileid != null" >
+		        fileid,
+		      </if>
+		      <if test="remark != null" >
+		        remark,
+		      </if>
+		      <if test="createDate != null" >
+		        create_date,
+		      </if>
+		      </trim>
+		    <trim prefix="values (" suffix=")" suffixOverrides="," >
+		      <if test="appid != null" >
+		        #{appid, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="openid != null" >
+		        #{openid, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="collect != null" >
+		        #{collect, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="msgtype != null" >
+		        #{msgtype, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="reply != null" >
+		        #{reply, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="official != null" >
+		        #{official, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="content != null" >
+		        #{content, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="fileid != null" >
+		        #{fileid, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="remark != null" >
+		         #{remark, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="createDate != null" >
+		        now(), 
+		      </if>
+		    </trim>
+    </insert>
+    
+    <update id="update" parameterType="com.ty.entity.Msg">
+        update weixin_msg
+		   <set >
+		      <if test="collect != null" >
+		        collect = #{collect, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="msgtype != null" >
+		        msgtype = #{msgtype, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="reply != null" >
+		        reply = #{reply, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="official != null" >
+		        official = #{official, jdbcType=INTEGER}, 
+		      </if>
+		      <if test="content != null" >
+		        content = #{content, jdbcType=VARCHAR}, 
+		      </if>
+		      <if test="remark != null" >
+		         remark = #{remark, jdbcType=VARCHAR}, 
+		      </if>
+		    </set>
+		    where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 分页查询用户信息 -->
+    <select id="findList" resultType="com.ty.entity.Msg">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM weixin_msg a
+       INNER JOIN (SELECT MAX(id) id FROM weixin_msg WHERE official = 0 GROUP BY openid) t ON a.id = t.id
+        <include refid="baseJoins"/>
+        where 1 = 1
+        <if test="content != null and content != ''">
+	        and content like
+	        <if test="dbName == 'oracle'">'%'||upper(#{content})||'%'</if>
+	        <if test="dbName == 'mssql'">'%'+upper(#{content})+'%'</if>
+	        <if test="dbName == 'mysql'">CONCAT('%', upper(#{content}), '%')</if>
+        </if>
+        <if test="openid != null and openid != ''">
+	        and a.openid = #{openid,jdbcType=VARCHAR}
+        </if>
+        <if test="collect != null and collect != ''">
+	        and collect = #{collect,jdbcType=INTEGER}
+        </if>
+        <if test="userInfo != null and userInfo.nickname != null and userInfo.nickname != ''">
+	        and u.nickname like
+	        <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
+	        <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
+	        <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
+        </if>
+        <if test="userInfo != null and userInfo.remark != null and userInfo.remark != ''">
+	        and u.remark like
+	        <if test="dbName == 'oracle'">'%'||upper(#{userInfo.remark})||'%'</if>
+	        <if test="dbName == 'mssql'">'%'+upper(#{userInfo.remark})+'%'</if>
+	        <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.remark}), '%')</if>
+        </if>
+        <!-- 数据范围过滤 -->
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.id desc
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 回复消息列表 -->
+    <select id="replyList" resultType="com.ty.entity.Msg">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM weixin_msg a
+        <include refid="baseJoins"/>
+        where 1 = 1
+        <if test="content != null and content != ''">
+            and content like
+            <if test="dbName == 'oracle'">'%'||upper(#{content})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{content})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{content}), '%')</if>
+        </if>
+        <if test="openid != null and openid != ''">
+            and a.openid = #{openid,jdbcType=VARCHAR}
+        </if>
+        <if test="collect != null and collect != ''">
+            and collect = #{collect,jdbcType=INTEGER}
+        </if>
+        <if test="userInfo != null and userInfo.nickname != null and userInfo.nickname != ''">
+            and u.nickname like
+            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
+        </if>
+        <if test="userInfo != null and userInfo.remark != null and userInfo.remark != ''">
+            and u.remark like
+            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.remark})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.remark})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.remark}), '%')</if>
+        </if>
+        <!-- 数据范围过滤 -->
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.id desc
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 根据id查询当前消息 -->
+    <select id="selectById" resultMap="BaseResultMap" parameterType="com.ty.entity.Msg">
+    	select 
+    	<include refid="Base_Column_List"/>
+    	from weixin_msg a
+    	<include refid="baseJoins"/>
+    	where a.id = #{id, jdbcType=INTEGER}
+    </select>
+    
+    <!-- 默认清除5天前未收藏消息 -->
+    <delete id="deleteUnCollect" parameterType="com.ty.entity.Msg">
+    	delete from weixin_msg
+    	where date(create_date) &lt;= DATE_SUB(CURDATE(),INTERVAL 5 DAY)
+    	and collect !=1
+    </delete>
+    
+    <!-- 更新历史消息回复状态 -->
+    <update id="markMsg" parameterType="com.ty.entity.Msg">
+        UPDATE weixin_msg
+           SET reply = 1
+         WHERE official = 0
+           AND create_date &lt;= NOW()
+           AND appid = #{appid, jdbcType=VARCHAR}
+           AND openid = #{openid, jdbcType=VARCHAR}
+    </update>
+    
+</mapper>
