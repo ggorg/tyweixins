@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" th:w>
 <head>
 <meta charset="UTF-8" />
 <link type="text/css" rel="stylesheet" href="/layui/css/layui.css"/>
@@ -19,7 +19,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">上级菜单</label>
     <div class="layui-input-block">
-      <input type="text" name="mParentId" required="required"  lay-verify="required|number" placeholder="上级菜单ID" autocomplete="off" class="layui-input" />
+      <input type="text" name="mParentId" required="required" th:value="${#httpServletRequest.getParameter('id')}"  lay-verify="required|number" placeholder="上级菜单ID" readonly="readonly" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
