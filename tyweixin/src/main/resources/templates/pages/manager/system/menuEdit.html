@@ -11,39 +11,30 @@
 <body style="padding:30px 60px 10px 10px">
 <form class="layui-form" >
   <div class="layui-form-item">
-    <label class="layui-form-label">角色名</label>
+    <label class="layui-form-label">菜单名称</label>
     <div class="layui-input-block">
-      <input type="text" name="rName" required="required"  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" />
-    </div>
-  </div>  <div class="layui-form-item">
-    <label class="layui-form-label">角色别称</label>
-    <div class="layui-input-block">
-      <input type="text" name="rByname" required="required"  lay-verify="required" placeholder="角色别称" autocomplete="off" class="layui-input" />
+      <input type="text" name="mName" required="required"  lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">角色类型</label>
-    <div class="layui-input-inline">
-      <select name="rType" lay-verify="required" >
-        <option value="1_1">普通用户</option>
-        <option value="1_2">管理员</option>
-        <option value="1_3">超级管理员</option>
-
-      </select>
+    <label class="layui-form-label">上级菜单</label>
+    <div class="layui-input-block">
+      <input type="text" name="mParentId" required="required"  lay-verify="required|number" placeholder="上级菜单ID" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">选择用户</label>
-
-      <div class="layui-input-block" style="overflow-y: auto;height: 200px;border: 1px #E6E6E6 solid;padding-left: 10px">
-
-        <input type="checkbox" name="uId"  title="写作" th:each="obj:${userList}" th:value="${obj['id']}"  th:title="${obj['uName']}">
-
-
-      </div>
-
-
+    <label class="layui-form-label">url地址</label>
+    <div class="layui-input-block">
+      <input type="text" name="mUrl" required="required"  lay-verify="required" placeholder="请输入url地址" autocomplete="off" class="layui-input" />
+    </div>
   </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">排序</label>
+    <div class="layui-input-block">
+      <input type="text" name="mSort" required="required"  lay-verify="required|number" placeholder="排序" autocomplete="off" class="layui-input" />
+    </div>
+  </div>
+
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
@@ -55,7 +46,7 @@
 layui.use('form', function(){
   var form = layui.form;
     $(".layui-form").submit(function(){
-        $.post("do-create-role",$(".layui-form").serializeArray(),function(data){
+        $.post("do-create-menu",$(".layui-form").serializeArray(),function(data){
             layer.msg(data.reMsg);
             if(data.reCode==1){
 

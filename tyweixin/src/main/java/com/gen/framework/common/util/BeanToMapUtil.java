@@ -35,9 +35,9 @@ public class BeanToMapUtil {
 								readMethod.setAccessible(true);
 							}
 							Object value = readMethod.invoke(obj);
-							if (value != null) {
+							//if (value != null) {
 								params.put(name, value);
-							}
+							//}
 						} catch (Throwable ex) {
 							logger.error("beanToMap:", ex);
 						}

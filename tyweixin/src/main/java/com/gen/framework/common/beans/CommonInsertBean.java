@@ -6,6 +6,7 @@ import com.gen.framework.common.util.BeanToMapUtil;
 
 public class CommonInsertBean {
 	private String tablename;
+	private Integer id;
 	private Object params;
 	public String getTablename() {
 		return tablename;
@@ -30,5 +31,13 @@ public class CommonInsertBean {
 	public CommonInsertBean(String tablename,Object params){
 		this.tablename=tablename;
 		this.setParams(params);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

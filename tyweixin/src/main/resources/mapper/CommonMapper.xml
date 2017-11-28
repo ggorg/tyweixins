@@ -159,7 +159,7 @@
 			limit #{startNum },#{endNum}
 		</if>
   	</select>
-  	<insert id="insertObject" parameterType="com.gen.framework.common.beans.CommonInsertBean">
+  	<insert id="insertObject" useGeneratedKeys="true" keyProperty="id" parameterType="com.gen.framework.common.beans.CommonInsertBean">
   			insert into ${tablename} 
   			<foreach collection="params" item="value"  index="key" open="(" close=")" separator=",">
   				${key}

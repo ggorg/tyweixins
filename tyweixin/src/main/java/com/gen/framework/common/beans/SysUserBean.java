@@ -1,8 +1,10 @@
 package com.gen.framework.common.beans;
 
 public class SysUserBean {
+    private Integer id;
     private String uName;
     private String uPassword;
+    private Integer disabled;
 
     public String getuName() {
         return uName;
@@ -18,6 +20,22 @@ public class SysUserBean {
 
     public void setuPassword(String uPassword) {
         this.uPassword = uPassword;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Integer disabled) {
+        this.disabled = disabled;
     }
 
     @Override

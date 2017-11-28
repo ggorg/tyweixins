@@ -48,4 +48,8 @@ public class CommonSearchBean extends CommonBean {
 		this.endNum=endNum;
 		this.startNum=startNum;
 	}
+	public CommonSearchBean(String tablename , Object condition,
+			CommonChildBean ... childConditions) {
+		super(tablename, null, null, condition, childConditions);
+	}
 }

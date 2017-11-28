@@ -1,8 +1,10 @@
 package com.gen.framework.common.services;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.beans.CommonCountBean;
 import com.gen.framework.common.beans.CommonInsertBean;
 import com.gen.framework.common.beans.CommonSearchBean;
+import com.gen.framework.common.beans.CommonUpdateBean;
 import com.gen.framework.common.dao.CommonMapper;
 import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.Page;
@@ -11,6 +13,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,21 +23,73 @@ public abstract class CommonService {
     private CommonMapper commonMapper;
 
     public ResponseVO commonInsert(String tableName,Object bean){
-        ResponseVO vo=new ResponseVO();
         Map params= BeanToMapUtil.beanToMap(bean);
-        params.put("createTime",new Date());
-        params.put("updatetime",new Date());
-        params.put("isDelete",false);
-        this.commonMapper.insertObject(new CommonInsertBean(tableName,params));
-        vo.setReCode(1);
-        vo.setReMsg("创建成功");
+        return commonInsertMap(tableName,params);
+    }
+    public ResponseVO commonInsertMap(String tableName,Map params){
+        ResponseVO vo=new ResponseVO();
+        CommonInsertBean cib=new CommonInsertBean(tableName,params);
+        int n=this.commonMapper.insertObject(cib);
+        if(n>0){
+            vo.setReCode(1);
+            vo.setReMsg("创建成功");
+            vo.setData(cib.getId());
+        }else{
+            vo.setReCode(-2);
+            vo.setReMsg("创建失败");
+        }
+
         return vo;
     }
+    public List commonList(String tableName,String ordername,Integer pageNum,Integer pageSize,Map<String,Object> searchCondition){
+        Page page=null;
+        if(pageNum!=null && pageSize!=null){
+            page=new Page(pageNum,pageSize);
+        }
+        CommonSearchBean csb=new CommonSearchBean(tableName,ordername,null, page==null?null:page.getStartRow(),page==null?null:page.getEndRow(),searchCondition);
+        return this.commonMapper.selectObjects(csb);
+    }
+    public long commonCountBySingleParam(String tableName,String paramName,Object paramValue){
+        Map<String,Object> searchCondition=new HashMap<>();
+        searchCondition.put(paramName+",=",paramValue);
+        return this.commonMapper.selectCount( new CommonCountBean(tableName,searchCondition));
+    }
+    public long commonCountBySearchCondition(String tableName,Map<String,Object> searchCondition){
 
-    public Page commonList(String tableName,String ordername,Integer pageNum,Integer pageSize,Map<String,Object> condition)throws Exception{
+        return this.commonMapper.selectCount( new CommonCountBean(tableName,searchCondition));
+    }
+    public <T> T commonObjectBySingleParam(String tableName,String paramName,Object paramValue,Class<T> clazz)throws Exception{
+        Map<String,Object> condition=new HashMap<>();
+        condition.put(paramName+",=",paramValue);
+        List<Map> list=this.commonMapper.selectObjects(new CommonSearchBean(tableName,condition));
+        if(list!=null && !list.isEmpty()){
+             T t=clazz.newInstance();
+             PropertyUtils.copyProperties(t,list.get(0));
+             return t;
+
+        }
+        return null;
+    }
+    public ResponseVO  commonUpdateBySingleSearchParam(String tableName,Map setParams,String searchParamName,String searchParamValue){
+        ResponseVO vo=new ResponseVO();
+        setParams.put("updateTime",new Date());
+        Map searchCondition=new HashMap();
+        searchCondition.put(searchParamName,searchParamValue);
+        CommonUpdateBean cub=new CommonUpdateBean(tableName,setParams,searchCondition);
+        int n=this.commonMapper.updateObject(cub);
+        if(n>0){
+            vo.setReCode(1);
+            vo.setReMsg("修改成功");
+        }else{
+            vo.setReCode(-2);
+            vo.setReMsg("修改失败");
+        }
+        return vo;
+    }
+    public Page commonPage(String tableName,String ordername,Integer pageNum,Integer pageSize,Map<String,Object> searchCondition)throws Exception{
         Page page=new Page(pageNum,pageSize);
 
-        CommonSearchBean csb=new CommonSearchBean(tableName,ordername,null, page.getStartRow(),page.getEndRow(),condition);
+        CommonSearchBean csb=new CommonSearchBean(tableName,ordername,null, page.getStartRow(),page.getEndRow(),searchCondition);
         CommonCountBean ccb = new CommonCountBean();
 
         PropertyUtils.copyProperties(ccb, csb);

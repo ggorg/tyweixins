@@ -1,6 +1,7 @@
 package com.gen.framework.common.beans;
 
 public class SysRoleBean {
+    private Integer id;
     private String rName;
     private String rByname;
     private String rType;
@@ -27,5 +28,13 @@ public class SysRoleBean {
 
     public void setrType(String rType) {
         this.rType = rType;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
