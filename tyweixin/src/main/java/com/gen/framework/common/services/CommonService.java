@@ -28,12 +28,13 @@ public abstract class CommonService {
         this.commonMapper.insertObject(new CommonInsertBean(tableName,params));
         vo.setReCode(1);
         vo.setReMsg("创建成功");
+        return vo;
     }
 
     public Page commonList(String tableName,String ordername,Integer pageNum,Integer pageSize,Map<String,Object> condition)throws Exception{
         Page page=new Page(pageNum,pageSize);
 
-        CommonSearchBean csb=new CommonSearchBean(tableName,"null",null, page.getStartRow(),page.getEndRow(),condition);
+        CommonSearchBean csb=new CommonSearchBean(tableName,ordername,null, page.getStartRow(),page.getEndRow(),condition);
         CommonCountBean ccb = new CommonCountBean();
 
         PropertyUtils.copyProperties(ccb, csb);
