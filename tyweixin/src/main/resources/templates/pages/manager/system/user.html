@@ -5,9 +5,6 @@
         <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
         <script type="text/javascript"  th:inline="javascript">
            initPage(/*[[${userPage!=null?userPage.total:0}]]*/ );
-           layui.use('form', function() {
-               var form = layui.form;
-           });
         </script>
 	</head>
     <body class="withvernav">
@@ -27,7 +24,6 @@
                 <div class="contenttitle2">
                     <h3>用户列表</h3>
                 </div><!--contenttitle-->
-                <form class="layui-form">
                 <div class="tableoptions">
                     <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit')" title="table2">新建</button> &nbsp;
                     <!-- <select class="radius3">
@@ -75,7 +71,6 @@
                     </tbody>
 
                 </table>
-                </form>
                 <div id="pages"></div>
             </div>
         </div>
