@@ -53,7 +53,7 @@ public class CoreService {
         try {
             // 默认返回的文本消息内容
             String respContent = "";
-
+            System.out.println("request = [" + request + "]");
             // xml请求解析
             Map<String, String> requestMap = MessageUtil.parseXml(request);
             // 发送方帐号（open_id）
@@ -208,6 +208,7 @@ public class CoreService {
     // 接收用户发送的文本消息内容
     public String handelText(String content, String appid, String openid) {
         String respContent = "";
+        respContent = content;
         return respContent;
     }
     

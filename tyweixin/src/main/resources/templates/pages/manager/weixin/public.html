@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+        <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+        <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
+        <script type="text/javascript"  th:inline="javascript">
+           initPage(/*[[${userPage!=null?userPage.total:0}]]*/ );
+        </script>
+	</head>
+    <body class="withvernav">
+    <div class="bodywrapper">
+
+        <th:block th:include="pages/manager/common/header::sysheader"></th:block>
+        <th:block th:include="pages/manager/common/menus::sysmenus"></th:block>
+       <div class="centercontent tables">
+
+           <!-- <div class="pageheader notab">
+           <h1 class="pagetitle">Tables</h1>
+           <span class="pagedesc">This is a sample description of a page</span>
+
+       </div>--><!--pageheader-->
+
+            <div id="contentwrapper" class="contentwrapper">
+                <div class="contenttitle2">
+                    <h3>公众号列表</h3>
+                </div><!--contenttitle-->
+                <div class="tableoptions">
+                    <button class="radius3" id="createBtn" onclick="openDialog('400px','340px','创建公众号','edit')" title="table2">新建</button> &nbsp;
+                    <!-- <select class="radius3">
+                         <option value="">Show All</option>
+                         <option value="">Rendering Engine</option>
+                         <option value="">Platform</option>
+                     </select> &nbsp;
+                     <button class="radius3">Apply Filter</button>
+                     <input class="radius3" style="padding: 6px 5px 6px 5px;margin-left:10px;"/>-->
+                </div><!--tableoptions-->
+                <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
+                    <colgroup>
+                        <!--<col class="con0" style="width: 4%" />-->
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="head1">名称</th>
+                        <th class="head0">AppID</th>
+                        <th class="head1">AppSecret</th>
+                        <th class="head0">创建时间</th>
+                        <th class="head1">操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="obj:${userPage?.result}">
+                       
+                        <td th:text="${obj['name']}">Trident</td>
+                        <td th:text="${obj['appid']}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['appsecret']}">Win 95+</td>
+                        <td th:text="${obj['update_date']}">Win 95+</td>
+
+                        <td class="center">
+                            <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" >修 改</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" >删除</button>
+                            </div>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+                <div id="pages"></div>
+            </div>
+        </div>
+
+    </div>
+
+	</body>
+	
+</html>
