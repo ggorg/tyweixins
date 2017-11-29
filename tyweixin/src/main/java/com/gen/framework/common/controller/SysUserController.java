@@ -97,17 +97,17 @@ public class SysUserController {
         return "pages/manager/system/menu";
     }
     @GetMapping("/menu/to-edit")
-    public String toMemuEdit(String rId,Model model){
+    public String toMmuEdit(Integer id,Model model){
         try {
-
+            if(id!=null && id>0)model.addAttribute("menuObject",this.sysManagerService.getMenuById(id));
         }catch (Exception e){
             logger.error("SysUserController->toMemuEdit",e);
         }
         return "pages/manager/system/menuEdit";
     }
-    @PostMapping("/menu/do-create-menu")
+    @PostMapping("/menu/do-edit-menu")
     @ResponseBody
-    public ResponseVO doCreateMenu(SysMenuBean sysMenuBean){
+    public ResponseVO doEditMenu(SysMenuBean sysMenuBean){
         try {
             return this.sysManagerService.saveMenu(sysMenuBean);
         }catch (Exception e){

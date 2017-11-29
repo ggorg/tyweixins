@@ -138,7 +138,9 @@ public class SysManagerService extends CommonService{
 
         return this.commonPage("baseRole","createTime desc",pageNum,10,new HashMap<String,Object>());
     }
-
+    public SysMenuBean getMenuById(Integer mId)throws Exception{
+       return  this.commonObjectBySingleParam("baseMenu","id",mId,SysMenuBean.class);
+    }
     public Page getMenuPage(Integer pageNum)throws Exception{
 
         return this.commonPage("baseMenu","mSort asc",pageNum,10,new HashMap<String,Object>());
@@ -163,10 +165,17 @@ public class SysManagerService extends CommonService{
             sysMenuBean.setmSort(1);
         }
         Map params= BeanToMapUtil.beanToMap(sysMenuBean);
-        params.put("createTime",new Date());
         params.put("updateTime",new Date());
+        if(sysMenuBean.getId()!=null && sysMenuBean.getId()>0){
+           return this.commonUpdateBySingleSearchParam("baseMenu",params,"id",sysMenuBean.getId());
+        }else{
+            params.put("createTime",new Date());
+            return this.commonInsertMap("baseMenu",params);
+        }
 
-        return this.commonInsertMap("baseMenu",params);
+
+
+
     }
     public List getAllMenu(){
         return this.commonList("baseMenu","mSort asc",null,null,new HashMap<>());

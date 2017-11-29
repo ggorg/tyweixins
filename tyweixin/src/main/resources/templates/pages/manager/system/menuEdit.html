@@ -10,23 +10,29 @@
 </head>
 <body style="padding:30px 60px 10px 10px">
 <form class="layui-form" >
-  <input type="hidden" name="mParentId" th:value="${#httpServletRequest.getParameter('id')}"/>
+  <input type="hidden" th:if="${menuObject!=null}" name="id" th:value="${menuObject?.id}" />
   <div class="layui-form-item">
     <label class="layui-form-label">菜单名称</label>
     <div class="layui-input-block">
-      <input type="text" name="mName" required="required"  lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input" />
+      <input type="text" name="mName" required="required" th:value="${menuObject?.mName}" lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input" />
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">上级菜单ID</label>
+    <div class="layui-input-block">
+      <input type="text" name="mParentId" th:readonly="${menuObject==null}" th:value="${menuObject!=null?menuObject?.mParentId:#httpServletRequest.getParameter('pid')}" required="required"  lay-verify="required|number" placeholder="请输入上级菜单ID" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">url地址</label>
     <div class="layui-input-block">
-      <input type="text" name="mUrl" required="required"  lay-verify="required" placeholder="请输入url地址" autocomplete="off" class="layui-input" />
+      <input type="text" name="mUrl" required="required" th:value="${menuObject?.mUrl}"  lay-verify="required" placeholder="请输入url地址" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">排序</label>
     <div class="layui-input-block">
-      <input type="text" name="mSort" required="required"  lay-verify="required|number" placeholder="排序" autocomplete="off" class="layui-input" />
+      <input type="text" name="mSort" required="required" th:value="${menuObject?.mSort}"   lay-verify="required|number" placeholder="排序" autocomplete="off" class="layui-input" />
     </div>
   </div>
 
@@ -41,11 +47,13 @@
 layui.use('form', function(){
   var form = layui.form;
     $(".layui-form").submit(function(){
-        $.post("do-create-menu",$(".layui-form").serializeArray(),function(data){
+        $.post("do-edit-menu",$(".layui-form").serializeArray(),function(data){
             layer.msg(data.reMsg);
             if(data.reCode==1){
 
-                top.location.href=window.parent.location.href;
+                window.setTimeout(function(){
+                    top.location.href=window.parent.location.href;
+                },500)
             }
 
         });

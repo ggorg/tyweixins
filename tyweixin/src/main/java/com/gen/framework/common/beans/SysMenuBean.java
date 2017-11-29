@@ -1,10 +1,19 @@
 package com.gen.framework.common.beans;
 
 public class SysMenuBean {
+    private Integer id;
     private String mName;
     private Integer mParentId;
     private Integer mSort;
     private String mUrl;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getmName() {
         return mName;

@@ -5,6 +5,9 @@
         <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
         <script type="text/javascript"  th:inline="javascript">
            initPage(/*[[${userPage!=null?userPage.total:0}]]*/ );
+           layui.use('form', function() {
+               var form = layui.form;
+           });
         </script>
 	</head>
     <body class="withvernav">
@@ -24,6 +27,7 @@
                 <div class="contenttitle2">
                     <h3>用户列表</h3>
                 </div><!--contenttitle-->
+                <form class="layui-form">
                 <div class="tableoptions">
                     <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit')" title="table2">新建</button> &nbsp;
                     <!-- <select class="radius3">
@@ -58,19 +62,20 @@
                     <tr th:each="obj:${userPage?.result}">
                        
                         <td th:text="${obj['uName']}">Trident</td>
-                        <td th:text="${obj['isDelete']>0?'已禁用':'已启用'}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['disabled']>0?'已禁用':'已启用'}">Internet Explorer 4.0</td>
                         <td th:text="${obj['createTime']}">Win 95+</td>
 
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'280px\',\'修改用户\',\'to-edit?uId='+${obj['id']}+'\')'"  >修 改</button>
-                            <button  th:class="'layui-btn layui-btn-sm '+${obj['isDelete']>0?'':'layui-btn-danger'}" th:text="${obj['isDelete']>0?'启 用':'禁 用'}"></button>
+                            <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
                             </div>
                     </tr>
 
                     </tbody>
 
                 </table>
+                </form>
                 <div id="pages"></div>
             </div>
         </div>
