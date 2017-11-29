@@ -1,6 +1,9 @@
 package com.ty.services;
 
+import com.gen.framework.common.dao.CommonMapper;
+import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.util.Page;
+import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.PubweixinMapper;
 import com.ty.entity.Pubweixin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,15 +11,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * 微信公众号相关操作服务
  */
 @Service
-public class PubWeixinService {
+public class PubWeixinService extends CommonService {
     @Autowired
     private PubweixinMapper pubweixinMapper;
+	@Autowired
+	private CommonMapper commonMapper;
     
     /**
      * 添加公众号
@@ -24,7 +30,8 @@ public class PubWeixinService {
      * @return
      */
     @Transactional(readOnly = false)
-	public int saveOrUpdate(Pubweixin pubweixin){
+	public ResponseVO saveOrUpdate(Pubweixin pubweixin){
+		ResponseVO vo=new ResponseVO();
     	int ret = 0;
     	Pubweixin pw = pubweixinMapper.selectByAppid(pubweixin.getAppid());
     	if(pw!=null){
@@ -37,7 +44,9 @@ public class PubWeixinService {
     		pubweixin.setUpdate_date(new Date());
     		ret = pubweixinMapper.insert(pubweixin);
     	}
-    	return ret;
+		vo.setReCode(1);
+		vo.setReMsg("创建公众号成功");
+    	return vo;
     }
     /**
      * 将公众号删除标志设置为1 已删除
@@ -59,16 +68,12 @@ public class PubWeixinService {
     
     /**
      * 分页查询微信公众号列表
-     * @param page
-     * @param pubweixin
+     * @param pageNum
      * @return
      */
-    public Page<Pubweixin> findPubweixin(Page<Pubweixin> page, Pubweixin pubweixin) {
-        // 设置分页参数
-        // 执行分页查询
-        page.setResult(pubweixinMapper.findList(pubweixin));
-        return page;
-    }
+    public Page findPubweixin(Integer pageNum) throws Exception{
+		return this.commonPage("weixin_public","update_date desc",pageNum,10,new HashMap<>());
+	}
 
     /**
      * 无分页查询微信公众号列表
@@ -76,8 +81,8 @@ public class PubWeixinService {
      * @param pubweixin
      * @return
      */
-    public List<Pubweixin> findPubweixin(Pubweixin pubweixin) {
-        List<Pubweixin> list = pubweixinMapper.findList(pubweixin);
+    public List<Pubweixin> findPubweixinAll(Pubweixin pubweixin) {
+        List<Pubweixin> list = pubweixinMapper.findListAll(pubweixin);
         return list;
     }
     

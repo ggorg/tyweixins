@@ -1,5 +1,6 @@
 package com.ty.dao;
 
+import com.gen.framework.common.util.Page;
 import com.ty.entity.Pubweixin;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,10 +27,12 @@ public interface PubweixinMapper {
 	int update(Pubweixin pubweixin);
 	
 	/**
-     * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());
+     * 查询数据列表，如果需要分页
      *
      * @param entity
      * @return
      */
-    public List<Pubweixin> findList(Pubweixin entity);
+    public List<Pubweixin> findList(Page page, Pubweixin entity);
+
+    public List<Pubweixin> findListAll( Pubweixin entity);
 }
