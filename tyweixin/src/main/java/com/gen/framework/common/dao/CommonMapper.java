@@ -2,12 +2,9 @@ package com.gen.framework.common.dao;
 
 import java.util.List;
 
+import com.gen.framework.common.beans.*;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gen.framework.common.beans.CommonCountBean;
-import com.gen.framework.common.beans.CommonInsertBean;
-import com.gen.framework.common.beans.CommonSearchBean;
-import com.gen.framework.common.beans.CommonUpdateBean;
 @SuppressWarnings("rawtypes")
 @Mapper
 public interface CommonMapper {
@@ -15,4 +12,5 @@ public interface CommonMapper {
 	List selectObjects(CommonSearchBean commonSearchBean);
 	int insertObject(CommonInsertBean commonInsertBean);
 	int updateObject(CommonUpdateBean commonUpdateBean);
+	int deleteObject(CommonDeleteBean dommonDeleteBean);
 }

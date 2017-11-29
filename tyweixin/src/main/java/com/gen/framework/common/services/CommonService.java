@@ -1,10 +1,7 @@
 package com.gen.framework.common.services;
 
 import com.alibaba.fastjson.JSONObject;
-import com.gen.framework.common.beans.CommonCountBean;
-import com.gen.framework.common.beans.CommonInsertBean;
-import com.gen.framework.common.beans.CommonSearchBean;
-import com.gen.framework.common.beans.CommonUpdateBean;
+import com.gen.framework.common.beans.*;
 import com.gen.framework.common.dao.CommonMapper;
 import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.Page;
@@ -54,6 +51,12 @@ public abstract class CommonService {
         searchCondition.put(paramName+",=",paramValue);
         return this.commonMapper.selectCount( new CommonCountBean(tableName,searchCondition));
     }
+    public List commonObjectsBySingleParam(String tableName,String paramName,Object paramValue)throws Exception{
+        Map<String,Object> condition=new HashMap<>();
+        condition.put(paramName+",=",paramValue);
+        List<Map> list=this.commonMapper.selectObjects(new CommonSearchBean(tableName,condition));
+        return list;
+    }
     public long commonCountBySearchCondition(String tableName,Map<String,Object> searchCondition){
 
         return this.commonMapper.selectCount( new CommonCountBean(tableName,searchCondition));
@@ -63,14 +66,14 @@ public abstract class CommonService {
         condition.put(paramName+",=",paramValue);
         List<Map> list=this.commonMapper.selectObjects(new CommonSearchBean(tableName,condition));
         if(list!=null && !list.isEmpty()){
-             T t=clazz.newInstance();
-             PropertyUtils.copyProperties(t,list.get(0));
-             return t;
+            T t=clazz.newInstance();
+            PropertyUtils.copyProperties(t,list.get(0));
+            return t;
 
         }
         return null;
     }
-    public ResponseVO  commonUpdateBySingleSearchParam(String tableName,Map setParams,String searchParamName,String searchParamValue){
+    public ResponseVO  commonUpdateBySingleSearchParam(String tableName,Map setParams,String searchParamName,Object searchParamValue){
         ResponseVO vo=new ResponseVO();
         setParams.put("updateTime",new Date());
         Map searchCondition=new HashMap();
@@ -101,5 +104,10 @@ public abstract class CommonService {
         }
 
         return page;
+    }
+    public int commonDelete(String tableName,String paramName,Object paramValue){
+        Map searchCondition=new HashMap();
+        searchCondition.put(paramName,paramValue);
+        return this.commonMapper.deleteObject(new CommonDeleteBean(tableName,searchCondition));
     }
 }

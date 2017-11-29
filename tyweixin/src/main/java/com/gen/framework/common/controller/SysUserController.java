@@ -29,28 +29,39 @@ public class SysUserController {
         }
         return "pages/manager/system/user";
     }
-    @PostMapping("/user/do-create-user")
+    @PostMapping("/user/do-edit-user")
     @ResponseBody
-    public ResponseVO doCreateUser(SysUserBean sysUserBean){
+    public ResponseVO doEditUser(SysUserBean sysUserBean){
         try {
             return this.sysManagerService.saveUser(sysUserBean);
         }catch (Exception e){
             logger.error("SysUserController->doCreateUser->系统异常",e);
             return new ResponseVO(-1,"创建失败",null);
         }
-
     }
 
     @GetMapping("/user/to-edit")
-    public String toUserEdit(String uId){
+    public String toUserEdit(Integer uId, Model model){
+        try {
+            model.addAttribute("userObject",this.sysManagerService.getUserById(uId));
+        }catch (Exception e){
+            logger.error("SysUserController->toUserEdit->系统异常",e);
+
+        }
+
         return "pages/manager/system/userEdit";
     }
 
 
 
     @GetMapping("/role/to-edit")
-    public String toRoleEdit(String rId,Model model){
-        model.addAttribute("userList",this.sysManagerService.getAllUser());
+    public String toRoleEdit(Integer rId,Model model){
+        try {
+            model.addAllAttributes(this.sysManagerService.getRoleById(rId));
+        }catch (Exception e){
+            logger.error("SysUserController->toRoleEdit->系统异常",e);
+
+        }
         return "pages/manager/system/roleEdit";
     }
 
@@ -63,9 +74,9 @@ public class SysUserController {
         }
         return "pages/manager/system/role";
     }
-    @PostMapping("/role/do-create-role")
+    @PostMapping("/role/do-edit-role")
     @ResponseBody
-    public ResponseVO doCreateRole(SysRoleBean sysRoleBean, Integer[] uId){
+    public ResponseVO doEditRole(SysRoleBean sysRoleBean, Integer[] uId){
         try {
             return this.sysManagerService.saveRole(sysRoleBean,uId);
         }catch (Exception e){
@@ -104,5 +115,26 @@ public class SysUserController {
             return new ResponseVO(-1,"创建失败",null);
         }
 
+    }
+
+    @GetMapping("/role/to-menu-power")
+    public String toMenuPower(Integer rId,Model model){
+        try {
+           // model.addAttribute("menuPage",this.sysManagerService.getAllMenu());
+            model.addAttribute("menuPage",this.sysManagerService.handlePower(rId));
+        }catch (Exception e){
+            logger.error("SysUserController->toMenuPower->系统异常",e);
+        }
+        return "pages/manager/system/rolePower";
+    }
+    @PostMapping("/role/do-power")
+    @ResponseBody
+    public ResponseVO doPower(Integer rId,Integer[] mId){
+        try{
+            return this.sysManagerService.savePower(rId,mId);
+        }catch (Exception e){
+            logger.error("SysUserController->doPower->系统异常",e);
+            return new ResponseVO(-1,"授权失败",null);
+        }
     }
 }

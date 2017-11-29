@@ -10,10 +10,11 @@
 </head>
 <body style="padding:40px 60px 10px 10px">
 <form class="layui-form" >
+  <input th:if="${userObject!=null and userObject.id!=null}" type="hidden" name="id" th:value="${userObject.id}"/>
   <div class="layui-form-item">
     <label class="layui-form-label">用户名</label>
     <div class="layui-input-block">
-      <input type="text" name="uName" required="required"  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" />
+      <input type="text" name="uName" required="required"  lay-verify="required" th:value="${userObject?.uName}" placeholder="请输入用户名" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
@@ -33,10 +34,12 @@
 layui.use('form', function(){
   var form = layui.form;
     $(".layui-form").submit(function(){
-        $.post("do-create-user",$(".layui-form").serializeArray(),function(data){
+        $.post("do-edit-user",$(".layui-form").serializeArray(),function(data){
             alert(data.reMsg);
             if(data.reCode==1){
-                top.location.href=window.parent.location.href;
+                window.setTimeout(function(){
+                    top.location.href=window.parent.location.href;
+                },500)
             }
 
         });

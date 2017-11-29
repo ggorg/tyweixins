@@ -10,16 +10,11 @@
 </head>
 <body style="padding:30px 60px 10px 10px">
 <form class="layui-form" >
+  <input type="hidden" name="mParentId" th:value="${#httpServletRequest.getParameter('id')}"/>
   <div class="layui-form-item">
     <label class="layui-form-label">菜单名称</label>
     <div class="layui-input-block">
       <input type="text" name="mName" required="required"  lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input" />
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">上级菜单</label>
-    <div class="layui-input-block">
-      <input type="text" name="mParentId" required="required" th:value="${#httpServletRequest.getParameter('id')}"  lay-verify="required|number" placeholder="上级菜单ID" readonly="readonly" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">

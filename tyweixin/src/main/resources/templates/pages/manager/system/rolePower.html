@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+        <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+
+        <script type="text/javascript" src="/sysframe2/js/plugins/jquery-1.7.min.js"></script>
+        <script type="text/javascript" src="/layui/layui.js"></script>
+	</head>
+    <body >
+    <div class="bodywrapper">
+
+       <div class="centercontent tables">
+
+           <!-- <div class="pageheader notab">
+           <h1 class="pagetitle">Tables</h1>
+           <span class="pagedesc">This is a sample description of a page</span>
+
+       </div>--><!--pageheader-->
+
+            <div id="contentwrapper" class="contentwrapper">
+
+                <form class="layui-form">
+                    <input type="hidden" name="rId" th:value="${#httpServletRequest.getParameter('rId')}"/>
+                    <div class="layui-form-item">
+                <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
+                    <colgroup>
+                        <col class="con0" style="width: 20%"  />
+                        <col class="con1" style="width: 60%"  />
+                        <col class="con0" style="width: 20%"  />
+
+                    </colgroup>
+                    <thead>
+                    <tr>
+                       
+                        <th class="head1">菜单名称</th>
+                        <th class="head0">Url地址</th>
+                        <th class="head1">操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="obj:${menuPage}">
+
+                        <td  th:style="'padding-top: 0px;padding-bottom: 0px;font-size: 16px;'+${obj['isChild']!=null?'padding-left:8px;':''}" ><i th:text="${obj['isChild']!=null?'&#xe625;':'&nbsp;&nbsp;&nbsp;'}" class="layui-icon"></i> <span th:text="${obj['mParentId']>-1?'&nbsp;&nbsp;&nbsp;':''}+${obj['mName']}">Trident</span></td>
+
+                        <td th:text="${obj['mUrl']}" style="padding-top: 0px;padding-bottom: 0px;font-size: 16px">Win 95+</td>
+
+                        <td class="center" style="padding-top: 0px;padding-bottom: 0px;">
+
+                                <input type="checkbox"  th:checked="${obj['isPower']}" name="mId" th:value="${obj['id']}" lay-skin="switch" lay-filter="switchTest" title="开关">
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        layui.use('form', function(){
+            var form = layui.form;
+            $(".layui-form").submit(function(){
+                $.post("do-power",$(".layui-form").serializeArray(),function(data){
+                    layer.msg(data.reMsg);
+                    if(data.reCode==1){
+                        window.setTimeout(function(){
+                            top.location.href=window.parent.location.href;
+                        },500)
+
+                    }
+
+                });
+                return false;
+            });
+            //各种基于事件的操作，下面会有进一步介绍
+        });
+    </script>
+	</body>
+	
+</html>

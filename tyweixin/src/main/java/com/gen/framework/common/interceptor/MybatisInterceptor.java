@@ -48,9 +48,10 @@ public class MybatisInterceptor implements Interceptor {
 		long time = (end - start);
 		if (time > 1) {
 			String[] infos = getSql(configuration, boundSql, sqlId);
-			String fmSQL = SQLUtils.format(infos[1], JdbcConstants.MYSQL);
+			//String fmSQL = SQLUtils.format(infos[1], JdbcConstants.MYSQL);
+
 			logger.debug("调用的Java方法：\n " + infos[0]);
-			logger.debug("执行SQL语句：\n" + fmSQL + "\n" + " 语句执行的时间：" + time + "ms\n");
+			logger.debug("执行SQL语句：\n" + infos[1] + "\n" + " 语句执行的时间：" + time + "ms\n");
 		}
 		return returnValue;
 	}

@@ -178,4 +178,10 @@
   				${key}=#{value}
   			</foreach>
   	</update>
+	<delete id="deleteObject" parameterType="com.gen.framework.common.beans.CommonDeleteBean">
+		delete from ${tablename}
+		<foreach collection="condition" item="value"  index="key" open="where" separator="and">
+			${key}=#{value}
+		</foreach>
+	</delete>
 </mapper>
