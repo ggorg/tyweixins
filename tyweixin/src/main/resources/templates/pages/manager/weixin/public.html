@@ -57,7 +57,7 @@
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'340px\',\'修改公众号\',\'edit?appid='+${obj['appid']}+'\')'" >修 改</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del" >删除</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del('+${obj['appid']}+')'" >删除</button>
                             </div>
                     </tr>
 
@@ -70,26 +70,20 @@
 
     </div>
     <script type="text/javascript">
-        layui.use(['table', 'element'], function(){
-                    table = layui.table //表格
-                    ,element = layui.element; //元素操作
-            //监听工具条
-            table.on('tool(demo)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-                var data = obj.data //获得当前行数据
-                        ,layEvent = obj.event; //获得 lay-event 对应的值
-                if(layEvent === 'detail'){
-                    layer.msg('查看操作');
-                } else if(layEvent === 'del'){
-                    layer.confirm('真的删除行么', function(index){
-                        obj.del(); //删除对应行（tr）的DOM结构
-                        layer.close(index);
-                        //向服务端发送删除指令
+        function del(obj){
+            jConfirm("确定删除?","删除",function(data){
+                if(data){
+                    $.post("/delete",{appid:obj},function(data){
+                        if(data.reCode==1){
+                            layer.msg(data.reMsg);
+                            window.setTimeout(function(){
+                                top.location.href=window.parent.location.href;
+                            },500)
+                        }
                     });
-                } else if(layEvent === 'edit'){
-                    layer.msg('编辑操作');
                 }
-            });
-        });
+            })
+        }
     </script>
 	</body>
 	
