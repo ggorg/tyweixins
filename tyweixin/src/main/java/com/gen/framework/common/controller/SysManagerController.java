@@ -4,6 +4,7 @@ import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.beans.SysRoleBean;
 import com.gen.framework.common.beans.SysUserBean;
 import com.gen.framework.common.services.SysManagerService;
+import com.gen.framework.common.thymeleaf.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/sys")
-public class SysUserController {
-    private final Logger logger = LoggerFactory.getLogger(SysUserController.class);
+public class SysManagerController {
+    private final Logger logger = LoggerFactory.getLogger(SysManagerController.class);
     @Autowired
     private SysManagerService sysManagerService;
 
@@ -135,6 +135,23 @@ public class SysUserController {
         }catch (Exception e){
             logger.error("SysUserController->doPower->系统异常",e);
             return new ResponseVO(-1,"授权失败",null);
+        }
+    }
+    @GetMapping("/to-login")
+    public String toLogin(){
+        return "pages/manager/system/login";
+    }
+
+    @PostMapping("/do-login")
+    @ResponseBody
+    public ResponseVO doLogin(SysUserBean sysUserBean){
+
+        try{
+            Tools.setCookie("token","test");
+            return new ResponseVO(1,"登录成功",sysUserBean);
+        }catch (Exception e){
+            logger.error("SysUserController->doLogin->系统异常",e);
+            return new ResponseVO(-1,"登录失败",null);
         }
     }
 }

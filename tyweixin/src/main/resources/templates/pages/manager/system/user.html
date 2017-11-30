@@ -64,7 +64,7 @@
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'280px\',\'修改用户\',\'to-edit?uId='+${obj['id']}+'\')'"  >修 改</button>
-                            <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
+                            <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:onclick="" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
                             </div>
                     </tr>
 

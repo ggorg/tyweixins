@@ -24,6 +24,26 @@ function initPage(count){
 
     })
 }
+function initForm(url,formObject){
+    layui.use('form', function(){
+        var form = layui.form;
+
+        $(formObject==undefined?".layui-form":formObject).submit(function(){
+            $.post(url,$(formObject==undefined?".layui-form":formObject).serializeArray(),function(data){
+                layer.msg(data.reMsg);
+                if(data.reCode==1){
+
+                    window.setTimeout(function(){
+                        top.location.href=window.parent.location.href;
+                    },500)
+                }
+
+            });
+            return false;
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+}
 function openDialog(width,height,title,url){
     layer.open({
         type: 2,

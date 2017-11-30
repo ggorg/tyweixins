@@ -1,5 +1,12 @@
 package com.gen.framework.common.thymeleaf;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -187,5 +194,29 @@ public final class Tools {
 		long times = date.getTime()-date2.getTime();
 		return (times>=0?"":"-")+ (times>=0?times/(24*60*60*1000):-times/(24*60*60*1000))+"天";
 	}
+	public static boolean isLogin(){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = attrs.getRequest();
+		Cookie[] cookies=request.getCookies();
+		if(cookies!=null){
+			for(Cookie cookie:cookies){
+				if(cookie.getName().equals("token") && StringUtils.isNotBlank(cookie.getValue())){
+					return false;
+				}
+			}
+		}
 
+		return true;
+	}
+	public static void setCookie(String key,String value){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletResponse response = attrs.getResponse();
+		Cookie cookie = new Cookie(key, value);
+		/*if (StringUtils.isNotBlank(domain)) {
+			cookie.setDomain(domain);
+		}*/
+
+		cookie.setPath("/");
+		response.addCookie(cookie);
+	}
 }

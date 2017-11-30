@@ -4,9 +4,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <meta charset="UTF-8" />
-<link type="text/css" rel="stylesheet" href="/layui/css/layui.css"/>
-  <script type="text/javascript" src="/sysframe2/js/plugins/jquery-1.7.min.js"></script>
-<script type="text/javascript" src="/layui/layui.js"></script>
+  <th:block th:include="pages/manager/common/editResources::syseditjsresources"></th:block>
 </head>
 <body style="padding:40px 60px 10px 10px">
 <form class="layui-form" >
@@ -31,22 +29,7 @@
   </div>
 </form>
 <script type="text/javascript">
-layui.use('form', function(){
-  var form = layui.form;
-    $(".layui-form").submit(function(){
-        $.post("do-edit-user",$(".layui-form").serializeArray(),function(data){
-            alert(data.reMsg);
-            if(data.reCode==1){
-                window.setTimeout(function(){
-                    top.location.href=window.parent.location.href;
-                },500)
-            }
-
-        });
-        return false;
-    });
-  //各种基于事件的操作，下面会有进一步介绍
-});
+    initForm("do-edit-user",".layui-form")
 </script>
 </body>
 </html>
