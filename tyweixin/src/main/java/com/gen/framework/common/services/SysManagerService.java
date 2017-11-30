@@ -2,6 +2,7 @@ package com.gen.framework.common.services;
 
 import com.gen.framework.common.beans.*;
 import com.gen.framework.common.dao.CommonMapper;
+import com.gen.framework.common.dao.MenuPowerMapper;
 import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.MenuMapComparator;
 import com.gen.framework.common.util.Page;
@@ -20,6 +21,9 @@ public class SysManagerService extends CommonService{
 
     @Autowired
     private CommonMapper commonMapper;
+
+    @Autowired
+    private MenuPowerMapper menuPowerMapper;
 
 
     public Page getUserPage(Integer pageNum)throws Exception{
@@ -265,4 +269,5 @@ public class SysManagerService extends CommonService{
         vo.setReMsg("授权成功");
         return vo;
     }
+
 }
