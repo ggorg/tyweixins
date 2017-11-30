@@ -36,34 +36,35 @@ public class PubWeixinService extends CommonService {
     	Pubweixin pw = pubweixinMapper.selectByAppid(pubweixin.getAppid());
     	if(pw!=null){
     		pubweixin.setId(pw.getId());
-    		pubweixin.setDel_flag("0");
     		pubweixin.setUpdate_date(new Date());
     		ret = pubweixinMapper.update(pubweixin);
-    	}else{
-    		pubweixin.setCreate_date(new Date());
-    		pubweixin.setUpdate_date(new Date());
-    		ret = pubweixinMapper.insert(pubweixin);
-    	}
+			vo.setReMsg("修改成功");
+		}else{
+			pubweixin.setCreate_date(new Date());
+			pubweixin.setUpdate_date(new Date());
+			ret = pubweixinMapper.insert(pubweixin);
+			vo.setReMsg("创建公众号成功");
+		}
 		vo.setReCode(1);
-		vo.setReMsg("创建公众号成功");
     	return vo;
     }
     /**
-     * 将公众号删除标志设置为1 已删除
-     * @param appid
+     * 删除公众号
+     * @param pubweixin
      * @return
      */
     @Transactional(readOnly = false)
-    public int deletePubweixinByAppid(String appid){
-    	int ret = 0;
-    	Pubweixin pw = pubweixinMapper.selectByAppid(appid);
-    	if(pw!=null){
-    		pw.setDel_flag("1");;
-    		ret = pubweixinMapper.update(pw);
-    	}else{
-    		ret = -2;
-    	}
-    	return ret;
+    public ResponseVO delete(Pubweixin pubweixin){
+		ResponseVO vo=new ResponseVO();
+    	int res = pubweixinMapper.delete(pubweixin);
+		if(res>0){
+			vo.setReCode(1);
+			vo.setReMsg("删除成功");
+		}else{
+			vo.setReCode(-2);
+			vo.setReMsg("删除失败");
+		}
+    	return vo;
     }
     
     /**

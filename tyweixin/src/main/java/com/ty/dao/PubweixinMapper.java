@@ -25,7 +25,9 @@ public interface PubweixinMapper {
 	int insert(Pubweixin pubweixin);
 	
 	int update(Pubweixin pubweixin);
-	
+
+	int delete(Pubweixin pubweixin);
+
 	/**
      * 查询数据列表，如果需要分页
      *
