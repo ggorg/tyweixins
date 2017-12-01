@@ -218,8 +218,10 @@ public final class Tools {
 		response.addCookie(cookie); */
 		session.setAttribute(key,obj);
 	}
-	public static boolean setParentSession(Integer parentId){
-		setSession("parentId",parentId);
+	public static boolean setParentSession(Integer id){
+
+
+		setSession("parentId",id);
 		return true;
 	}
 	public static Integer getParentId(){

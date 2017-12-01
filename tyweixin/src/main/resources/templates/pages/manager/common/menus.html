@@ -5,7 +5,7 @@
 <div class="header">
 	<ul class="headermenu">
 
-		<li th:each="menu:${session?.userPower}" th:if="${menu.mParentId==-1}" th:inline="text" th:with="currentPage=${#httpServletRequest.getServletPath() eq menu.mUrl or #TdTool.getParentId()==menu.id ?#TdTool.setParentSession(menu.id):false}" th:class="${currentPage?'current':''}"  >
+		<li th:each="menu:${session?.userPower}" th:if="${menu.mParentId==-1}" th:inline="text" th:with="currentPage=${#httpServletRequest.getServletPath() eq menu.mUrl or #httpServletRequest.getParameter('currentPid')== menu.id.toString() ?#TdTool.setParentSession(menu.id):false}" th:class="${currentPage?'current':''}"  >
 
 			<a th:href="${menu.mUrl}"><span  th:class="'icon fa fa-3x '+${menu.mIcon}" ></span>[[${menu.mName}]]</a>
 		</li>
@@ -22,7 +22,7 @@
 <div class="vernav2 ">
 	<ul>
 		<li th:each="menu:${session?.userPower}" th:inline="text" th:if="${#TdTool?.getParentId()==menu.mParentId}" th:class="${#httpServletRequest.getServletPath() eq menu.mUrl?'current':''}" >
-			<a th:href="${menu.mUrl}" ><span  th:class="'icon fa fa-1x style1 '+${menu.mIcon}" ></span>[[${menu.mName}]]</a>
+			<a th:href="${menu.mUrl+'?currentPid='+menu.mParentId}" ><span  th:class="'icon fa fa-1x style1 '+${menu.mIcon}" ></span>[[${menu.mName}]]</a>
 		</li>
 <!--		<li class="current"><a href="/sys/user/to-list" ><span class="icon fa fa-user fa-1x style1" ></span>用户管理</a></li>
 		<li><a href="/sys/role/to-list" class="widgets"><span class="icon fa fa-users fa-1x style1" ></span>角色管理</a></li>
