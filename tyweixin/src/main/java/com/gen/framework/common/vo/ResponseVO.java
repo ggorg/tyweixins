@@ -1,11 +1,11 @@
 package com.gen.framework.common.vo;
 
-public class ResponseVO {
+public class ResponseVO<T> {
     private Integer reCode;
     private String reMsg;
-    private Object data;
+    private T data;
 
-    public ResponseVO(Integer reCode, String reMsg, Object data) {
+    public ResponseVO(Integer reCode, String reMsg, T data) {
         this.reCode = reCode;
         this.reMsg = reMsg;
         this.data = data;
@@ -30,11 +30,11 @@ public class ResponseVO {
         this.reMsg = reMsg;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

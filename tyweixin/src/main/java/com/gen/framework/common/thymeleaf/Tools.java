@@ -7,6 +7,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -196,27 +197,36 @@ public final class Tools {
 	}
 	public static boolean isLogin(){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request = attrs.getRequest();
-		Cookie[] cookies=request.getCookies();
-		if(cookies!=null){
-			for(Cookie cookie:cookies){
-				if(cookie.getName().equals("token") && StringUtils.isNotBlank(cookie.getValue())){
-					return false;
-				}
-			}
-		}
+		HttpSession session=attrs.getRequest().getSession();
 
+		if(session.getAttribute("user")!=null){
+			return false;
+		}
 		return true;
 	}
-	public static void setCookie(String key,String value){
+	public static void setSession(String key,Object obj){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletResponse response = attrs.getResponse();
+		HttpSession session=attrs.getRequest().getSession();
+
+		/*HttpServletResponse response = attrs.getResponse();
 		Cookie cookie = new Cookie(key, value);
-		/*if (StringUtils.isNotBlank(domain)) {
+		*//*if (StringUtils.isNotBlank(domain)) {
 			cookie.setDomain(domain);
-		}*/
+		}*//*
 
 		cookie.setPath("/");
-		response.addCookie(cookie);
+		response.addCookie(cookie); */
+		session.setAttribute(key,obj);
+	}
+	public static boolean setParentSession(Integer parentId){
+		setSession("parentId",parentId);
+		return true;
+	}
+	public static Integer getParentId(){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpSession session=attrs.getRequest().getSession();
+		return (Integer)session.getAttribute("parentId");
+
+
 	}
 }

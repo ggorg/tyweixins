@@ -1,11 +1,23 @@
 package com.gen.framework.common.beans;
 
-public class SysMenuBean {
+import java.io.Serializable;
+
+public class SysMenuBean implements Serializable {
+
     private Integer id;
     private String mName;
     private Integer mParentId;
     private Integer mSort;
     private String mUrl;
+    private String mIcon;
+
+    public String getmIcon() {
+        return mIcon;
+    }
+
+    public void setmIcon(String mIcon) {
+        this.mIcon = mIcon;
+    }
 
     public Integer getId() {
         return id;

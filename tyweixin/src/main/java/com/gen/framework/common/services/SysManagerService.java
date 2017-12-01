@@ -7,6 +7,7 @@ import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.MenuMapComparator;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -274,6 +275,34 @@ public class SysManagerService extends CommonService{
         vo.setReCode(1);
         vo.setReMsg("授权成功");
         return vo;
+    }
+    public ResponseVO login(SysUserBean sysUserBean)throws Exception{
+        ResponseVO vo=new ResponseVO();
+        if(StringUtils.isBlank(sysUserBean.getuName())){
+            vo.setReCode(-2);
+            vo.setReMsg("用户名为空");
+            return vo;
+        }
+        if(StringUtils.isBlank(sysUserBean.getuPassword())){
+            vo.setReCode(-2);
+            vo.setReMsg("密码为空");
+            return vo;
+        }
+        Map searchMap=new HashMap();
+        searchMap.put("uName",sysUserBean.getuName());
+        searchMap.put("uPassword",sysUserBean.getuPassword());
+        searchMap.put("disabled",false);
+        vo.setReCode(1);
+        vo.setReMsg("登录成功");
+        List list=this.commonList("baseUser",null,null,null,searchMap);
+        if(list!=null){
+            Map user=(Map) list.get(0);
+            vo.setData(user);
+        }
+        return vo;
+    }
+    public List getPowerMenu(Integer uid){
+        return this.menuPowerMapper.queryById(uid);
     }
 
 }

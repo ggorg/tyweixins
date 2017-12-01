@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/sys")
 public class SysManagerController {
@@ -156,8 +158,13 @@ public class SysManagerController {
     public ResponseVO doLogin(SysUserBean sysUserBean){
 
         try{
-            Tools.setCookie("token","test");
-            return new ResponseVO(1,"登录成功",sysUserBean);
+            ResponseVO<Map> vo=this.sysManagerService.login(sysUserBean);
+            if(vo.getReCode()!=1){
+                return vo;
+            }
+            Tools.setSession("user",vo.getData());
+            Tools.setSession("userPower",this.sysManagerService.getPowerMenu((Integer) vo.getData().get("id")));
+            return vo;
         }catch (Exception e){
             logger.error("SysUserController->doLogin->系统异常",e);
             return new ResponseVO(-1,"登录失败",null);

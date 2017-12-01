@@ -11,6 +11,7 @@
     left join baserole br on br.id=brm.rId
     left join baseuserrole bur on bur.rId=br.id
     left join baseuser bu on bu.id=bur.uid and bu.id=#{uid}
+    order by bm.mSort asc
     </select>
     
 </mapper>
