@@ -52,7 +52,16 @@ public class SysManagerController {
         return "pages/manager/system/userEdit";
     }
 
-
+    @PostMapping("/user/do-disabled-user")
+    @ResponseBody
+    public ResponseVO doDisabledUser(SysUserBean sysUserBean){
+        try {
+            return this.sysManagerService.disabledUser(sysUserBean);
+        }catch (Exception e){
+            logger.error("SysUserController->doDisabledUser->系统异常",e);
+            return new ResponseVO(-1,"操作失败",null);
+        }
+    }
 
     @GetMapping("/role/to-edit")
     public String toRoleEdit(Integer rId,Model model){

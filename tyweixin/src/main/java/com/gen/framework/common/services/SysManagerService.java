@@ -36,7 +36,13 @@ public class SysManagerService extends CommonService{
         return this.commonObjectBySingleParam("baseUser","id",uid,SysUserBean.class);
 
     }
+    public ResponseVO disabledUser(SysUserBean sysUserBean)throws  Exception{
 
+        Map setParams=new HashMap();
+        setParams.put("disabled",sysUserBean.getDisabled());
+       return this.commonUpdateBySingleSearchParam("baseUser",setParams,"id",sysUserBean.getId());
+
+    }
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO saveUser(SysUserBean sysUserBean)throws  Exception{
         ResponseVO vo=new ResponseVO();

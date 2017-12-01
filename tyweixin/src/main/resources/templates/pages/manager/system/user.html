@@ -64,7 +64,7 @@
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'280px\',\'修改用户\',\'to-edit?uId='+${obj['id']}+'\')'"  >修 改</button>
-                            <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:onclick="" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
+                            <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:onclick="'confirmDisabled('+${obj['id']}+','+${!(obj['disabled']>0)}+')'" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
                             </div>
                     </tr>
 
@@ -76,7 +76,26 @@
         </div>
 
     </div>
+    <script type="text/javascript">
 
+        function confirmDisabled(id,isDisabled){
+            layer.confirm(isDisabled?"是否禁用":"是否启用", {icon: 3, title:'提示'}, function(index){
+                if(index>0){
+                    jQuery.post("do-disabled-user",{id:id,disabled:isDisabled},function(data){
+                        layer.msg(data.reMsg);
+                        if(data.reCode==1){
+
+                            window.setTimeout(function(){
+                                top.location.href=window.parent.location.href;
+                            },500)
+                        }
+
+                    });
+                }
+                //layer.close(index);
+            });
+        }
+    </script>
 	</body>
-	
+
 </html>
