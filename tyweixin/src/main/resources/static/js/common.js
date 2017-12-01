@@ -12,12 +12,12 @@ function initPage(count){
             theme: '#fb9337',
             layout: ['prev','page','next', 'skip','count'],
             curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
-                var page = location.search.match(/pageNum=(\d+)/);
+                var page = location.search.match(/pageNo=(\d+)/);
                 return page ? page[1] : 1;
             }(),
             jump: function(e, first){ //触发分页后的回调
                 if(!first){ //一定要加此判断，否则初始时会无限刷新
-                    location.href = '?pageNum='+e.curr;
+                    location.href = '?pageNo='+e.curr;
                 }
             }
         });
