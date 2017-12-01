@@ -57,7 +57,7 @@
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'340px\',\'修改公众号\',\'edit?appid='+${obj['appid']}+'\')'" >修 改</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del('+${obj['appid']}+')'" >删除</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['appid']}+'\')'" >删除</button>
                             </div>
                     </tr>
 
@@ -70,10 +70,17 @@
 
     </div>
     <script type="text/javascript">
+        jQuery.noConflict();
+
+        // 在这段代码作用区域中你可以使用$来调用jQuery
+        jQuery(document).ready(function($){
+
+        });
+
         function del(obj){
             jConfirm("确定删除?","删除",function(data){
                 if(data){
-                    $.post("/delete",{appid:obj},function(data){
+                    jQuery.post("delete",{appid:obj},function(data){
                         if(data.reCode==1){
                             layer.msg(data.reMsg);
                             window.setTimeout(function(){
@@ -84,6 +91,7 @@
                 }
             })
         }
+
     </script>
 	</body>
 	
