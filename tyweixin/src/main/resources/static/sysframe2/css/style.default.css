@@ -427,11 +427,11 @@ body.withmenucoll2 { background-position: 35px 0; } /* with menu style 2 in coll
 }
 .vernav ul li.current span.arrow, .vernav2 ul li.current span.arrow { background-position: 0 -5px; }
 
-.iconmenu ul li a { 
-	padding-left: 35px; background-image: url(../images/default/icons_sprite.png); background-repeat: no-repeat; background-position: 10px 12px; 
+/*.iconmenu ul li a {
+	padding-left: 35px; background-image: url(../images/default/icons_sprite.png); background-repeat: no-repeat; background-position: 10px 12px;
 }
 .iconmenu ul li a:hover { background-image: url(../images/default/icons_sprite2.png); }
-.iconmenu ul li.current a:hover { background-image: url(../images/default/icons_sprite.png); }
+.iconmenu ul li.current a:hover { background-image: url(../images/default/icons_sprite.png); }*/
 .iconmenu ul ul { padding-left: 25px; }
 
 .iconmenu ul li a.editor { background-position: 8px 10px; }
@@ -489,8 +489,8 @@ body.withmenucoll2 { background-position: 35px 0; } /* with menu style 2 in coll
 .menucoll2 ul li { height: 36px; position: relative; }
 .menucoll2 ul li span.arrow { display: none; }
 .menucoll2 > ul > li > a { overflow: hidden; width: 0; height: 36px; padding: 0 0 0 35px; }
-.menucoll2 > ul > li.hover > a { background-color: #f7f7f7; background-image: url(../images/default/icons_sprite2.png); }
-.menucoll2 > ul > li.current > a { background-image: url(../images/default/icons_sprite.png); } 
+/*.menucoll2 > ul > li.hover > a { background-color: #f7f7f7; background-image: url(../images/default/icons_sprite2.png); }
+.menucoll2 > ul > li.current > a { background-image: url(../images/default/icons_sprite.png); } */
 .menucoll2 ul ul { 
 	position: absolute; z-index: 100; top: 0; left: 35px; padding: 0; width: 200px; background: none; border: 1px solid #ccc; 
 	-moz-box-shadow: 1px 1px 3px rgba(0,0,0,0.1); -webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.1); box-shadow: 2px 1px 3px rgba(0,0,0,0.1);

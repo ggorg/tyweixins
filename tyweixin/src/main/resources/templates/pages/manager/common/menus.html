@@ -19,7 +19,7 @@
 
 </div><!--header-->
 
-<div class="vernav2 ">
+<div class="vernav2 iconmenu ">
 	<ul>
 		<li th:each="menu:${session?.userPower}" th:inline="text" th:if="${#TdTool?.getParentId()==menu.mParentId}" th:class="${#httpServletRequest.getServletPath() eq menu.mUrl?'current':''}" >
 			<a th:href="${menu.mUrl+'?currentPid='+menu.mParentId}" ><span  th:class="'icon fa fa-1x style1 '+${menu.mIcon}" ></span>[[${menu.mName}]]</a>
