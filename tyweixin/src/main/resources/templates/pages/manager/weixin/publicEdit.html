@@ -19,13 +19,19 @@
     <div class="layui-form-item">
     <label class="layui-form-label">AppID</label>
     <div class="layui-input-block">
-      <input type="text" name="appid" required="required"  lay-verify="required" th:value="${pubweixin?.appid}" placeholder="请输入AppID" autocomplete="off" class="layui-input" />
+      <input type="text" name="appid" required="required"  lay-verify="required" th:value="${pubweixin?.appid}" th:readonly="${pubweixin?.appid!=null}" placeholder="请输入AppID" autocomplete="off" class="layui-input" />
     </div>
   </div>
     <div class="layui-form-item">
     <label class="layui-form-label">AppSecret</label>
     <div class="layui-input-block">
       <input type="text" name="appsecret" required="required"  lay-verify="required" th:value="${pubweixin?.appsecret}" placeholder="请输入AppSecret" autocomplete="off" class="layui-input" />
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">原始ID</label>
+    <div class="layui-input-block">
+      <input type="text" name="openid" required="required"  lay-verify="required" th:value="${pubweixin?.openid}" placeholder="请输入原始ID" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">

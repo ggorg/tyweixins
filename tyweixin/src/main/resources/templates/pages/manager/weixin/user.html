@@ -4,7 +4,7 @@
         <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
         <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
         <script type="text/javascript"  th:inline="javascript">
-           initPage(/*[[${pubPage!=null?pubPage.total:0}]]*/ );
+           initPage(/*[[${userPage!=null?userPage.total:0}]]*/ );
         </script>
 	</head>
     <body class="withvernav">
@@ -22,10 +22,10 @@
 
             <div id="contentwrapper" class="contentwrapper">
                 <div class="contenttitle2">
-                    <h3>公众号列表</h3>
+                    <h3>用户列表</h3>
                 </div><!--contenttitle-->
                 <div class="tableoptions">
-                    <button class="radius3" id="createBtn" onclick="openDialog('400px','380px','创建公众号','edit')" title="table2">新建</button> &nbsp;
+                    <button class="radius3" id="createBtn" onclick="openDialog('400px','340px','创建公众号','edit')" title="table2">查询</button> &nbsp;
                 </div><!--tableoptions-->
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" lay-filter="demo" class="stdtable stdtablecb">
                     <colgroup>
@@ -35,31 +35,47 @@
                         <col class="con1" />
                         <col class="con0" />
                         <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
                     </colgroup>
                     <thead>
                     <tr>
-                        <th class="head1">名称</th>
-                        <th class="head0">AppID</th>
-                        <th class="head1">AppSecret</th>
-                        <th class="head0">原始ID</th>
-                        <th class="head1">创建时间</th>
-                        <th class="head0">操作</th>
+                        <th class="head1">头像</th>
+                        <th class="head0">昵称</th>
+                        <th class="head1">openid</th>
+                        <th class="head0">appid</th>
+                        <th class="head1">关注状态</th>
+                        <th class="head0">性别</th>
+                        <th class="head1">国家</th>
+                        <th class="head0">省份</th>
+                        <th class="head1">城市</th>
+                        <th class="head0">关注日期</th>
+                        <th class="head1">操作</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    <tr th:each="obj:${pubPage?.result}">
+                    <tr th:each="obj:${userPage?.result}">
                        
-                        <td th:text="${obj['name']}">Trident</td>
-                        <td th:text="${obj['appid']}">Internet Explorer 4.0</td>
-                        <td th:text="${obj['appsecret']}">Win 95+</td>
+                        <td th:attr="src=${obj['headimgurl']},title=#{logo}">Trident</td>
+                        <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
-                        <td th:text="${#dates.format(obj['update_date'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>
+                        <td th:text="${obj['appid']}">Win 95+</td>
+                        <td th:text="${obj['subscribe']}">Win 95+</td>
+                        <td th:text="${obj['sex']}">Win 95+</td>
+                        <td th:text="${obj['country']}">Win 95+</td>
+                        <td th:text="${obj['province']}">Win 95+</td>
+                        <td th:text="${obj['city']}">Win 95+</td>
+                        <td th:text="${#dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>
 
                         <td class="center">
                             <div class="layui-btn-group">
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'380px\',\'修改公众号\',\'edit?appid='+${obj['appid']}+'\')'" >修 改</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['appid']}+'\')'" >删除</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'340px\',\'修改备注\',\'edit?openid='+${obj['openid']}+'\')'" >修 改</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['openid']}+'\')'" >删除</button>
                             </div>
                     </tr>
 

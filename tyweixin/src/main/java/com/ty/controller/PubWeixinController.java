@@ -44,7 +44,7 @@ public class PubWeixinController{
     public String list(@RequestParam(defaultValue = "1") Integer pageNo, Model model) {
         try {
             Page<Pubweixin> page = weixinPublicService.findPubweixin(pageNo);
-            model.addAttribute("userPage", page);
+            model.addAttribute("pubPage", page);
         } catch (Exception e) {
             e.printStackTrace();
         }

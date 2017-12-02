@@ -51,7 +51,7 @@ public class UserInfo {
     /**
      * 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
      */
-    private Date subscribeTime;
+    private Date subscribe_time;
     /**
      * 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段
      */
@@ -71,7 +71,7 @@ public class UserInfo {
     /**
      * 公众号应用ID
      */
-    private String publicopenid;
+    private String appid;
     /**
      * 创建时间
      */
@@ -113,12 +113,12 @@ public class UserInfo {
         this.fakeid = fakeid;
     }
 
-    public String getPublicopenid() {
-        return publicopenid;
+    public String getAppid() {
+        return appid;
     }
 
-    public void setPublicopenid(String publicopenid) {
-        this.publicopenid = publicopenid;
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
     public Date getCreate_date() {
@@ -201,12 +201,12 @@ public class UserInfo {
         this.country = country;
     }
 
-    public Date getSubscribeTime() {
-        return subscribeTime;
+    public Date getSubscribe_time() {
+        return subscribe_time;
     }
 
-    public void setSubscribeTime(Date subscribeTime) {
-        this.subscribeTime = subscribeTime;
+    public void setSubscribe_time(Date subscribe_time) {
+        this.subscribe_time = subscribe_time;
     }
 
     public String getUnionid() {

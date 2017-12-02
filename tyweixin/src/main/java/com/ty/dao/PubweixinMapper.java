@@ -34,7 +34,9 @@ public interface PubweixinMapper {
      * @param entity
      * @return
      */
-    public List<Pubweixin> findList(Page page, Pubweixin entity);
+    public List<Pubweixin> findList(@Param("page")Page page, Pubweixin entity);
+    /** 查询总数*/
+    public int findListCount(Pubweixin entity);
 
     public List<Pubweixin> findListAll( Pubweixin entity);
 }

@@ -148,7 +148,7 @@ public class CoreService {
                         UserInfo userInfo = new UserInfo();
                         userInfo.setOpenid(fromUserName);
                         userInfo.setSubscribe("1");
-                        userInfo.setSubscribeTime(new Date());
+                        userInfo.setSubscribe_time(new Date());
                         userInfoMapper.update(userInfo);
                     } else {
                         UserInfo userInfo = weixinInterfaceService.getUserInfo(appid, fromUserName);

@@ -12,14 +12,14 @@
         <result property="country" column="country"/>
         <result property="province" column="province"/>
         <result property="city" column="city"/>
-        <result property="headimgid" column="headimgid"/>
+        <result property="headimgurl" column="headimgurl"/>
         <result property="subscribe" column="subscribe"/>
-        <result property="subscribeTime" column="subscribe_time"/>
+        <result property="subscribe_time" column="subscribe_time"/>
         <result property="unionid" column="unionid"/>
         <result property="remark" column="remark"/>
         <result property="groupid" column="groupid"/>
         <result property="fakeid" column="fakeid"/>
-        <result property="publicopenid" column="publicopenid"/>
+        <result property="appid" column="appid"/>
         <result property="create_date" column="create_date"/>
         <result property="update_date" column="update_date"/>
     </resultMap>
@@ -32,27 +32,20 @@
         country,
         province,
         city,
-        headimgid,
+        headimgurl,
         (CASE when subscribe='1' THEN '关注' else '未关注' END) subscribe,
         subscribe_time,
         unionid,
         remark,
         groupid,
-        publicopenid,
+        appid,
         a.create_date,
-        a.update_date,
-        f.id AS "sysfile.id",
-        f.name AS "sysfile.name",
-        f.path AS "sysfile.path"
-    </sql>
-
-    <sql id="sysFileJoins">
-        LEFT JOIN sys_file f ON f.id = a.headimgid
+        a.update_date
     </sql>
 
     <insert id="insert" parameterType="com.ty.entity.UserInfo">
         insert into weixin_user
-        (openid,nickname,sex,language,country,province,city,headimgid,subscribe,subscribe_time,unionid,remark,groupid,publicopenid,create_date,update_date)
+        (openid,nickname,sex,language,country,province,city,headimgurl,subscribe,subscribe_time,unionid,remark,groupid,appid,create_date,update_date)
         values(
         #{userInfo.openid, jdbcType=VARCHAR},
         #{userInfo.nickname, jdbcType=VARCHAR},
@@ -61,13 +54,13 @@
         #{userInfo.country, jdbcType=VARCHAR},
         #{userInfo.province, jdbcType=VARCHAR},
         #{userInfo.city, jdbcType=VARCHAR},
-        #{userInfo.headimgid, jdbcType=INTEGER},
+        #{userInfo.headimgurl, jdbcType=VARCHAR},
         #{userInfo.subscribe, jdbcType=VARCHAR},
         #{userInfo.subscribeTime, jdbcType=TIMESTAMP},
         #{userInfo.unionid, jdbcType=VARCHAR},
         #{userInfo.remark, jdbcType=VARCHAR},
         #{userInfo.groupid, jdbcType=INTEGER},
-        #{userInfo.publicopenid, jdbcType=VARCHAR},
+        #{userInfo.appid, jdbcType=VARCHAR},
         now(),now()
         )
     </insert>
@@ -93,8 +86,8 @@
 		      <if test="city != null" >
 		        city=#{city, jdbcType=VARCHAR}, 
 		      </if>
-		      <if test="headimgid != null" >
-		        headimgid=#{headimgid, jdbcType=INTEGER}, 
+		      <if test="headimgurl != null" >
+                headimgurl=#{headimgurl, jdbcType=VARCHAR},
 		      </if>
 		      <if test="subscribe != null" >
 		        subscribe=#{subscribe, jdbcType=VARCHAR}, 
@@ -111,8 +104,8 @@
 		      <if test="groupid != null" >
 		        groupid=#{groupid, jdbcType=INTEGER}, 
 		      </if>
-		      <if test="publicopenid != null" >
-		        publicopenid=#{publicopenid, jdbcType=VARCHAR}, 
+		      <if test="appid != null" >
+		        appid=#{appid, jdbcType=VARCHAR},
 		      </if>
 		      <if test="update_date != null" >
 		        update_date=now(), 
@@ -125,7 +118,6 @@
         select
         <include refid="Base_Column_List"/>
         from weixin_user a
-        <include refid="sysFileJoins"/>
         where openid = #{openid,jdbcType=VARCHAR}
     </select>
 
@@ -134,64 +126,110 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_user a
-        <include refid="sysFileJoins"/>
-        WHERE 1=1 
-        <if test="nickname != null and nickname != ''">
+        WHERE 1=1
+        <if test="userInfo.nickname != null and userInfo.nickname != ''">
             AND upper(a.nickname)  LIKE
-            <if test="dbName == 'oracle'">'%'||upper(#{nickname})||'%'</if>
-            <if test="dbName == 'mssql'">'%'+upper(#{nickname})+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', upper(#{nickname}), '%')</if>
+            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
         </if>
-        <if test="openid != null and openid != ''">
+        <if test="userInfo.openid != null and userInfo.openid != ''">
             AND a.openid  LIKE
-            <if test="dbName == 'oracle'">'%'||#{openid}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{openid}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{openid}, '%')</if>
+            <if test="dbName == 'oracle'">'%'||#{userInfo.openid}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.openid}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.openid}, '%')</if>
         </if>
-        <if test="remark != null and remark != ''">
+        <if test="userInfo.remark != null and userInfo.remark != ''">
             AND a.remark  LIKE
-            <if test="dbName == 'oracle'">'%'||#{remark}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{remark}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{remark}, '%')</if>
+            <if test="dbName == 'oracle'">'%'||#{userInfo.remark}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.remark}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.remark}, '%')</if>
         </if>
-        <if test="country != null and country != ''">
+        <if test="userInfo.country != null and userInfo.country != ''">
             AND a.country  LIKE
-            <if test="dbName == 'oracle'">'%'||#{country}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{country}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{country}, '%')</if>
+            <if test="dbName == 'oracle'">'%'||#{userInfo.country}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.country}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.country}, '%')</if>
         </if>
-        <if test="province != null and province != ''">
+        <if test="userInfo.province != null and userInfo.province != ''">
             AND a.province  LIKE
-            <if test="dbName == 'oracle'">'%'||#{province}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{province}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{province}, '%')</if>
+            <if test="dbName == 'oracle'">'%'||#{userInfo.province}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.province}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.province}, '%')</if>
         </if>
-        <if test="city != null and city != ''">
+        <if test="userInfo.city != null and userInfo.city != ''">
             AND a.city  LIKE
-            <if test="dbName == 'oracle'">'%'||#{city}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{city}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{city}, '%')</if>
+            <if test="dbName == 'oracle'">'%'||#{userInfo.city}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.city}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.city}, '%')</if>
         </if>
-        <if test="subscribe != null and subscribe != ''">
-            AND a.subscribe  = #{subscribe}
+        <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
+            AND a.subscribe  = #{userInfo.subscribe}
         </if>
-        <if test="sex != null and sex != ''">
-            AND a.sex  = #{sex}
+        <if test="userInfo.sex != null and userInfo.sex != ''">
+            AND a.sex  = #{userInfo.sex}
         </if>
+        ORDER BY a.subscribe_time desc
         <!-- 数据范围过滤 -->
         <choose>
-            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
-                ORDER BY ${page.orderBy}
+            <when test="page !=null">
+                limit  #{page.startRow, jdbcType=INTEGER},#{page.endRow, jdbcType=INTEGER}
             </when>
-            <otherwise>
-                ORDER BY a.subscribe_time desc
-            </otherwise>
         </choose>
+    </select>
+
+    <select id="findListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM weixin_user a
+        WHERE 1=1
+        <if test="userInfo.nickname != null and userInfo.nickname != ''">
+            AND upper(a.nickname)  LIKE
+            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
+            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
+        </if>
+        <if test="userInfo.openid != null and userInfo.openid != ''">
+            AND a.openid  LIKE
+            <if test="dbName == 'oracle'">'%'||#{userInfo.openid}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.openid}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.openid}, '%')</if>
+        </if>
+        <if test="userInfo.remark != null and userInfo.remark != ''">
+            AND a.remark  LIKE
+            <if test="dbName == 'oracle'">'%'||#{userInfo.remark}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.remark}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.remark}, '%')</if>
+        </if>
+        <if test="userInfo.country != null and userInfo.country != ''">
+            AND a.country  LIKE
+            <if test="dbName == 'oracle'">'%'||#{userInfo.country}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.country}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.country}, '%')</if>
+        </if>
+        <if test="userInfo.province != null and userInfo.province != ''">
+            AND a.province  LIKE
+            <if test="dbName == 'oracle'">'%'||#{userInfo.province}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.province}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.province}, '%')</if>
+        </if>
+        <if test="userInfo.city != null and userInfo.city != ''">
+            AND a.city  LIKE
+            <if test="dbName == 'oracle'">'%'||#{userInfo.city}||'%'</if>
+            <if test="dbName == 'mssql'">'%'+#{userInfo.city}+'%'</if>
+            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.city}, '%')</if>
+        </if>
+        <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
+            AND a.subscribe  = #{userInfo.subscribe}
+        </if>
+        <if test="userInfo.sex != null and userInfo.sex != ''">
+            AND a.sex  = #{userInfo.sex}
+        </if>
     </select>
     
     <select id="findOpenidList" parameterType="java.lang.String" resultType="java.util.HashMap">
     	select openid
     	FROM weixin_user
-    	where publicopenid = #{appid}
+    	where appid = #{appid}
     </select>
 </mapper>

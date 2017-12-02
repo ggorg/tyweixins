@@ -19,7 +19,7 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List" >
-	    id, name, appid, appsecret, openid, usable, create_by, create_date, update_by, update_date, 
+	    id, name, appid, appsecret, openid, usable, create_by, create_date, update_by,update_date,
 	    remarks
   	</sql>
   
@@ -153,20 +153,28 @@
 	</delete>
 	
 	<!-- 分页查询公众号信息 -->
-    <select id="findList" resultType="com.ty.entity.Pubweixin">
+    <select id="findList" parameterType="com.gen.framework.common.util.Page" resultType="com.ty.entity.Pubweixin">
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_public a
         <!-- 数据范围过滤 -->
         <choose>
             <when test="page !=null">
-                limit  #{page.startRow},#{page.endRow}
+                limit  #{page.startRow, jdbcType=INTEGER},#{page.endRow, jdbcType=INTEGER}
             </when>
             <otherwise>
                 ORDER BY a.update_date
             </otherwise>
         </choose>
     </select>
+
+    <!-- 查询公众号总数 -->
+    <select id="findListCount" resultType="int">
+        SELECT
+        count(*)
+        FROM weixin_public a
+    </select>
+
 	<!-- 不分页查询公众号信息 -->
     <select id="findListAll" resultType="com.ty.entity.Pubweixin">
         SELECT

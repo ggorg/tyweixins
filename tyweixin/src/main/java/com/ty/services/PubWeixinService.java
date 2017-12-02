@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -73,7 +72,13 @@ public class PubWeixinService extends CommonService {
      * @return
      */
     public Page findPubweixin(Integer pageNum) throws Exception{
-		return this.commonPage("weixin_public","update_date desc",pageNum,10,new HashMap<>());
+//		return this.commonPage("weixin_public","update_date desc",pageNum,10,new HashMap<>());
+		Page<Pubweixin> page = new Page<Pubweixin>(pageNum,10);
+		List<Pubweixin> list = pubweixinMapper.findList(page,new Pubweixin());
+		int total = pubweixinMapper.findListCount(new Pubweixin());
+		page.setResult(list);
+		page.setTotal(total);
+		return page;
 	}
 
     /**

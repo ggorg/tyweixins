@@ -1,5 +1,6 @@
 package com.ty.dao;
 
+import com.gen.framework.common.util.Page;
 import com.ty.entity.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,12 +22,19 @@ public interface UserInfoMapper {
     UserInfo selectByopenid(@Param("openid") String openid);
 
     /**
-     * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());
+     * 查询数据列表，如果需要分页，请设置分页对象
      *
-     * @param entity
+     * @param userInfo 筛选条件
      * @return
      */
-    List<UserInfo> findList(UserInfo entity);
+    List<UserInfo> findList(@Param("page")Page page, @Param("userInfo")UserInfo userInfo);
+
+    /**
+     * 查询总数
+     * @param userInfo 筛选条件
+     * @return
+     */
+    int findListCount(@Param("userInfo")UserInfo userInfo);
     
     /**
      * 获取用户openid列表

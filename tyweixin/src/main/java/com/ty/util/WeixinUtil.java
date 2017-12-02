@@ -80,17 +80,8 @@ public class WeixinUtil {
 		//查询正常状态的微信公众号
 		List<Pubweixin> temp = pubweixinMapper.select();
 		//查询已经删除的微信公众号
-		List<Pubweixin> tempdel = pubweixinMapper.selectdel();
 		List<Pubweixin> samePub = new ArrayList<Pubweixin>();
 		long time = new Date().getTime();
-		//移除已经删除的公众号
-		for(Pubweixin pw : tempdel){
-			for (AccessToken accessToken : AccessTokenSet) {
-				if(accessToken.getAppid().equals(pw.getAppid())){
-					AccessTokenSet.remove(accessToken);
-				}
-			}
-		}
 		//判断存在内存的AccessTokenSet与数据库有效的公众号长度不相等，添加新公众号accessToken
 		if (temp.size() > 0 && temp.size() != AccessTokenSet.size()){
 			for (Pubweixin pw : temp) {
@@ -145,7 +136,7 @@ public class WeixinUtil {
         UserInfo user = new UserInfo();
         try {
         	user.setOpenid(openid);
-        	user.setPublicopenid(appid);
+        	user.setAppid(appid);
         	if(jsonObject.containsKey("city")){
         		user.setCity(jsonObject.getString("city"));
         	}
@@ -174,7 +165,7 @@ public class WeixinUtil {
             	user.setSubscribe("0");
             }
             if (jsonObject.containsKey("subscribe_time")) {
-                user.setSubscribeTime(new Date(Long.valueOf(jsonObject.getString("subscribe_time")) * 1000));
+                user.setSubscribe_time(new Date(Long.valueOf(jsonObject.getString("subscribe_time")) * 1000));
             }
             if(jsonObject.containsKey("remark")){
                 user.setRemark(jsonObject.getString("remark"));

@@ -21,8 +21,6 @@ import java.util.Map;
 public class WeixinUserService {
 
     private static final Logger logger = Logger.getLogger(WeixinUserService.class);
-    /** 头像保存路径 */
-    private static String HEADIMG_PATH = "";
     @Autowired
     private WeixinInterfaceService weixinInterfaceService;
     @Autowired
@@ -32,34 +30,21 @@ public class WeixinUserService {
     /**
      * 分页查询微信列表
      * 
-     * @param page 分页信息
-     * @param userInfo 查询条件
+     * @param pageNum 分页信息
      * @return 微信用户列表
      */
-    public Page<UserInfo> findUser(Page<UserInfo> page, UserInfo userInfo) {
+    public Page<UserInfo> findUser(Integer pageNum,UserInfo userInfo) {
+        Page<UserInfo> page = new Page<UserInfo>(pageNum,10);
         // 设置分页参数
-        List<UserInfo> UserInfoList = userInfoMapper.findList(userInfo);
-        /*
-        for(UserInfo user : UserInfoList){
-            //转换昵称中的Emoji表情
-            user.setNickname(EmojiUtil.resolveToEmojiFromByte(user.getNickname()));
-        }
-        */
+        List<UserInfo> UserInfoList = userInfoMapper.findList(page,userInfo);
+        int total =  userInfoMapper.findListCount(userInfo);
         // 执行分页查询
         page.setResult(UserInfoList);
+        page.setTotal(total);
         return page;
     }
 
-    /**
-     * 无分页查询微信列表
-     * 
-     * @param userInfo 查询条件
-     * @return 微信用户列表
-     */
-    public List<UserInfo> findUser(UserInfo userInfo) {
-        return userInfoMapper.findList(userInfo);
-    }
-    
+
     /**
      * 添加或更新微信用户资料
      * 
@@ -217,7 +202,7 @@ public class WeixinUserService {
             next_openid = jsonObject.getString("next_openid");
             try {
                 // 数据库微信列表
-                List<UserInfo> userlist = userInfoMapper.findList(new UserInfo());
+                List<UserInfo> userlist = userInfoMapper.findList(null,new UserInfo());
                 // 从接口取回来的openid List移除数据库已经存在的用户信息，剩下新增的微信用户
                 List<Map<String, String>> removeList = new ArrayList<Map<String, String>>();
                 for (Map<String, String> m : dblist) {
