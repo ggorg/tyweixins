@@ -17,7 +17,7 @@
 <script type="text/javascript" src="/sysframe2/js/plugins/colorpicker.js"></script>
 <script type="text/javascript" src="/sysframe2/js/custom/elements.js"></script>
 <script type="text/javascript" src="/js/common.js"></script>
-<script  type="text/javascript" th:if="${#TdTool.isLogin()}" >
+<script  type="text/javascript" th:if="${!#TdTool.isLogin()}" >
     layui.use([ 'layer'],function(){
         layer=layui.layer;
         layer.open({

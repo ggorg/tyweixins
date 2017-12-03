@@ -11,7 +11,8 @@ import javax.servlet.http.HttpSession;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-       
+import java.util.List;
+
 /**
  * 工具计算类
  * 
@@ -199,7 +200,7 @@ public final class Tools {
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpSession session=attrs.getRequest().getSession();
 
-		if(session.getAttribute("user")!=null){
+		if(session.getAttribute("user")==null){
 			return false;
 		}
 		return true;
@@ -230,5 +231,17 @@ public final class Tools {
 		return (Integer)session.getAttribute("parentId");
 
 
+	}
+	public static void clearLoginSession(){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpSession session=attrs.getRequest().getSession();
+		session.removeAttribute("user");
+		session.removeAttribute("userPower");
+		session.invalidate();
+	}
+	public static List getUserPowerMenu(){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpSession session=attrs.getRequest().getSession();
+		return (List)session.getAttribute("userPower");
 	}
 }

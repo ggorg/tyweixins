@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -153,6 +155,11 @@ public class SysManagerController {
         return "pages/manager/system/login";
     }
 
+    @GetMapping("/to-logut")
+    public String toLogut(){
+        Tools.clearLoginSession();
+        return "redirect:/";
+    }
     @PostMapping("/do-login")
     @ResponseBody
     public ResponseVO doLogin(SysUserBean sysUserBean){
@@ -163,7 +170,11 @@ public class SysManagerController {
                 return vo;
             }
             Tools.setSession("user",vo.getData());
-            Tools.setSession("userPower",this.sysManagerService.getPowerMenu((Integer) vo.getData().get("id")));
+            List<SysMenuBean> menus=this.sysManagerService.getPowerMenu((Integer)vo.getData().get("id"));
+            Tools.setSession("userPower",menus);
+            Map jumpMap=new HashMap();
+            jumpMap.put("jumpUrl",menus.get(0).getmUrl());
+            vo.setData(jumpMap);
             return vo;
         }catch (Exception e){
             logger.error("SysUserController->doLogin->系统异常",e);

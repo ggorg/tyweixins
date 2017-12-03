@@ -34,7 +34,13 @@ function initForm(url,formObject){
                 if(data.reCode==1){
 
                     window.setTimeout(function(){
-                        top.location.href=window.parent.location.href;
+
+                        if(data.data!=null && data.data.jumpUrl!=undefined){
+                            top.location.href= data.data.jumpUrl;
+                        }else{
+                            top.location.href=window.parent.location.href;
+
+                        }
                     },500)
                 }
 

@@ -5,12 +5,12 @@
 <mapper namespace="com.gen.framework.common.dao.MenuPowerMapper">
 
     <select id="queryById" parameterType="java.lang.Integer" resultType="com.gen.framework.common.beans.SysMenuBean">
-
-    select bm.* from basemenu bm
+  select DISTINCT bm.* from basemenu bm
     left join baserolemenus brm on brm.mId=bm.id
     left join baserole br on br.id=brm.rId
     inner join baseuserrole bur on bur.rId=br.id
-    left join baseuser bu on bu.id=bur.uid and bu.id=#{uid}
+    left join baseuser bu on bu.id=bur.uid
+	where bu.id=#{uid}
     order by bm.mSort asc
     </select>
     
