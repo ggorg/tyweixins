@@ -1,9 +1,6 @@
 package com.gen.framework.common.beans;
 
-import java.io.Serializable;
-
-public class SysMenuBean implements Serializable {
-
+public class SysMenuBean{
     private Integer id;
     private String mName;
     private Integer mParentId;
