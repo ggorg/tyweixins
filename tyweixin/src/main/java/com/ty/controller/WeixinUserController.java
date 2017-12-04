@@ -26,8 +26,9 @@ public class WeixinUserController{
     private WeixinUserService weixinUserService;
 
     @RequestMapping(value = {"list", ""})
-    public String list(@RequestParam(defaultValue = "1") Integer pageNo, Model model) {
-        Page<UserInfo> page = weixinUserService.findUser(pageNo,new UserInfo());
+    public String list(UserInfo userInfo,@RequestParam(defaultValue = "1") Integer pageNo, Model model) {
+        Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
+        model.addAttribute("userInfo", userInfo);
         model.addAttribute("userPage", page);
         return "pages/manager/weixin/user";
     }

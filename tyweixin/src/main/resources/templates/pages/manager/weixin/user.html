@@ -24,9 +24,60 @@
                 <div class="contenttitle2">
                     <h3>用户列表</h3>
                 </div><!--contenttitle-->
-                <div class="tableoptions">
-                    <button class="radius3" id="createBtn" onclick="openDialog('400px','340px','创建公众号','edit')" title="table2">查询</button> &nbsp;
-                </div><!--tableoptions-->
+                <form class="layui-form" th:action="list">
+                    <div class="tableoptions">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">昵称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="nickname" placeholder="请输入昵称" th:value="${userInfo?.nickname}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">openid</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">关注</label>
+                                <div class="layui-input-inline">
+                                    <select name="subscribe">
+                                        <option value="">请选择</option>
+                                        <option value="1" th:selected="${userInfo?.subscribe == '1'}">关注</option>
+                                        <option value="0" th:selected="${userInfo?.subscribe == '0'}">未关注</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">省份</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="province" placeholder="请输入省份" th:value="${userInfo?.province}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">城市</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="city" placeholder="请输入城市" th:value="${userInfo?.city}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">性别</label>
+                                <div class="layui-input-inline">
+                                    <select name="sex" >
+                                        <option value="">请选择</option>
+                                        <option value="1" th:selected="${userInfo?.sex == '1'}">男性</option>
+                                        <option value="2" th:selected="${userInfo?.sex == '2'}">女性</option>
+                                        <option value="0" th:selected="${userInfo?.sex == '0'}">未知</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">查询</button> &nbsp;
+                        </div>
+                    </div><!--tableoptions-->
+                </form>
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" lay-filter="demo" class="stdtable stdtablecb">
                     <colgroup>
                         <!--<col class="con0" style="width: 4%" />-->
@@ -40,7 +91,6 @@
                         <col class="con0" />
                         <col class="con1" />
                         <col class="con0" />
-                        <col class="con1" />
                     </colgroup>
                     <thead>
                     <tr>
@@ -54,14 +104,13 @@
                         <th class="head0">省份</th>
                         <th class="head1">城市</th>
                         <th class="head0">关注日期</th>
-                        <th class="head1">操作</th>
                     </tr>
                     </thead>
 
                     <tbody>
                     <tr th:each="obj:${userPage?.result}">
                        
-                        <td th:attr="src=${obj['headimgurl']},title=#{logo}">Trident</td>
+                        <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
                         <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
                         <td th:text="${obj['appid']}">Win 95+</td>
@@ -71,12 +120,6 @@
                         <td th:text="${obj['province']}">Win 95+</td>
                         <td th:text="${obj['city']}">Win 95+</td>
                         <td th:text="${#dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>
-
-                        <td class="center">
-                            <div class="layui-btn-group">
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'340px\',\'修改备注\',\'edit?openid='+${obj['openid']}+'\')'" >修 改</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['openid']}+'\')'" >删除</button>
-                            </div>
                     </tr>
 
                     </tbody>
@@ -88,27 +131,12 @@
 
     </div>
     <script type="text/javascript">
-        jQuery.noConflict();
-
-        // 在这段代码作用区域中你可以使用$来调用jQuery
-        jQuery(document).ready(function($){
-
-        });
-
-        function del(obj){
-            layer.confirm('确定删除?',{icon:2,title:'删除'}, function(index){
-                layer.close(index);
-                //向服务端发送删除指令
-                jQuery.post("delete",{appid:obj},function(data){
-                    if(data.reCode==1){
-                        layer.msg(data.reMsg);
-                        window.setTimeout(function(){
-                            top.location.href=window.parent.location.href;
-                        },500)
-                    }
-                });
+        layui.use('form', function(){
+            var form = layui.form;
+            $(".layui-form").submit(function(data){
+                console.log(data);
             });
-        }
+        });
 
     </script>
 	</body>
