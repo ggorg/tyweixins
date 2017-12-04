@@ -10,6 +10,10 @@ import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +30,8 @@ public class SysManagerService extends CommonService{
     @Autowired
     private MenuPowerMapper menuPowerMapper;
 
-
+    @Autowired
+    private CacheManager cacheManager;
     public Page getUserPage(Integer pageNum)throws Exception{
         return this.commonPage("baseUser","createTime desc",pageNum,10,new HashMap<>());
     }
@@ -156,38 +161,49 @@ public class SysManagerService extends CommonService{
 
         return this.commonPage("baseMenu","mSort asc",pageNum,10,new HashMap<String,Object>());
     }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO saveMenu(SysMenuBean sysMenuBean){
         ResponseVO vo=new ResponseVO();
-        if(StringUtils.isBlank(sysMenuBean.getmName())){
-            vo.setReCode(-2);
-            vo.setReMsg("菜单名为空");
+        try {
+            if(StringUtils.isBlank(sysMenuBean.getmName())){
+                vo.setReCode(-2);
+                vo.setReMsg("菜单名为空");
+                return vo;
+            }
+            if(StringUtils.isBlank(sysMenuBean.getmUrl())){
+                vo.setReCode(-2);
+                vo.setReMsg("菜单地址为空");
+                return vo;
+            }
+            if(sysMenuBean.getmParentId()==null || sysMenuBean.getmParentId()==0){
+                sysMenuBean.setmParentId(-1);
+            }
+            if(sysMenuBean.getmSort()==null || sysMenuBean.getmSort()==0){
+                sysMenuBean.setmSort(1);
+            }
+            Map params= BeanToMapUtil.beanToMap(sysMenuBean);
+            params.put("updateTime",new Date());
+            if(sysMenuBean.getId()!=null && sysMenuBean.getId()>0){
+                vo=this.commonUpdateBySingleSearchParam("baseMenu",params,"id",sysMenuBean.getId());;
+            }else{
+                params.put("createTime",new Date());
+                vo=this.commonInsertMap("baseMenu",params);
+            }
             return vo;
+        }finally {
+            if(vo.getReCode()==1){
+                Cache cache=cacheManager.getCache("allMenu");
+                cache.put("'all'",getAllMenu());
+            }
         }
-        if(StringUtils.isBlank(sysMenuBean.getmUrl())){
-            vo.setReCode(-2);
-            vo.setReMsg("菜单地址为空");
-            return vo;
-        }
-        if(sysMenuBean.getmParentId()==null || sysMenuBean.getmParentId()==0){
-            sysMenuBean.setmParentId(-1);
-        }
-        if(sysMenuBean.getmSort()==null || sysMenuBean.getmSort()==0){
-            sysMenuBean.setmSort(1);
-        }
-        Map params= BeanToMapUtil.beanToMap(sysMenuBean);
-        params.put("updateTime",new Date());
-        if(sysMenuBean.getId()!=null && sysMenuBean.getId()>0){
-           return this.commonUpdateBySingleSearchParam("baseMenu",params,"id",sysMenuBean.getId());
-        }else{
-            params.put("createTime",new Date());
-            return this.commonInsertMap("baseMenu",params);
-        }
+
 
 
 
 
     }
+    @Cacheable(value="allMenu",key="'all'")
     public List getAllMenu(){
         return this.commonList("baseMenu","mSort asc",null,null,new HashMap<>());
     }
@@ -305,6 +321,7 @@ public class SysManagerService extends CommonService{
         vo.setReMsg("登录失败");
         return vo;
     }
+
     public List getPowerMenu(Integer uid){
         return this.menuPowerMapper.queryById(uid);
     }
