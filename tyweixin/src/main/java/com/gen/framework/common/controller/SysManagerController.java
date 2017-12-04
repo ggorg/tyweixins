@@ -155,8 +155,8 @@ public class SysManagerController {
         return "pages/manager/system/login";
     }
 
-    @GetMapping("/to-logut")
-    public String toLogut(){
+    @GetMapping("/to-logout")
+    public String toLogout(){
         Tools.clearLoginSession();
         return "redirect:/";
     }
