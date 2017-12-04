@@ -31,9 +31,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 response.sendRedirect("/");
                 return false;
             }else{
-                List<SysMenuBean> menus=Tools.getUserPowerMenu();
-                if(menus!=null){
-                    for(SysMenuBean menu:menus){
+                List menus=Tools.getUserPowerMenu();
+                if(menus!=null && !menus.isEmpty()){
+                    SysMenuBean menu=null;
+                    for(Object obj:menus){
+                        menu=(SysMenuBean)obj;
                         if(menu.getmUrl().equals(path)){
                             return true;
                         }

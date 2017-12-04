@@ -292,13 +292,17 @@ public class SysManagerService extends CommonService{
         searchMap.put("uName",sysUserBean.getuName());
         searchMap.put("uPassword",sysUserBean.getuPassword());
         searchMap.put("disabled",false);
-        vo.setReCode(1);
-        vo.setReMsg("登录成功");
+
         List list=this.commonList("baseUser",null,null,null,searchMap);
-        if(list!=null){
+        if(list!=null && !list.isEmpty()){
+            vo.setReCode(1);
+            vo.setReMsg("登录成功");
             Map user=(Map) list.get(0);
             vo.setData(user);
+            return vo;
         }
+        vo.setReCode(-2);
+        vo.setReMsg("登录失败");
         return vo;
     }
     public List getPowerMenu(Integer uid){
