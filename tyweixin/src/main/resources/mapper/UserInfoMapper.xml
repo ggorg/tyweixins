@@ -129,39 +129,27 @@
         WHERE 1=1
         <if test="userInfo.nickname != null and userInfo.nickname != ''">
             AND upper(a.nickname)  LIKE
-            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
-            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
+            CONCAT('%', upper(#{userInfo.nickname}), '%')
         </if>
         <if test="userInfo.openid != null and userInfo.openid != ''">
             AND a.openid  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.openid}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.openid}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.openid}, '%')</if>
+            CONCAT('%', #{userInfo.openid}, '%')
         </if>
         <if test="userInfo.remark != null and userInfo.remark != ''">
             AND a.remark  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.remark}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.remark}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.remark}, '%')</if>
+            CONCAT('%', #{userInfo.remark}, '%')
         </if>
         <if test="userInfo.country != null and userInfo.country != ''">
             AND a.country  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.country}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.country}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.country}, '%')</if>
+            CONCAT('%', #{userInfo.country}, '%')
         </if>
         <if test="userInfo.province != null and userInfo.province != ''">
             AND a.province  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.province}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.province}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.province}, '%')</if>
+            CONCAT('%', #{userInfo.province}, '%')
         </if>
         <if test="userInfo.city != null and userInfo.city != ''">
             AND a.city  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.city}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.city}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.city}, '%')</if>
+            CONCAT('%', #{userInfo.city}, '%')
         </if>
         <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
             AND a.subscribe  = #{userInfo.subscribe}
@@ -185,39 +173,27 @@
         WHERE 1=1
         <if test="userInfo.nickname != null and userInfo.nickname != ''">
             AND upper(a.nickname)  LIKE
-            <if test="dbName == 'oracle'">'%'||upper(#{userInfo.nickname})||'%'</if>
-            <if test="dbName == 'mssql'">'%'+upper(#{userInfo.nickname})+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', upper(#{userInfo.nickname}), '%')</if>
+            CONCAT('%', upper(#{userInfo.nickname}), '%')
         </if>
         <if test="userInfo.openid != null and userInfo.openid != ''">
             AND a.openid  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.openid}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.openid}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.openid}, '%')</if>
+            CONCAT('%', #{userInfo.openid}, '%')
         </if>
         <if test="userInfo.remark != null and userInfo.remark != ''">
             AND a.remark  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.remark}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.remark}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.remark}, '%')</if>
+            CONCAT('%', #{userInfo.remark}, '%')
         </if>
         <if test="userInfo.country != null and userInfo.country != ''">
             AND a.country  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.country}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.country}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.country}, '%')</if>
+            CONCAT('%', #{userInfo.country}, '%')
         </if>
         <if test="userInfo.province != null and userInfo.province != ''">
             AND a.province  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.province}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.province}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.province}, '%')</if>
+            CONCAT('%', #{userInfo.province}, '%')
         </if>
         <if test="userInfo.city != null and userInfo.city != ''">
             AND a.city  LIKE
-            <if test="dbName == 'oracle'">'%'||#{userInfo.city}||'%'</if>
-            <if test="dbName == 'mssql'">'%'+#{userInfo.city}+'%'</if>
-            <if test="dbName == 'mysql'">CONCAT('%', #{userInfo.city}, '%')</if>
+            CONCAT('%', #{userInfo.city}, '%')
         </if>
         <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
             AND a.subscribe  = #{userInfo.subscribe}
