@@ -23,7 +23,10 @@ public class SysManagerController {
     private final Logger logger = LoggerFactory.getLogger(SysManagerController.class);
     @Autowired
     private SysManagerService sysManagerService;
-
+    @GetMapping
+    public String toIndex(){
+        return "pages/manager/system/blankFrame";
+    }
     @GetMapping("/user/to-list")
     public String toUserList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
         try {

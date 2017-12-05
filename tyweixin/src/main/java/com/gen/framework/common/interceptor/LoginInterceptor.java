@@ -21,6 +21,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private String filterUrls;
     private List filterList;
 
+    @Value("${gen.framework.manager.url.prefix}")
+    private String managerPrefixUrls;
+    private List managerPrefixUrlsList;
     @Autowired
     private SysManagerService sysManagerService;
 
@@ -29,11 +32,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception{
         String path=request.getRequestURI();
+        String prefixPath=path.replaceAll("^(/[^/]+).*$","$1");
         if(filterList==null && StringUtils.isNotBlank(filterUrls)){
             filterList= Arrays.asList(filterUrls.replaceAll(" ","").split(","));
         }
+        if(managerPrefixUrlsList==null && StringUtils.isNotBlank(managerPrefixUrls)){
+            managerPrefixUrlsList= Arrays.asList(managerPrefixUrls.replaceAll(" ","").split(","));
+        }
 
-        if(!filterList.contains(path)){
+        if(managerPrefixUrlsList.contains(prefixPath) && !filterList.contains(path)){
             if(!Tools.isLogin()){
                 response.sendRedirect("/");
                 return false;
@@ -63,4 +70,5 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         return true;
     }
+
 }
