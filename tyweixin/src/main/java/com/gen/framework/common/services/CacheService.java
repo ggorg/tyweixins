@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CacheService {
-   // @Autowired
-    private CacheManager cacheManager;
 
     @CachePut(value ="commonCache",key="#key" )
     public Object set(String key,Object value){

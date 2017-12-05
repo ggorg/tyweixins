@@ -2,6 +2,7 @@ package com.ty.services;
 
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
+import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.util.HttpUtil;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,9 +11,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-public class ChannelApiService {
+public class ChannelApiService  extends CommonService {
 
     private String vaildCodeUrl;
     @Value("${ty.telphone.prefix}")
@@ -21,7 +28,8 @@ public class ChannelApiService {
     @Autowired
     private CacheService cacheService;
 
-
+    @Autowired
+    private WeixinUserService weixinUserService;
 
     public ResponseVO sendVaildCode(String telphone)throws Exception{
 
@@ -33,6 +41,10 @@ public class ChannelApiService {
         }
         if(!telphone.matches("^("+tyTelPrefix+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
+        }
+        long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
+        if(count>0){
+            return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
         }
         JSONObject obj=new JSONObject();
 
@@ -71,5 +83,28 @@ public class ChannelApiService {
             return new ResponseVO(-2,"验证失败",null);
         }
     }
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ResponseVO bind(String telphone,String openid){
+        if(StringUtils.isBlank(telphone)){
+            return new ResponseVO(-2,"手机号为空",null);
+        }
+        if(StringUtils.isBlank(openid)){
+            return new ResponseVO(-2,"微信openid为空",null);
+        }
+        long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
+        if(count>0){
+            return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
+        }
+        Map param=new HashMap();
+        param.put("tuTelphone",telphone);
+        param.put("tuOpenId",openid);
+        param.put("createTime",new Date());
+        param.put("updateTime",new Date());
+        ResponseVO<Integer> vo=this.commonInsertMap("ty_user",param);
+        if(vo.getData()!=null && vo.getData()>0){
+            return new ResponseVO(1,"绑定成功",null);
+        }
+        return new ResponseVO(-2,"绑定失败",null);
 
+    }
 }
