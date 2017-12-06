@@ -19,6 +19,21 @@
     		Util.toast('请输入手机号码');
     		return
     	}
+    	if(tel.match(/^(133|153|177|180|181|189).*$/)==null){
+            Util.toast('抱歉，非电信手机号码不能绑定');
+            return
+        }
+        Util.Ajax({
+            url:"do-send-vaild-code",
+            type:"post",
+            dataType:"JSON",
+            data:{telphone:tel,openid:"test"},
+            cbOk:function(data){
+                Util.toast(data.reMsg);
+
+            }
+        })
+
     	var displayEl = $(e.currentTarget);
         var time = 60;
         // Util.getCodeCountdown(60, displayEl);
@@ -73,6 +88,6 @@
     }
 
 
-    Util.iconToast('<i class="icon-warn"></i>您还不是翼支付用户<br/>请下载翼支付注册');
+    //Util.iconToast('<i class="icon-warn"></i>您还不是翼支付用户<br/>请下载翼支付注册');
 
 })();

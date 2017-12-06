@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "/wap")
@@ -22,6 +23,7 @@ public class WapController {
         return "pages/wap/bindingPhone";
     }
     @PostMapping("/do-send-vaild-code")
+    @ResponseBody
     public ResponseVO doSendVaildCode(String telphone,String openid){
         try {
             return this.channelApiService.sendVaildCode(telphone,openid);
