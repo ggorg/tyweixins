@@ -3,8 +3,11 @@ package com.ty.services;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.services.CommonService;
-import com.gen.framework.common.util.HttpUtil;
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.ActEnum;
+import com.ty.entity.TyUser;
+import com.ty.entity.UserInfo;
+import com.ty.util.HttpUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -19,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ChannelApiService  extends CommonService {
+public class TyBindService extends CommonService {
 
     private String vaildCodeUrl;
     @Value("${ty.telphone.prefix}")
@@ -30,8 +33,10 @@ public class ChannelApiService  extends CommonService {
 
     @Autowired
     private WeixinUserService weixinUserService;
+    @Autowired
+    private TyVoucherService tyVoucherService;
 
-    public ResponseVO sendVaildCode(String telphone)throws Exception{
+    public ResponseVO sendVaildCode(String telphone,String openid)throws Exception{
 
         if(StringUtils.isBlank(telphone)){
             return new ResponseVO(-2,"手机号为空",null);
@@ -42,17 +47,23 @@ public class ChannelApiService  extends CommonService {
         if(!telphone.matches("^("+tyTelPrefix+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
         }
-        long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
-        if(count>0){
+        TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
+        //long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
+        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTyOpenId())){
             return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
+        }
+        UserInfo user=this.weixinUserService.selectByopenid(openid);
+        if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()!="1"){
+            return new ResponseVO(-2,"请先关注翼支付关众号",null);
         }
         JSONObject obj=new JSONObject();
 
         obj.put("phone_no",telphone);
         String ranInt=RandomStringUtils.randomNumeric(5);
-        obj.put("act_code","5");
+        obj.put("act_code", ActEnum.act6.getCode());
         obj.put("message",ranInt);
-        String callBackStr=HttpUtil.jsonPost(vaildCodeUrl,obj.toJSONString());
+
+        String callBackStr= HttpUtil.doPost(vaildCodeUrl,obj.toJSONString());
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject json=JSONObject.parseObject(callBackStr);
             if(json.containsKey("status") && json.getString("status").equals("0")){
@@ -62,7 +73,7 @@ public class ChannelApiService  extends CommonService {
         }
         return new ResponseVO(-2,"验证码发送失败",null);
     }
-    public ResponseVO vaildeCode(String telphone,String code)throws Exception{
+    public ResponseVO vaildeCode(String telphone,String code,String openid)throws Exception{
         if(StringUtils.isBlank(telphone)){
             return new ResponseVO(-2,"手机号为空",null);
         }
@@ -74,6 +85,10 @@ public class ChannelApiService  extends CommonService {
         }
         if(!telphone.matches("^("+tyTelPrefix+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
+        }
+        UserInfo user=this.weixinUserService.selectByopenid(openid);
+        if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()!="1"){
+            return new ResponseVO(-2,"请先关注翼支付关众号",null);
         }
         String cacheCode=this.cacheService.getValidCode(telphone);
         if(StringUtils.isBlank(cacheCode)){
@@ -87,7 +102,7 @@ public class ChannelApiService  extends CommonService {
         }
     }
     @Transactional(propagation = Propagation.REQUIRED)
-    public ResponseVO bind(String telphone,String openid){
+    public ResponseVO bind(String telphone,String openid)throws Exception{
         if(StringUtils.isBlank(telphone)){
             return new ResponseVO(-2,"手机号为空",null);
         }
@@ -97,17 +112,28 @@ public class ChannelApiService  extends CommonService {
         if(StringUtils.isBlank(openid)){
             return new ResponseVO(-2,"微信openid为空",null);
         }
-        long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
-        if(count>0){
+        TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
+        //long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
+        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTyOpenId())){
             return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
         }
+        UserInfo user=this.weixinUserService.selectByopenid(openid);
+        if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()!="1"){
+            return new ResponseVO(-2,"请先关注翼支付公众号",null);
+        }
         Map param=new HashMap();
-        param.put("tuTelphone",telphone);
         param.put("tuOpenId",openid);
-        param.put("createTime",new Date());
+        param.put("tuTelphone",telphone);
         param.put("updateTime",new Date());
-        ResponseVO<Integer> vo=this.commonInsertMap("ty_user",param);
-        if(vo.getData()!=null && vo.getData()>0){
+        ResponseVO<Integer> vo=null;
+        if(tyUser==null){
+            param.put("createTime",new Date());
+            vo=this.commonInsertMap("ty_user",param);
+        }else{
+            vo=this.commonUpdateBySingleSearchParam("ty_user",param,"tuTelphone",telphone);
+        }
+        if(vo.getReCode()==1){
+            tyVoucherService.saveVoucheies(telphone);
             return new ResponseVO(1,"绑定成功",null);
         }
         return new ResponseVO(-2,"绑定失败",null);
