@@ -19,11 +19,11 @@ import java.util.Map;
 public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Value("${gen.framework.menus.filter.urls}")
     private String filterUrls;
-    private List filterList;
+   // private List filterList;
 
     @Value("${gen.framework.manager.url.prefix}")
     private String managerPrefixUrls;
-    private List managerPrefixUrlsList;
+   // private List managerPrefixUrlsList;
     @Autowired
     private SysManagerService sysManagerService;
 
@@ -33,14 +33,20 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             throws Exception{
         String path=request.getRequestURI();
         String prefixPath=path.replaceAll("^(/[^/]+).*$","$1");
+        if(filterUrls.indexOf("*")>-1 && filterUrls.indexOf(".")==-1){
+            filterUrls=filterUrls.replaceAll("[*]",".*");
+        }
+       /* if(path.matches("^("+filterUrls+").*$")){
+
+        }
         if(filterList==null && StringUtils.isNotBlank(filterUrls)){
             filterList= Arrays.asList(filterUrls.replaceAll(" ","").split(","));
         }
         if(managerPrefixUrlsList==null && StringUtils.isNotBlank(managerPrefixUrls)){
             managerPrefixUrlsList= Arrays.asList(managerPrefixUrls.replaceAll(" ","").split(","));
-        }
+        }*/
 
-        if(managerPrefixUrlsList.contains(prefixPath) && !filterList.contains(path)){
+        if(prefixPath.matches("^("+managerPrefixUrls+")$") && !path.matches("^("+filterUrls+")$")){
             if(!Tools.isLogin()){
                 response.sendRedirect("/");
                 return false;

@@ -72,6 +72,9 @@ public class ChannelApiService  extends CommonService {
         if(!NumberUtils.isNumber(telphone)){
             return new ResponseVO(-2,"请填写正确的手机号",null);
         }
+        if(!telphone.matches("^("+tyTelPrefix+").*$")){
+            return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
+        }
         String cacheCode=this.cacheService.getValidCode(telphone);
         if(StringUtils.isBlank(cacheCode)){
             return new ResponseVO(-2,"验证码已经超时请重新发送一次",null);
@@ -87,6 +90,9 @@ public class ChannelApiService  extends CommonService {
     public ResponseVO bind(String telphone,String openid){
         if(StringUtils.isBlank(telphone)){
             return new ResponseVO(-2,"手机号为空",null);
+        }
+        if(!telphone.matches("^("+tyTelPrefix+").*$")){
+            return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
         }
         if(StringUtils.isBlank(openid)){
             return new ResponseVO(-2,"微信openid为空",null);
