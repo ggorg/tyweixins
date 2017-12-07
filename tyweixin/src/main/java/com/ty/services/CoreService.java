@@ -152,7 +152,7 @@ public class CoreService {
                         userInfoMapper.update(userInfo);
                     } else {
                         UserInfo userInfo = weixinInterfaceService.getUserInfo(appid, fromUserName);
-                        // 保存微信用户资料入库以及头像保存本地
+                        // 保存微信用户资料入库
                         weixinUserService.save(userInfo);
                     }
 

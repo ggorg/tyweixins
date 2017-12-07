@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+        <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+        <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
+        <script type="text/javascript"  th:inline="javascript">
+            initPage(/*[[${menuPage!=null?menuPage.total:0}]]*/ );
+        </script>
+	</head>
+    <body class="withvernav">
+    <div class="bodywrapper">
+
+        <th:block th:include="pages/manager/common/header::sysheader"></th:block>
+        <th:block th:include="pages/manager/common/menus::sysmenus"></th:block>
+        <div class="centercontent tables">
+
+            <!-- <div class="pageheader notab">
+            <h1 class="pagetitle">Tables</h1>
+            <span class="pagedesc">This is a sample description of a page</span>
+
+        </div>--><!--pageheader-->
+
+            <div id="contentwrapper" class="contentwrapper">
+                <div class="contenttitle2">
+                    <h3>菜单列表</h3>
+                </div><!--contenttitle-->
+                <div class="tableoptions">
+                    <button class="radius3" id="createBtn" title="table2" onclick="openDialog('500px','440px','新建顶级菜单','edit?parent_id=-1')">新建顶级菜单</button> &nbsp;
+                </div><!--tableoptions-->
+                <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
+                    <colgroup>
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                       
+                        <th class="head1">菜单名称</th>
+                        <th class="head0">菜单主键</th>
+                        <th class="head1">菜单父主键</th>
+                        <th class="head0">排序</th>
+                        <th class="head1">类型</th>
+                        <th class="head0">操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="obj:${menuList}">
+                       
+                        <td th:text="${obj['name']}">Trident</td>
+                        <td th:text="${obj['id']}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['parent_id']}">Win 95+</td>
+                        <td th:text="${obj['sort']}">Win 95+</td>
+                        <td th:text="${obj['type']}">Win 95+</td>
+
+                        <td class="center">
+                            <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'修改菜单\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'创建下级菜单\',\'edit?id='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                            </div>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+                <div id="pages"></div>
+            </div>
+        </div>
+
+    </div>
+
+	</body>
+	
+</html>

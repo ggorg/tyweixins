@@ -34,7 +34,7 @@ public class PubWeixinController{
         try {
             model.addAttribute("pubweixin",this.weixinPublicService.selectByAppid(appid));
         }catch (Exception e){
-            logger.error("PubWeixinController->toUserEdit->系统异常",e);
+            logger.error("PubWeixinController->edit->系统异常",e);
 
         }
         return "pages/manager/weixin/publicEdit";

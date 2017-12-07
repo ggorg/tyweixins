@@ -56,7 +56,7 @@
         #{userInfo.city, jdbcType=VARCHAR},
         #{userInfo.headimgurl, jdbcType=VARCHAR},
         #{userInfo.subscribe, jdbcType=VARCHAR},
-        #{userInfo.subscribeTime, jdbcType=TIMESTAMP},
+        #{userInfo.subscribe_time, jdbcType=TIMESTAMP},
         #{userInfo.unionid, jdbcType=VARCHAR},
         #{userInfo.remark, jdbcType=VARCHAR},
         #{userInfo.groupid, jdbcType=INTEGER},
@@ -92,8 +92,8 @@
 		      <if test="subscribe != null" >
 		        subscribe=#{subscribe, jdbcType=VARCHAR}, 
 		      </if>
-		      <if test="subscribeTime != null" >
-		        subscribe_time=#{subscribeTime, jdbcType=TIMESTAMP},
+		      <if test="subscribe_time != null" >
+		        subscribe_time=#{subscribe_time, jdbcType=TIMESTAMP},
 		      </if>
 		      <if test="unionid != null" >
 		        unionid=#{unionid, jdbcType=VARCHAR}, 
