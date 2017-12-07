@@ -75,7 +75,6 @@ public abstract class CommonService {
     }
     public ResponseVO  commonUpdateBySingleSearchParam(String tableName,Map setParams,String searchParamName,Object searchParamValue){
         ResponseVO vo=new ResponseVO();
-        setParams.put("updateTime",new Date());
         Map searchCondition=new HashMap();
         searchCondition.put(searchParamName,searchParamValue);
         CommonUpdateBean cub=new CommonUpdateBean(tableName,setParams,searchCondition);

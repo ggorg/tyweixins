@@ -6,6 +6,7 @@ import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.ActEnum;
 import com.ty.util.HttpUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +27,12 @@ public class TyVoucherService extends CommonService {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRED)
-    public void saveVoucheies(String telphone)throws Exception{
+    public void saveVoucheies(String telphone,Integer id)throws Exception{
         JSONObject param=new JSONObject();
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act5.getCode());
-        String callBackStr=HttpUtil.doPost(getVoucherUrl,param.toString());
+       // String callBackStr=HttpUtil.doPost(getVoucherUrl,param.toString());
+        String callBackStr= FileUtils.readFileToString(new File("D:\\文档\\天翼\\json\\查询代金卷.txt"));
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson= JSONObject.parseObject(callBackStr);
             if(callBackJson.getString("status").equals("0")){
@@ -47,6 +50,7 @@ public class TyVoucherService extends CommonService {
                         obj.put("tvBeginTime",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd"));
                         obj.put("tvEndTime",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd"));
                         obj.put("createTime",new Date());
+                        obj.put("tuid",id);
                         this.commonInsertMap("ty_voucher",obj);
                     }
                 }

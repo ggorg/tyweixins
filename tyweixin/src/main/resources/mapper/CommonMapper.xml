@@ -169,7 +169,8 @@
   				#{value}
   			</foreach>
   	</insert>
-  	<update id="updateObject" parameterType="com.gen.framework.common.beans.CommonUpdateBean">
+  	<update id="updateObject" parameterType="com.gen.framework.common.beans.CommonUpdateBean" >
+
   		update ${tablename} 
   		  	<foreach collection="params" item="value"  index="key" open="set " separator=",">
   				${key}=#{value}
@@ -178,7 +179,7 @@
   				${key}=#{value}
   			</foreach>
   	</update>
-	<delete id="deleteObject" parameterType="com.gen.framework.common.beans.CommonDeleteBean">
+	<delete id="deleteObject" parameterType="com.gen.framework.common.beans.CommonDeleteBean" >
 		delete from ${tablename}
 		<foreach collection="condition" item="value"  index="key" open="where" separator="and">
 			${key}=#{value}

@@ -23,16 +23,7 @@
             Util.toast('抱歉，非电信手机号码不能绑定');
             return
         }
-        Util.Ajax({
-            url:"do-send-vaild-code",
-            type:"post",
-            dataType:"JSON",
-            data:{telphone:tel,openid:"test"},
-            cbOk:function(data){
-                Util.toast(data.reMsg);
 
-            }
-        })
 
     	var displayEl = $(e.currentTarget);
         var time = 60;
@@ -52,6 +43,22 @@
             displayEl.removeClass('counting');
             displayEl.html('获取验证码');
         });
+        Util.Ajax({
+            url:"do-send-vaild-code",
+            type:"post",
+            dataType:"JSON",
+            data:{telphone:tel,openid:"test"},
+            cbOk:function(data){
+                if(data.reCode==-2){
+                    Util.toast(data.reMsg);
+                    displayEl.removeClass('counting');
+                    displayEl.html('获取验证码');
+                    clearInterval(interval);
+                }else if(data.reCode==-1){
+                    Util.toast(data.reMsg);
+                }
+            }
+        })
     }
 
 
@@ -82,9 +89,21 @@
     	}
 
     	// todo 发送ajax请求绑定
-    	console.log('立即绑定')
+        Util.Ajax({
+            url:"do-bind",
+            type:"post",
+            dataType:"JSON",
+            data:{telphone:tel,openid:"test",code:code},
+            cbOk:function(data){
+                if(data.reCode!=1){
+                    Util.toast(data.reMsg);
 
-        Util.iconToast('<i class="icon-success"></i>绑定成功');
+                }else {
+                    Util.iconToast('<i class="icon-success"></i>绑定成功');
+                }
+            }
+        })
+
     }
 
 
