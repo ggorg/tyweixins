@@ -1,6 +1,7 @@
 package com.ty.controller;
 
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.services.TyBalanceService;
 import com.ty.services.TyBindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public class WapController {
 
     @Autowired
     private TyBindService tyBindService;
+
+    @Autowired
+    private TyBalanceService tyBalanceService;
     @GetMapping("/to-bind-telphone")
     public String toBindTelphone(){
         return "pages/wap/bindingPhone";
@@ -49,5 +53,15 @@ public class WapController {
 
         }
         return new ResponseVO(-1,"绑定失败",null);
+    }
+    @PostMapping("/to-myself-center")
+    @ResponseBody
+    public ResponseVO toMyselfCenter(String openid){
+        try {
+            return this.tyBalanceService.getBalance(openid);
+        }catch (Exception e){
+            logger.error("WapController->toMyselfCenter->系统异常",e);
+        }
+        return new ResponseVO(-1,"操作失败",null);
     }
 }
