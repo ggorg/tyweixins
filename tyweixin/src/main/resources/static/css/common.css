@@ -4,3 +4,8 @@ span.style1{
 .layui-form-item2{
     margin-bottom: 0px;
 }
+.layui-form-item2 .layui-input-inline{
+    width: auto;
+}.layui-form-item2 .layui-form-label{
+    width: auto;
+}
