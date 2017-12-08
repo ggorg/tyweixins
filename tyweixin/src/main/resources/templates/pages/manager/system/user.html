@@ -23,9 +23,38 @@
             <div id="contentwrapper" class="contentwrapper">
                 <div class="contenttitle2">
                     <h3>用户列表</h3>
+
                 </div><!--contenttitle-->
+
                 <div class="tableoptions">
-                    <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit')" title="table2">新建</button> &nbsp;
+
+                    <form class="layui-form">
+                        <div class="layui-form-item2 layui-form-item">
+                        <div class="float-left-div" >
+
+                            <label class="layui-form-label" >用户名</label>
+                            <div class="layui-input-inline" >
+                                <input class="layui-input" name="uName"/>
+                            </div>
+                        </div>
+                            <div class="float-left-div" >
+
+                            <label class="layui-form-label" >角色类型</label>
+                            <div class="layui-input-inline" >
+                                <select name="rType" lay-verify="required" >
+                                    <option value="1_1" th:selected="${roleObject?.rType=='1_1'}">普通用户</option>
+                                    <option value="1_2" th:selected="${roleObject?.rType=='1_2'}">管理员</option>
+                                    <option value="1_3" th:selected="${roleObject?.rType=='1_3'}">超级管理员</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                            <a href="" class="btn btn_search radius50" style="line-height: 26px"><span>Search</span></a>
+
+
+                    </div>
+                    </form>
                     <!-- <select class="radius3">
                          <option value="">Show All</option>
                          <option value="">Rendering Engine</option>
@@ -34,6 +63,11 @@
                      <button class="radius3">Apply Filter</button>
                      <input class="radius3" style="padding: 6px 5px 6px 5px;margin-left:10px;"/>-->
                 </div><!--tableoptions-->
+                <div class="tableoptions">
+
+                    <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit')" title="table2">新建</button> &nbsp;
+
+                </div>
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
                     <colgroup>
                         <!--<col class="con0" style="width: 4%" />-->
@@ -44,6 +78,8 @@
                         <col class="con0" />
                     </colgroup>
                     <thead>
+
+
                     <tr>
                        
                         <th class="head1">用户名</th>
@@ -95,6 +131,9 @@
                 //layer.close(index);
             });
         }
+        layui.use('form', function(){
+            var form = layui.form;
+        })
     </script>
 	</body>
 
