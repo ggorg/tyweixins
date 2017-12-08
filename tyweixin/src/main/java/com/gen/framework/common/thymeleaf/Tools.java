@@ -244,4 +244,15 @@ public final class Tools {
 		HttpSession session=attrs.getRequest().getSession();
 		return (List)session.getAttribute("userPower");
 	}
+	public static String getRealAmount(String input){
+		String newInput= StringUtils.isNotBlank(input)?input:"0";
+		if(newInput.length()==1){
+			newInput="0.0"+newInput;
+		}else if(newInput.length()==2){
+			newInput="0."+newInput;
+		}else{
+			newInput=newInput.replaceAll("^([0-9]+)([0-9][0-9])$","$1.$2");
+		}
+		return newInput;
+	}
 }

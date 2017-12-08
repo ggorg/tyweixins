@@ -2,9 +2,9 @@ package com.ty.entity;
 
 public class TyUser {
     private Integer id;
-    private String tyTelphone;
-    private String tyOpenId;
-    private Boolean tyDisabled;
+    private String tuTelphone;
+    private String tuOpenId;
+    private Boolean tuDisabled;
 
     public Integer getId() {
         return id;
@@ -14,27 +14,27 @@ public class TyUser {
         this.id = id;
     }
 
-    public String getTyTelphone() {
-        return tyTelphone;
+    public String getTuTelphone() {
+        return tuTelphone;
     }
 
-    public void setTyTelphone(String tyTelphone) {
-        this.tyTelphone = tyTelphone;
+    public void setTuTelphone(String tuTelphone) {
+        this.tuTelphone = tuTelphone;
     }
 
-    public String getTyOpenId() {
-        return tyOpenId;
+    public String getTuOpenId() {
+        return tuOpenId;
     }
 
-    public void setTyOpenId(String tyOpenId) {
-        this.tyOpenId = tyOpenId;
+    public void setTuOpenId(String tuOpenId) {
+        this.tuOpenId = tuOpenId;
     }
 
-    public Boolean getTyDisabled() {
-        return tyDisabled;
+    public Boolean getTuDisabled() {
+        return tuDisabled;
     }
 
-    public void setTyDisabled(Boolean tyDisabled) {
-        this.tyDisabled = tyDisabled;
+    public void setTuDisabled(Boolean tuDisabled) {
+        this.tuDisabled = tuDisabled;
     }
 }

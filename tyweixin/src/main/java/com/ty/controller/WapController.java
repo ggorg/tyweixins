@@ -7,10 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/wap")
@@ -54,7 +57,7 @@ public class WapController {
         }
         return new ResponseVO(-1,"绑定失败",null);
     }
-    @PostMapping("/to-myself-center")
+    @GetMapping("/to-myself-center")
     @ResponseBody
     public ResponseVO toMyselfCenter(String openid){
         try {
@@ -63,5 +66,14 @@ public class WapController {
             logger.error("WapController->toMyselfCenter->系统异常",e);
         }
         return new ResponseVO(-1,"操作失败",null);
+    }
+    @GetMapping("/to-balance-detail")
+    public String toBalanceDetail(String openid, Model model){
+        try {
+            model.addAllAttributes((Map)this.tyBalanceService.getBalanceDetail(openid).getData());
+        }catch (Exception e){
+            logger.error("WapController->toBalanceDetail->系统异常",e);
+        }
+        return "pages/wap/balanceInquiries";
     }
 }

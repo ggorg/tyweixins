@@ -48,7 +48,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         if(prefixPath.matches("^("+managerPrefixUrls+")$") && !path.matches("^("+filterUrls+")$")){
             if(!Tools.isLogin()){
-                response.sendRedirect("/");
+                response.sendRedirect("/sys");
                 return false;
             }else{
                 List<Map> allMenus=sysManagerService.getAllMenu();

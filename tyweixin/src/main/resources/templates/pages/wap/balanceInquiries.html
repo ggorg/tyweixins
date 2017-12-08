@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
@@ -7,9 +7,9 @@
     <meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no" />
     <meta name="format-detection" content="telephone=no">
     <title>翼支付-公众号-余额查询</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/balanceInquiries.css">
-    <script src="../js/lib/adapt.js"></script>
+    <link rel="stylesheet" href="/wap/css/main.css">
+    <link rel="stylesheet" href="/wap/css/balanceInquiries.css">
+    <script src="/wap/js/lib/adapt.js"></script>
 </head>
 <body>
 <div class="scroll scroll-active">
@@ -28,10 +28,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p>12<span class="unit">笔</span><span>当月共交易</span></p>
+                                <p th:inline="text">[[${currentMonth!=null?currentMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p>4210.35<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(currentMonth!=null?currentMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
                             <div class="fl">
                                 <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
@@ -46,62 +46,15 @@
                       <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <li>
+                        <li th:each="data:${currentMonth['list']}">
                             <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
-                                <span>时间：2017-11-21  11:30:20</span>
+                                <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
+                                <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>
                                 <span>说明：充值</span>
-                                <span class="money">30.00元</span>
+                                <span class="money" th:text="${#TdTool.getRealAmount(data?.trnanAmt+'')}">30.00元</span>
                             </div>
                         </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="detail-con">
-                                <span class="name">天翼电子商务有限公司-00000871205020</span>
-                                <span>时间：2017-11-21  11:30:20</span>
-                                <span>说明：充值</span>
-                                <span class="money">30.00元</span>
-                            </div>
-                        </li>
+
 
                     </ul>
                 </li>
@@ -112,10 +65,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p>12<span class="unit">笔</span><span>当月共交易</span></p>
+                                <p th:inline="text">[[${lastMonth!=null?lastMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p>4210.35<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(lastMonth!=null?lastMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
                             <div class="fl">
                                 <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
@@ -130,14 +83,14 @@
                         <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <!--<li>-->
-                            <!--<div class="detail-con">-->
-                                <!--<span class="name">天翼电子商务有限公司-00000871205020</span>-->
-                                <!--<span>时间：2017-11-21  11:30:20</span>-->
-                                <!--<span>说明：充值</span>-->
-                                <!--<span class="money">30.00元</span>-->
-                            <!--</div>-->
-                        <!--</li>-->
+                        <li th:each="data:${lastMonth['list']}">
+                            <div class="detail-con">
+                                <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
+                                <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>
+                                <span>说明：充值</span>
+                                <span class="money" th:text="${#TdTool.getRealAmount(data?.trnanAmt+'')}">30.00元</span>
+                            </div>
+                        </li>
                     </ul>
                 </li>
                 <li class="pd-tab" data-type="2">
@@ -147,10 +100,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p>12<span class="unit">笔</span><span>当月共交易</span></p>
+                                <p th:inline="text">[[${beforeLastMonth!=null?beforeLastMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p>4210.35<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(beforeLastMonth!=null?beforeLastMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
                             <div class="fl">
                                 <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
@@ -165,14 +118,14 @@
                         <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <!--<li>-->
-                        <!--<div class="detail-con">-->
-                        <!--<span class="name">天翼电子商务有限公司-00000871205020</span>-->
-                        <!--<span>时间：2017-11-21  11:30:20</span>-->
-                        <!--<span>说明：充值</span>-->
-                        <!--<span class="money">30.00元</span>-->
-                        <!--</div>-->
-                        <!--</li>-->
+                        <li th:each="data:${beforeLastMonth['list']}">
+                            <div class="detail-con">
+                                <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
+                                <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>
+                                <span>说明：充值</span>
+                                <span class="money" th:text="${#TdTool.getRealAmount(data?.trnanAmt+'')}">30.00元</span>
+                            </div>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -181,7 +134,7 @@
 
 </div>
 </body>
-<script src="../js/lib/fastclick-jquery.js"></script>
-<script src="../js/common/util.js" type="text/javascript" charset="utf-8"></script>
-<script src="../js/balanceInquiries.js" type="text/javascript" charset="utf-8"></script>
+<script src="/wap/js/lib/fastclick-jquery.js"></script>
+<script src="/wap/js/common/util.js" type="text/javascript" charset="utf-8"></script>
+<script src="/wap/js/balanceInquiries.js" type="text/javascript" charset="utf-8"></script>
 </html>

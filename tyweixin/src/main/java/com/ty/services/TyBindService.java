@@ -51,7 +51,7 @@ public class TyBindService extends CommonService {
         }
         TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
         //long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
-        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTyOpenId())){
+        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTuOpenId())){
             return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
         }
         UserInfo user=this.weixinUserService.selectByopenid(openid);
@@ -117,7 +117,7 @@ public class TyBindService extends CommonService {
         }
         TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
         //long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
-        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTyOpenId())){
+        if(tyUser!=null && StringUtils.isNotBlank(tyUser.getTuOpenId())){
             return new ResponseVO(-2,"抱歉，此手机号已绑定过",null);
         }
         UserInfo user=this.weixinUserService.selectByopenid(openid);
