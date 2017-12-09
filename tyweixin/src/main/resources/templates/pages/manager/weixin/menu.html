@@ -95,9 +95,7 @@
         function release() {
             //向服务端发送发布菜单指令
             jQuery.post("release",{appid:jQuery('#appid').val()},function(data){
-                if(data.reCode==1){
-                    layer.msg(data.reMsg);
-                }
+                layer.msg(data.reMsg);
             });
         }
     </script>
