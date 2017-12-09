@@ -100,12 +100,12 @@ public class MenuService {
 
     /**
      * 删除菜单
-     * @param menu
+     * @param id 主键
      * @return
      */
-    public ResponseVO delete(com.ty.entity.Menu menu){
+    public ResponseVO delete(Integer id){
         ResponseVO vo=new ResponseVO();
-        int res = menuMapper.delete(menu);
+        int res = menuMapper.delete(id);
         if(res>0){
             vo.setReCode(1);
             vo.setReMsg("删除成功");

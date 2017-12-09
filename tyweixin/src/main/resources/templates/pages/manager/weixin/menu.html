@@ -69,8 +69,9 @@
                         <td th:text="${obj['type']}">Win 95+</td>
                         <td class="center">
                             <div class="layui-btn-group">
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'修改菜单\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'创建下级菜单\',\'edit?parent_id='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                                <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'修改菜单\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
+                                <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'创建下级菜单\',\'edit?parent_id='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                                <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\')'" >删除</button>
                             </div>
                     </tr>
 
@@ -96,6 +97,15 @@
             //向服务端发送发布菜单指令
             jQuery.post("release",{appid:jQuery('#appid').val()},function(data){
                 layer.msg(data.reMsg);
+            });
+        }
+        function del(obj) {
+            //向服务端发送发布菜单指令
+            jQuery.post("delete",{id:obj},function(data){
+                layer.msg(data.reMsg);
+                window.setTimeout(function(){
+                    top.location.href=window.parent.location.href;
+                },500)
             });
         }
     </script>

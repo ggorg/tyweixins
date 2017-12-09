@@ -91,9 +91,9 @@ public class MenuController {
 
     @RequestMapping(value = "delete")
     @ResponseBody
-    public ResponseVO delete(Menu menu, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public ResponseVO delete(Integer id, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         try {
-            return this.menuService.delete(menu);
+            return this.menuService.delete(id);
         } catch (Exception e) {
             logger.error("MenuController->delete->系统异常",e);
             return new ResponseVO(-1,"删除失败",null);

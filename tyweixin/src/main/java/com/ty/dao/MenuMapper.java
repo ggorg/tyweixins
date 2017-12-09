@@ -14,7 +14,7 @@ public interface MenuMapper {
     List<Menu> findList(@Param("appid")String appid);
     List<Menu> findListById(@Param("id")Integer id);
     int insert(Menu menu);
-    int delete(Menu menu);
+    int delete(@Param("id")Integer id);
     int update(Menu menu);
     Menu selectById(@Param("id")int id);
 }
