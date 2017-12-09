@@ -1,4 +1,4 @@
-package com.ty;
+package com.ty.enums;
 
 public enum ActEnum {
     act1("1","翼支付交易明细查询"),

@@ -37,18 +37,7 @@
                                 <input class="layui-input" name="uName"/>
                             </div>
                         </div>
-                            <div class="float-left-div" >
 
-                            <label class="layui-form-label" >角色类型</label>
-                            <div class="layui-input-inline" >
-                                <select name="rType" lay-verify="required" lay-filter="test" id="myselect" >
-                                    <option value="1_1" th:selected="${roleObject?.rType=='1_1'}">普通用户</option>
-                                    <option value="1_2" th:selected="${roleObject?.rType=='1_2'}">管理员</option>
-                                    <option value="1_3" th:selected="${roleObject?.rType=='1_3'}">超级管理员</option>
-
-                                </select>
-                            </div>
-                        </div>
 
                             <a href="" class="btn btn_search radius50"><span>Search</span></a>
 
@@ -65,10 +54,9 @@
                 </div><!--tableoptions-->
                 <div class="tableoptions">
 
-                    <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit?id='+jQuery('#myselect').val())" title="table2">新建</button> &nbsp;
+                    <button class="radius3" id="createBtn" onclick="openDialog('400px','280px','创建系统用户','to-edit')" title="table2">新建</button> &nbsp;
 
                 </div>
-                <form class="layui-form">
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
                     <colgroup>
                         <!--<col class="con0" style="width: 4%" />-->
@@ -115,7 +103,7 @@
                     </tbody>
 
                 </table>
-                </form>
+
                 <div id="pages"></div>
             </div>
         </div>
@@ -142,10 +130,7 @@
         }
         layui.use('form', function(){
             var form = layui.form;
-            form.on('select(test)', function(data){
-                console.log(data);
 
-            });
         })
 
     </script>
