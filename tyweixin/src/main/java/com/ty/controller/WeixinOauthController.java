@@ -1,14 +1,20 @@
 package com.ty.controller;
 
+import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.services.CacheService;
+import com.ty.config.Globals;
 import com.ty.entity.Pubweixin;
 import com.ty.entity.UserInfo;
 import com.ty.services.PubWeixinService;
 import com.ty.services.WeixinUserService;
+import com.ty.util.CommonUtil;
 import com.ty.util.WeixinUtil;
 import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.util.DecodeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +40,10 @@ public class WeixinOauthController {
     private PubWeixinService pubWeixinService;
     @Autowired
     private WeixinUserService weixinUserService;
+    @Autowired
+    private Globals globals;
+    @Autowired
+    private CacheService cacheService;
 
     /**
      * 通过code换取网页授权access_token
@@ -58,6 +68,7 @@ public class WeixinOauthController {
             // 根据传递过来的appid匹配数据库中公众号
             //Pubweixin pubweixin = pubWeixinService.selectByAppid(json.get("appid").toString());
             Pubweixin pubweixin = pubWeixinService.selectByAppid(appid);
+            cacheService.set(appid,pubweixin);
             if (pubweixin != null) {
                 String requestUrl = ACCESS_TOKEN.replace("APPID", pubweixin.getAppid()).replace("SECRET", pubweixin.getAppsecret()).replace("CODE", code);
 
@@ -93,6 +104,10 @@ public class WeixinOauthController {
                 if("redpack".equals(page)){
                     return InternalResourceViewResolver.REDIRECT_URL_PREFIX + "pages/manager/weixin/menu";
                 }
+                String jumpUrlValue=globals.getOauthJumUrlByKey(page);
+                if(StringUtils.isNotBlank(jumpUrlValue)){
+                   return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue;
+                }
             }
         }
 
@@ -114,11 +129,18 @@ public class WeixinOauthController {
 
     public static void main(String[] args) {
         Base32 base32 = new Base32();
-        String abc = "{\"appid\":\"wx695033b74d733b6f\",\"page\":\"redpack\"}";
+        String abc = "{\"appid\":\"wxd5ba1ab308c1908b\",\"page\":\"bind-telphone\"}";
         logger.info(abc);
+
+        System.out.println(CommonUtil.base32Encode(abc));
+        System.out.println(CommonUtil.base32Decode(CommonUtil.base32Encode(abc)));
+        System.out.println(base32.encodeAsString(abc.getBytes()));
         abc = base32.encodeAsString(abc.getBytes()).replace("=", "");
         logger.info(abc);
+
         byte[] debytes = base32.decode(abc);
         logger.info(new String(debytes));
+
+
     }
 }

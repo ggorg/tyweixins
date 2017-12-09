@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.thymeleaf.Tools;
 import com.gen.framework.common.vo.ResponseVO;
-import com.ty.ActEnum;
+import com.ty.enums.ActEnum;
 import com.ty.entity.TyBalanceTradeDetail;
 import com.ty.entity.TyUser;
 import com.ty.util.HttpUtil;

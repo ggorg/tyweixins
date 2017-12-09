@@ -1,5 +1,6 @@
 package com.ty.controller;
 
+import com.gen.framework.common.thymeleaf.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.services.TyBalanceService;
 import com.ty.services.TyBindService;
@@ -27,6 +28,7 @@ public class WapController {
     private TyBalanceService tyBalanceService;
     @GetMapping("/to-bind-telphone")
     public String toBindTelphone(){
+        Tools.noCachePage();
         return "pages/wap/bindingPhone";
     }
     @PostMapping("/do-send-vaild-code")
