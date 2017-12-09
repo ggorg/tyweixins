@@ -180,11 +180,5 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_public a
-        <!-- 数据范围过滤 -->
-        <choose>
-            <otherwise>
-                ORDER BY a.update_date
-            </otherwise>
-        </choose>
     </select>
 </mapper>

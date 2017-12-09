@@ -84,11 +84,10 @@ public class PubWeixinService extends CommonService {
     /**
      * 无分页查询微信公众号列表
      *
-     * @param pubweixin
      * @return
      */
-    public List<Pubweixin> findPubweixinAll(Pubweixin pubweixin) {
-        List<Pubweixin> list = pubweixinMapper.findListAll(pubweixin);
+    public List<Pubweixin> findPubweixinAll() {
+        List<Pubweixin> list = pubweixinMapper.findListAll();
         return list;
     }
     

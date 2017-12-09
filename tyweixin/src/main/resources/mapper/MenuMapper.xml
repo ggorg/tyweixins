@@ -32,13 +32,13 @@
         insert into weixin_menu
         (appid,`name`,`type`,`key`,url,parent_id,sort,create_date)
         values(
-        #{menu.appid, jdbcType=VARCHAR},
-        #{menu.name, jdbcType=VARCHAR},
-        #{menu.type, jdbcType=VARCHAR},
-        #{menu.key, jdbcType=VARCHAR},
-        #{menu.url, jdbcType=VARCHAR},
-        #{menu.parent_id, jdbcType=INTEGER},
-        #{menu.sort, jdbcType=INTEGER},
+        #{appid, jdbcType=VARCHAR},
+        #{name, jdbcType=VARCHAR},
+        #{type, jdbcType=VARCHAR},
+        #{key, jdbcType=VARCHAR},
+        #{url, jdbcType=VARCHAR},
+        #{parent_id, jdbcType=INTEGER},
+        #{sort, jdbcType=INTEGER},
         now()
         )
     </insert>
@@ -68,11 +68,12 @@
         where id =  #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="findList" resultMap="BaseResultMap" parameterType="com.ty.entity.Menu">
+    <select id="findList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from weixin_menu
         where appid = #{appid,jdbcType=VARCHAR}
+        order by sort asc
     </select>
 
     <select id="selectById" resultMap="BaseResultMap" parameterType="int">

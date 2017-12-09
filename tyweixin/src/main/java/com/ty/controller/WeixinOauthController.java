@@ -10,11 +10,13 @@ import org.apache.commons.codec.binary.Base32;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 网页授权获取用户基本信息
@@ -46,11 +48,13 @@ public class WeixinOauthController {
     private static final String USERINFO = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 
     @RequestMapping(value = "oauth")
-    public String oauth(String appid, String code, String state, HttpServletRequest request, RedirectAttributes attributes) {
+    public String oauth(String code, String state, HttpServletRequest request, RedirectAttributes attributes,HttpSession session,Model model) {
         // 判断用户是否授权
         if (code != null && code.length() > 0) {
             // 解析经过Base32编码后传递过来的json参数,state长度最长为128
+            //{"appid":"wx695033b74d733b6f","page":"redpack"}  Base32编码 PMRGC4DQNFSCEORCO54DMOJVGAZTGYRXGRSDOMZTMI3GMIRMEJYGCZ3FEI5CE4TFMRYGCY3LEJ6Q
             JSONObject json = JSONObject.parseObject(new String(new Base32().decode(state)));
+            String appid = json.getString("appid");
             // 根据传递过来的appid匹配数据库中公众号
             //Pubweixin pubweixin = pubWeixinService.selectByAppid(json.get("appid").toString());
             Pubweixin pubweixin = pubWeixinService.selectByAppid(appid);
@@ -83,6 +87,13 @@ public class WeixinOauthController {
                     }
                 }
             }
+            //TODO 这里根据state传递过来的参数page,跳转到对应页面
+            if(json.containsKey("page")){
+                String page = json.getString("page");
+                if("redpack".equals(page)){
+                    return InternalResourceViewResolver.REDIRECT_URL_PREFIX + "pages/manager/weixin/menu";
+                }
+            }
         }
 
         // 所有请求都跳转到此页面上
@@ -103,7 +114,7 @@ public class WeixinOauthController {
 
     public static void main(String[] args) {
         Base32 base32 = new Base32();
-        String abc = "{\"appid\":\"wx695033b74d733b6f\",\"page\":\"xmas\", \"src\":\"shake\", \"shop\":\"10\"}";
+        String abc = "{\"appid\":\"wx695033b74d733b6f\",\"page\":\"redpack\"}";
         logger.info(abc);
         abc = base32.encodeAsString(abc.getBytes()).replace("=", "");
         logger.info(abc);

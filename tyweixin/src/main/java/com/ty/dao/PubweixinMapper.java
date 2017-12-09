@@ -38,5 +38,5 @@ public interface PubweixinMapper {
     /** 查询总数*/
     public int findListCount(Pubweixin entity);
 
-    public List<Pubweixin> findListAll( Pubweixin entity);
+    public List<Pubweixin> findListAll();
 }

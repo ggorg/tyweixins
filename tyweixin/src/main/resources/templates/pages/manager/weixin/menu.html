@@ -25,7 +25,20 @@
                     <h3>菜单列表</h3>
                 </div><!--contenttitle-->
                 <div class="tableoptions">
-                    <button class="radius3" id="createBtn" title="table2" onclick="openDialog('500px','440px','新建顶级菜单','edit?parent_id=-1')">新建顶级菜单</button> &nbsp;
+                    <form class="layui-form">
+                        <div class="layui-form-item2 layui-form-item" style="float: left;">
+                            <div class="float-left-div" >
+                                <label class="layui-form-label" >公众号</label>
+                                <div class="layui-input-inline" >
+                                    <select name="appid" id="appid" lay-filter="appid">
+                                        <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}" th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <button class="radius3" id="createBtn" title="新建顶级菜单" onclick="openDialog('500px','440px','新建顶级菜单','edit?parent_id=-1&appid='+jQuery('#appid').val())">新建顶级菜单</button> &nbsp;
+                    <button class="radius3" id="releaseBtn" title="菜单发布" onclick="release()">菜单发布</button> &nbsp;
                 </div><!--tableoptions-->
                 <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
                     <colgroup>
@@ -38,7 +51,6 @@
                     </colgroup>
                     <thead>
                     <tr>
-                       
                         <th class="head1">菜单名称</th>
                         <th class="head0">菜单主键</th>
                         <th class="head1">菜单父主键</th>
@@ -50,17 +62,15 @@
 
                     <tbody>
                     <tr th:each="obj:${menuList}">
-                       
                         <td th:text="${obj['name']}">Trident</td>
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['parent_id']}">Win 95+</td>
                         <td th:text="${obj['sort']}">Win 95+</td>
                         <td th:text="${obj['type']}">Win 95+</td>
-
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'修改菜单\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'创建下级菜单\',\'edit?id='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'440px\',\'创建下级菜单\',\'edit?parent_id='+${obj['id']}+'\')'"  >创建下级菜单</button>
                             </div>
                     </tr>
 
@@ -72,7 +82,28 @@
         </div>
 
     </div>
+    <script type="text/javascript">
+        layui.use('form', function(){
+            var form = layui.form;
+            form.on('select(appid)', function(data){
+                jQuery.post("list",{appid:data.value},function(){
+                    top.location.href=window.parent.location.href;
+                });
+            });
+        })
 
+        function release() {
+            //向服务端发送发布菜单指令
+            jQuery.post("release",{appid:jQuery('#appid').val()},function(data){
+                if(data.reCode==1){
+                    layer.msg(data.reMsg);
+                    window.setTimeout(function(){
+                        top.location.href=window.parent.location.href;
+                    },500)
+                }
+            });
+        }
+    </script>
 	</body>
 	
 </html>

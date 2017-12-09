@@ -2,7 +2,9 @@ package com.ty.controller;
 
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.entity.Menu;
+import com.ty.entity.Pubweixin;
 import com.ty.services.MenuService;
+import com.ty.services.PubWeixinService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,20 +27,41 @@ public class MenuController {
     private static final Logger logger = Logger.getLogger("MenuController");
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private PubWeixinService pubWeixinService;
 
     @RequestMapping(value = {"list", ""})
     public String list(String appid, Model model) {
+        List<Pubweixin>pubweixinList = pubWeixinService.findPubweixinAll();
+        if(appid == null || appid.equals("")){
+            if(pubweixinList.size()>0){
+                appid = pubweixinList.get(0).getAppid();
+            }
+        }
         List<Menu> list =  menuService.findList(appid);
         model.addAttribute("menuList",list);
+        model.addAttribute("appid",appid);
+        model.addAttribute("pubweixinList",pubweixinList);
         return "pages/manager/weixin/menu";
     }
 
     @GetMapping("edit")
-    public String edit(Integer id,Model model){
+    public String edit(Integer id,Integer parent_id,String appid,Model model){
         try {
             if(id != null && id >0){
-                model.addAttribute("menu",this.menuService.selectById(id));
+                model.addAttribute("menuObject",this.menuService.selectById(id));
+            }else if(parent_id != null && parent_id != -1){
+                Menu parent_menu = this.menuService.selectById(parent_id);
+                Menu menu = new Menu();
+                menu.setParent_id(parent_id);
+                appid = parent_menu.getAppid();
+                menu.setAppid(appid);
+                model.addAttribute("menuObject",menu);
+            }else if(parent_id == -1){
+                Menu menu = new Menu();
+                menu.setParent_id(parent_id);
             }
+            model.addAttribute("appid",appid);
         }catch (Exception e){
             logger.error("MenuController->edit->系统异常",e);
 
@@ -65,6 +88,21 @@ public class MenuController {
         } catch (Exception e) {
             logger.error("MenuController->delete->系统异常",e);
             return new ResponseVO(-1,"删除失败",null);
+        }
+    }
+    @RequestMapping(value = "release")
+    @ResponseBody
+    public ResponseVO release(String appid, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            //TODO 从数据库取出该公众号配置好的菜单,组成json调用微信接口生成菜单
+            List<Menu> menuList = menuService.findList(appid);
+            for(Menu menu:menuList){
+
+            }
+            return new ResponseVO(1,"菜单发布成功",null);
+        } catch (Exception e) {
+            logger.error("MenuController->release->系统异常",e);
+            return new ResponseVO(-1,"菜单发布失败",null);
         }
     }
 }

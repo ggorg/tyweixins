@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper
 public interface MenuMapper {
     List<Menu> findList(@Param("appid")String appid);
-    int insert(@Param("menu")Menu menu);
-    int delete(@Param("menu")Menu menu);
-    int update(@Param("menu")Menu menu);
+    int insert(Menu menu);
+    int delete(Menu menu);
+    int update(Menu menu);
     Menu selectById(@Param("id")int id);
 }
