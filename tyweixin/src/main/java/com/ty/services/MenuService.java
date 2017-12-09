@@ -62,6 +62,15 @@ public class MenuService {
     }
 
     /**
+     * 根据主键id查询子菜单
+     * @param id 菜单主键id
+     * @return
+     */
+    public List<com.ty.entity.Menu> findListById(Integer id){
+        return menuMapper.findListById(id);
+    }
+
+    /**
      * 根据菜单主键查询菜单配置
      * @param id 主键
      * @return
@@ -106,4 +115,5 @@ public class MenuService {
         }
         return vo;
     }
+
 }

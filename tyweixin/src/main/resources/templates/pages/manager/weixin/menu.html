@@ -97,9 +97,6 @@
             jQuery.post("release",{appid:jQuery('#appid').val()},function(data){
                 if(data.reCode==1){
                     layer.msg(data.reMsg);
-                    window.setTimeout(function(){
-                        top.location.href=window.parent.location.href;
-                    },500)
                 }
             });
         }

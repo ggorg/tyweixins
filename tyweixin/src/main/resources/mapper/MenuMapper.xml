@@ -76,6 +76,14 @@
         order by sort asc
     </select>
 
+    <select id="findListById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from weixin_menu
+        where parent_id = #{id,jdbcType=INTEGER}
+        order by sort asc
+    </select>
+
     <select id="selectById" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List"/>
