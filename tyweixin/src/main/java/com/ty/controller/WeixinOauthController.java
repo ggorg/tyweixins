@@ -4,11 +4,14 @@ import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.ty.config.Globals;
+import com.ty.core.pojo.AccessToken;
 import com.ty.entity.Pubweixin;
 import com.ty.entity.UserInfo;
 import com.ty.services.PubWeixinService;
+import com.ty.services.WeixinInterfaceService;
 import com.ty.services.WeixinUserService;
 import com.ty.util.CommonUtil;
+import com.ty.util.WeiXinTools;
 import com.ty.util.WeixinUtil;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +47,10 @@ public class WeixinOauthController {
     private Globals globals;
     @Autowired
     private CacheService cacheService;
+    @Autowired
+    private WeixinInterfaceService weixinInterfaceService;
+
+
 
     /**
      * 通过code换取网页授权access_token
@@ -68,7 +75,8 @@ public class WeixinOauthController {
             // 根据传递过来的appid匹配数据库中公众号
             //Pubweixin pubweixin = pubWeixinService.selectByAppid(json.get("appid").toString());
             Pubweixin pubweixin = pubWeixinService.selectByAppid(appid);
-            cacheService.set(appid,pubweixin);
+
+
             if (pubweixin != null) {
                 String requestUrl = ACCESS_TOKEN.replace("APPID", pubweixin.getAppid()).replace("SECRET", pubweixin.getAppsecret()).replace("CODE", code);
 
@@ -106,6 +114,8 @@ public class WeixinOauthController {
                 }
                 String jumpUrlValue=globals.getOauthJumUrlByKey(page);
                 if(StringUtils.isNotBlank(jumpUrlValue)){
+                    AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
+                    WeiXinTools.initTicket(at.getTicket(),at.getAppid());
                    return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue;
                 }
             }

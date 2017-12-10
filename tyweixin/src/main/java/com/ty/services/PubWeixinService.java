@@ -7,6 +7,8 @@ import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.PubweixinMapper;
 import com.ty.entity.Pubweixin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class PubWeixinService extends CommonService {
      * @return
      */
     @Transactional(readOnly = false)
+	@CacheEvict(value="commonCache",key = "#pubweixin.appid")
 	public ResponseVO saveOrUpdate(Pubweixin pubweixin){
 		ResponseVO vo=new ResponseVO();
     	int ret = 0;
@@ -96,6 +99,7 @@ public class PubWeixinService extends CommonService {
      * @param appid
      * @return
      */
+	@Cacheable(value="commonCache",key = "#appid")
     public Pubweixin selectByAppid(String appid){
     	return pubweixinMapper.selectByAppid(appid);
     }

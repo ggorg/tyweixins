@@ -1,5 +1,6 @@
 package com.gen.framework.common.thymeleaf;
 
+import com.ty.util.WeiXinTools;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -267,5 +268,13 @@ public final class Tools {
 		response.addHeader("Pragma", "no-cache");
 		response.addHeader("Cache-Contro", "no-transform");
 
+	}
+	public static String initJssdk(String url,String jsApiList){
+		if(StringUtils.isBlank(url)){
+			ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+			HttpServletRequest request=attrs.getRequest();
+			//url=
+		}
+		return WeiXinTools.initJssdk(url,jsApiList);
 	}
 }
