@@ -3,27 +3,27 @@ package com.ty.entity;
 import java.util.Date;
 
 /**
- * 微信自定义菜单
- * Created by Jacky on 2017/12/5.
+ * 图文消息实体bean
+ * Created by Jacky on 2017/12/10.
  */
-public class Menu{
+public class Message {
+    /*主键id*/
     private int id;
-    /** 公众号ID*/
+    /*应用id*/
     private String appid;
-    /** 菜单标题，不超过16个字节，子菜单不超过60个字节*/
-    private String name;
-    /** 菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型*/
-    private String type;
-    /** 菜单KEY值，用于消息接口推送，不超过128字节*/
-    private String key;
-    /** 网页链接，用户点击菜单可打开链接，不超过1024字节。type为miniprogram时，不支持小程序的老版本客户端将打开本url*/
+    /*图文消息的标题*/
+    private String title;
+    /*图文消息的描述*/
+    private String description;
+    /*图文消息被点击后跳转的链接*/
     private String url;
-    /** 父级编号*/
+    /*图文消息的图片链接，支持JPG、PNG格式，较好的效果为大图640*320，小图80*80*/
+    private String picurl;
+    /*父级编号*/
     private int parent_id;
-    /** 排序*/
+    /*排序*/
     private int sort;
-
-    /** 创建时间*/
+    /*创建时间*/
     private Date create_date;
 
     public int getId() {
@@ -42,28 +42,20 @@ public class Menu{
         this.appid = appid;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUrl() {
@@ -72,6 +64,14 @@ public class Menu{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPicurl() {
+        return picurl;
+    }
+
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
     }
 
     public int getParent_id() {

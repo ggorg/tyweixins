@@ -2,15 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ty.dao.MenuMapper">
+<mapper namespace="com.ty.dao.MessageMapper">
 
-    <resultMap id="BaseResultMap" type="com.ty.entity.Menu">
+    <resultMap id="BaseResultMap" type="com.ty.entity.Message">
         <id property="id" column="id"/>
         <result property="appid" column="appid"/>
-        <result property="name" column="name"/>
-        <result property="type" column="type"/>
-        <result property="key" column="key"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
         <result property="url" column="url"/>
+        <result property="picurl" column="picurl"/>
         <result property="parent_id" column="parent_id"/>
         <result property="sort" column="sort"/>
         <result property="create_date" column="create_date"/>
@@ -19,46 +19,46 @@
     <sql id="Base_Column_List">
         id,
         appid,
-        `name`,
-        `type`,
-        `key`,
+        title,
+        description
         url,
+        picurl
         parent_id,
         sort,
         create_date
     </sql>
 
-    <insert id="insert" parameterType="com.ty.entity.Menu">
-        insert into weixin_menu
-        (appid,`name`,`type`,`key`,url,parent_id,sort,create_date)
+    <insert id="insert" parameterType="com.ty.entity.Message">
+        insert into weixin_message
+        (appid,title,description,url,picurl,parent_id,sort,create_date)
         values(
         #{appid, jdbcType=VARCHAR},
-        #{name, jdbcType=VARCHAR},
-        #{type, jdbcType=VARCHAR},
-        #{key, jdbcType=VARCHAR},
+        #{title, jdbcType=VARCHAR},
+        #{description, jdbcType=VARCHAR},
         #{url, jdbcType=VARCHAR},
+        #{picurl, jdbcType=VARCHAR},
         #{parent_id, jdbcType=INTEGER},
         #{sort, jdbcType=INTEGER},
         now()
         )
     </insert>
 
-    <update id="update" parameterType="com.ty.entity.Menu">
-        update weixin_menu
+    <update id="update" parameterType="com.ty.entity.Message">
+        update weixin_message
          <set >
-		      <if test="name != null" >
-                  `name`=#{name, jdbcType=VARCHAR},
+		      <if test="title != null" >
+                  title=#{title, jdbcType=VARCHAR},
 		      </if>
-		      <if test="type != null" >
-                  `type`=#{type, jdbcType=VARCHAR},
-		      </if>
-		      <if test="key != null" >
-                  `key`=#{key, jdbcType=VARCHAR},
+		      <if test="description != null" >
+                  description=#{description, jdbcType=VARCHAR},
 		      </if>
 		      <if test="url != null" >
                   url=#{url, jdbcType=VARCHAR},
-		      </if>
-		      <if test="parent_id != null" >
+              </if>
+             <if test="picurl != null" >
+                 picurl=#{picurl, jdbcType=VARCHAR},
+             </if>
+             <if test="parent_id != null" >
                   parent_id=#{parent_id, jdbcType=INTEGER},
 		      </if>
 		      <if test="sort != null" >
@@ -69,14 +69,14 @@
     </update>
 
     <delete id="delete" parameterType="int">
-        delete from weixin_menu
+        delete from weixin_message
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
     <select id="findList" resultMap="BaseResultMap"  parameterType="com.gen.framework.common.util.Page">
         select
         <include refid="Base_Column_List"/>
-        from weixin_menu
+        from weixin_message
         where appid = #{appid,jdbcType=VARCHAR}
         order by sort asc
         <!-- 数据范围过滤 -->
@@ -90,14 +90,14 @@
     <select id="findListCount" resultType="int">
         select
         count(*)
-        from weixin_menu
+        from weixin_message
         where appid = #{appid,jdbcType=VARCHAR}
     </select>
 
     <select id="findListById" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from weixin_menu
+        from weixin_message
         where parent_id = #{id,jdbcType=INTEGER}
         order by sort asc
     </select>
@@ -105,7 +105,7 @@
     <select id="selectById" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List"/>
-        from weixin_menu
+        from weixin_message
         where id = #{id,jdbcType=INTEGER}
     </select>
 

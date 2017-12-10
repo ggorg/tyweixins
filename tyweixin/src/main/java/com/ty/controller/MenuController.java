@@ -1,6 +1,7 @@
 package com.ty.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.core.pojo.Button;
 import com.ty.core.pojo.CommonButton;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,15 +42,15 @@ public class MenuController {
     private WeixinInterfaceService weixinInterfaceService;
 
     @RequestMapping(value = {"list", ""})
-    public String list(String appid, Model model) {
+    public String list(@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model) {
         List<Pubweixin>pubweixinList = pubWeixinService.findPubweixinAll();
         if(appid == null || appid.equals("")){
             if(pubweixinList.size()>0){
                 appid = pubweixinList.get(0).getAppid();
             }
         }
-        List<Menu> list =  menuService.findList(appid);
-        model.addAttribute("menuList",list);
+        Page<Menu> menuPage =  menuService.findList(pageNo,appid);
+        model.addAttribute("menuPage",menuPage);
         model.addAttribute("appid",appid);
         model.addAttribute("pubweixinList",pubweixinList);
         return "pages/manager/weixin/menu";
@@ -58,9 +60,9 @@ public class MenuController {
     public String edit(Integer id,Integer parent_id,String appid,Model model){
         try {
             if(id != null && id >0){
-                model.addAttribute("menuObject",this.menuService.selectById(id));
+                model.addAttribute("menuObject",menuService.selectById(id));
             }else if(parent_id != null && parent_id != -1){
-                Menu parent_menu = this.menuService.selectById(parent_id);
+                Menu parent_menu = menuService.selectById(parent_id);
                 Menu menu = new Menu();
                 menu.setParent_id(parent_id);
                 appid = parent_menu.getAppid();
@@ -104,7 +106,8 @@ public class MenuController {
     public ResponseVO release(String appid, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         try {
             // 从数据库取出该公众号配置好的菜单,组成json调用微信接口生成菜单
-            List<Menu> menuList = menuService.findList(appid);
+            Page<Menu> pageMenu = menuService.findList(1,appid);
+            List<Menu> menuList = pageMenu.getResult();
             JSONObject jsonObject = new JSONObject();
             com.ty.core.pojo.Menu m = new com.ty.core.pojo.Menu();
             //父级菜单

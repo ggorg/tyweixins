@@ -1,7 +1,5 @@
 package com.ty.services;
 
-import com.gen.framework.common.dao.CommonMapper;
-import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.PubweixinMapper;
@@ -17,12 +15,10 @@ import java.util.List;
  * 微信公众号相关操作服务
  */
 @Service
-public class PubWeixinService extends CommonService {
+public class PubWeixinService{
     @Autowired
     private PubweixinMapper pubweixinMapper;
-	@Autowired
-	private CommonMapper commonMapper;
-    
+
     /**
      * 添加公众号
      * @param pubweixin

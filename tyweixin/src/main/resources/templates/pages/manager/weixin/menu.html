@@ -61,7 +61,7 @@
                     </thead>
 
                     <tbody>
-                    <tr th:each="obj:${menuList}">
+                    <tr th:each="obj:${menuPage?.result}">
                         <td th:text="${obj['name']}">Trident</td>
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['parent_id']}">Win 95+</td>

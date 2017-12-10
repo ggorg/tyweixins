@@ -1,6 +1,7 @@
 package com.ty.services;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.core.pojo.Button;
 import com.ty.core.pojo.CommonButton;
@@ -54,11 +55,17 @@ public class MenuService {
 
     /**
      * 根据appid查询自定义菜单
+     * @param pageNum 页数
      * @param appid 应用id
      * @return
      */
-    public List<com.ty.entity.Menu> findList(String appid){
-        return menuMapper.findList(appid);
+    public Page findList(Integer pageNum,String appid){
+        Page<com.ty.entity.Menu>page = new Page<com.ty.entity.Menu>(pageNum,15);
+        List<com.ty.entity.Menu> list = menuMapper.findList(page,appid);
+        int total = menuMapper.findListCount(appid);
+        page.setResult(list);
+        page.setTotal(total);
+        return page;
     }
 
     /**
