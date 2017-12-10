@@ -273,7 +273,7 @@ public final class Tools {
 		if(StringUtils.isBlank(url)){
 			ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 			HttpServletRequest request=attrs.getRequest();
-			//url=
+			url=request.getRequestURL().append("?").append(request.getQueryString()).toString();
 		}
 		return WeiXinTools.initJssdk(url,jsApiList);
 	}

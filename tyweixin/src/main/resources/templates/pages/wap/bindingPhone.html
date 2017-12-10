@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:inline="text">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no" />
@@ -8,8 +8,12 @@
     <title>翼支付-公众号-绑定手机</title>
     <link rel="stylesheet" href="/wap/css/main.css">
     <link rel="stylesheet" href="/wap/css/bindingPhone.css">
-    <script src="/wap/js/lib/adapt.js"></script>
-    [[${#TdTool.initJssdk(null,'closeWindow')}]]
+    <script src="/wap/js/lib/adapt.js" type="text/javascript"></script>
+    <th:block th:utext="${#TdTool.initJssdk(null,'closeWindow')}">
+
+
+    </th:block>
+
     <script type="text/javascript">
         function tyCloseWin(){
             wx.closeWindow();
