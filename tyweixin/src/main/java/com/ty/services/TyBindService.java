@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.config.Globals;
 import com.ty.enums.ActEnum;
 import com.ty.entity.TyUser;
 import com.ty.entity.UserInfo;
+import com.ty.util.HttpUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,9 +27,7 @@ import java.util.Map;
 @Service
 public class TyBindService extends CommonService {
 
-    private String vaildCodeUrl;
-    @Value("${ty.telphone.prefix}")
-    private String tyTelPrefix;
+
 
     @Autowired
     private CacheService cacheService;
@@ -37,6 +37,9 @@ public class TyBindService extends CommonService {
     @Autowired
     private TyVoucherService tyVoucherService;
 
+    @Autowired
+    private Globals globals;
+
     public ResponseVO sendVaildCode(String telphone,String openid)throws Exception{
 
         if(StringUtils.isBlank(telphone)){
@@ -45,7 +48,7 @@ public class TyBindService extends CommonService {
         if(!NumberUtils.isNumber(telphone)){
             return new ResponseVO(-2,"请填写正确的手机号",null);
         }
-        if(!telphone.matches("^("+tyTelPrefix+").*$")){
+        if(!telphone.matches("^("+globals.getTyTelPrefix()+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
         }
         TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
@@ -64,8 +67,12 @@ public class TyBindService extends CommonService {
         obj.put("act_code", ActEnum.act6.getCode());
         obj.put("message",ranInt);
         System.out.println(ranInt);
-        String callBackStr= FileUtils.readFileToString(new File("D:\\文档\\天翼\\json\\成功.txt"));
-        //String callBackStr= HttpUtil.doPost(vaildCodeUrl,obj.toJSONString());
+        String callBackStr=null;
+        if(globals.getVaildCodeUrl().startsWith("http")){
+            callBackStr= HttpUtil.doPost(globals.getVaildCodeUrl(),obj.toJSONString());
+        }else{
+            callBackStr=FileUtils.readFileToString(new File(globals.getVaildCodeUrl()));
+        }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject json=JSONObject.parseObject(callBackStr);
             if(json.containsKey("status") && json.getString("status").equals("0")){
@@ -85,7 +92,7 @@ public class TyBindService extends CommonService {
         if(!NumberUtils.isNumber(telphone)){
             return new ResponseVO(-2,"请填写正确的手机号",null);
         }
-        if(!telphone.matches("^("+tyTelPrefix+").*$")){
+        if(!telphone.matches("^("+globals.getTyTelPrefix()+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
         }
         UserInfo user=this.weixinUserService.selectByopenid(openid);
@@ -108,7 +115,7 @@ public class TyBindService extends CommonService {
         if(StringUtils.isBlank(telphone)){
             return new ResponseVO(-2,"手机号为空",null);
         }
-        if(!telphone.matches("^("+tyTelPrefix+").*$")){
+        if(!telphone.matches("^("+globals.getTyTelPrefix()+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
         }
         if(StringUtils.isBlank(openid)){

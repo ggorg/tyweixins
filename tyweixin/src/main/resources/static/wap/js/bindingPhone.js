@@ -100,6 +100,7 @@
 
                 }else {
                     Util.iconToast('<i class="icon-success"></i>绑定成功');
+                    window.setTimeout(tyCloseWin(),1500)
                 }
             }
         })

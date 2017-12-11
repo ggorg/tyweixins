@@ -3,10 +3,13 @@ package com.ty.services;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CommonService;
+import com.ty.config.Globals;
 import com.ty.enums.ActEnum;
+import com.ty.util.HttpUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,9 @@ import java.util.Map;
 @EnableAsync
 @Service
 public class TyVoucherService extends CommonService {
-    private String getVoucherUrl;
+
+    @Autowired
+    private Globals globals;
 
     @Async
     @Transactional(propagation = Propagation.REQUIRED)
@@ -29,8 +34,13 @@ public class TyVoucherService extends CommonService {
         JSONObject param=new JSONObject();
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act5.getCode());
-       // String callBackStr=HttpUtil.doPost(getVoucherUrl,param.toString());
-        String callBackStr= FileUtils.readFileToString(new File("D:\\文档\\天翼\\json\\查询代金卷.txt"));
+
+        String callBackStr=null;
+        if(globals.getSearchVoucherUrl().startsWith("http")){
+            callBackStr= HttpUtil.doPost(globals.getSearchVoucherUrl(),param.toJSONString());
+        }else{
+            callBackStr=FileUtils.readFileToString(new File(globals.getSearchVoucherUrl()));
+        }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson= JSONObject.parseObject(callBackStr);
             if(callBackJson.getString("status").equals("0")){

@@ -12,6 +12,60 @@ public class Globals {
     @Value("${ty.oauth.jump.url}")
     private String  oauthJumUrl;
 
+    @Value("${ty.api.url.searchBalanceUrl}")
+    private String searchBalanceUrl;
+
+    @Value("${ty.api.url.searchBalanceDetailUrl}")
+    private String searchBalanceDetailUrl;
+
+    @Value("${ty.api.url.vaildCodeUrl}")
+    private String vaildCodeUrl;
+    @Value("${ty.telphone.prefix}")
+    private String tyTelPrefix;
+
+    @Value("${ty.api.url.searchVoucherUrl}")
+    private String searchVoucherUrl;
+
+    public String getSearchBalanceUrl() {
+        return searchBalanceUrl;
+    }
+
+    public void setSearchBalanceUrl(String searchBalanceUrl) {
+        this.searchBalanceUrl = searchBalanceUrl;
+    }
+
+    public String getSearchBalanceDetailUrl() {
+        return searchBalanceDetailUrl;
+    }
+
+    public void setSearchBalanceDetailUrl(String searchBalanceDetailUrl) {
+        this.searchBalanceDetailUrl = searchBalanceDetailUrl;
+    }
+
+    public String getVaildCodeUrl() {
+        return vaildCodeUrl;
+    }
+
+    public void setVaildCodeUrl(String vaildCodeUrl) {
+        this.vaildCodeUrl = vaildCodeUrl;
+    }
+
+    public String getTyTelPrefix() {
+        return tyTelPrefix;
+    }
+
+    public void setTyTelPrefix(String tyTelPrefix) {
+        this.tyTelPrefix = tyTelPrefix;
+    }
+
+    public String getSearchVoucherUrl() {
+        return searchVoucherUrl;
+    }
+
+    public void setSearchVoucherUrl(String searchVoucherUrl) {
+        this.searchVoucherUrl = searchVoucherUrl;
+    }
+
     private Map<String,String> mapOauthJumUrl;
     public String getOauthJumUrl() {
         return oauthJumUrl;

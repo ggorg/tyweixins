@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.thymeleaf.Tools;
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.config.Globals;
 import com.ty.enums.ActEnum;
 import com.ty.entity.TyBalanceTradeDetail;
 import com.ty.entity.TyUser;
@@ -13,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,9 +26,8 @@ import java.util.*;
 @Service
 public class TyBalanceService extends CommonService {
 
-    private String searchBalanceUrl;
-
-    private String searchBalanceDetailUrl;
+    @Autowired
+    private Globals globals;
 
     public ResponseVO getBalance(String openid)throws Exception{
         if(StringUtils.isBlank(openid)){
@@ -39,7 +40,12 @@ public class TyBalanceService extends CommonService {
         JSONObject param=new JSONObject();
         param.put("pay_user",tyuser.getTuTelphone());
         param.put("act_code", ActEnum.act2.getCode());
-        String callBackStr=HttpUtil.doPost(searchBalanceUrl,param.toJSONString());
+        String callBackStr=null;
+        if(globals.getSearchBalanceUrl().startsWith("http")){
+            callBackStr=HttpUtil.doPost(globals.getSearchBalanceUrl(),param.toJSONString());
+        }else{
+            callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceUrl()));
+        }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson=JSONObject.parseObject(callBackStr);
             if(callBackJson.getString("status").equals("0")){
@@ -72,8 +78,12 @@ public class TyBalanceService extends CommonService {
         JSONObject param=new JSONObject();
         param.put("pay_user",tyuser.getTuTelphone());
         param.put("act_code", ActEnum.act2.getCode());
-        //String callBackStr=HttpUtil.doPost(searchBalanceDetailUrl,param.toJSONString());
-        String callBackStr= FileUtils.readFileToString(new File("D:\\文档\\天翼\\json\\查询余额明细.txt"));
+        String callBackStr=null;
+        if(globals.getSearchBalanceDetailUrl().startsWith("http")){
+            callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),param.toJSONString());
+        }else{
+            callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceDetailUrl()));
+        }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson=JSONObject.parseObject(callBackStr);
             if(callBackJson.getString("status").equals("0")){

@@ -259,17 +259,17 @@ public final class Tools {
 	public static void noCachePage(){
 		ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletResponse response=attrs.getResponse();
-		response.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
+		response.addHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
 		// 设置 HTTP/1.1 no-cache 头
-		response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
+		response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate,post-check=0,no-transform");
 		// 设置 IE 扩展 HTTP/1.1 no-cache headers， 用户自己添加
-		response.addHeader("Cache-Control", "post-check=0, pre-check=0");
 		// 设置标准 HTTP/1.0 no-cache header.
 		response.addHeader("Pragma", "no-cache");
-		response.addHeader("Cache-Contro", "no-transform");
+
 
 	}
 	public static String initJssdk(String url,String jsApiList){
+
 		if(StringUtils.isBlank(url)){
 			ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 			HttpServletRequest request=attrs.getRequest();
