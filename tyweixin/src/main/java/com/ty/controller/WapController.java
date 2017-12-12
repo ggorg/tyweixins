@@ -1,6 +1,6 @@
 package com.ty.controller;
 
-import com.gen.framework.common.thymeleaf.Tools;
+import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.services.TyBalanceService;
 import com.ty.services.TyBindService;

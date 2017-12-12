@@ -1,6 +1,7 @@
 package com.gen.framework.common.controller;
 
 import com.gen.framework.common.config.MainGlobals;
+import com.gen.framework.common.util.UploadFileMoveUtil;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,22 +34,15 @@ public class MainController {
     @PostMapping("/rs/do-upload")
     @ResponseBody
     public ResponseVO doUpload(MultipartFile file){
-        FileOutputStream fos=null;
-        try{
-            File rsDir=new File(mainGlobals.getRsDir());
-            if(!rsDir.exists()){
-                rsDir.mkdirs();
-            }
-            File destFile=new File(rsDir,file.getOriginalFilename());
-            fos=new FileOutputStream(destFile);
-            IOUtils.write(file.getBytes(),fos);
+
+        boolean flag=UploadFileMoveUtil.move(file,mainGlobals.getRsDir());
+        if(flag){
             return new ResponseVO(1,"上传成功",null);
-        }catch (Exception e){
-            logger.error("MainController->doUpload",e);
-        }finally {
-            if(fos!=null)IOUtils.closeQuietly(fos);
+        }else{
+            return new ResponseVO(-2,"上传失败",null);
         }
-        return new ResponseVO(-2,"上传失败",null);
+
+
     }
 
     @GetMapping("/rs/{filename:.+}")

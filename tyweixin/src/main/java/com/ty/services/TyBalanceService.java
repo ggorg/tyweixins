@@ -3,7 +3,7 @@ package com.ty.services;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CommonService;
-import com.gen.framework.common.thymeleaf.Tools;
+import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
 import com.ty.enums.ActEnum;

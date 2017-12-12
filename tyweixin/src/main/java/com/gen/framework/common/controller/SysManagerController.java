@@ -4,7 +4,7 @@ import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.beans.SysRoleBean;
 import com.gen.framework.common.beans.SysUserBean;
 import com.gen.framework.common.services.SysManagerService;
-import com.gen.framework.common.thymeleaf.Tools;
+import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

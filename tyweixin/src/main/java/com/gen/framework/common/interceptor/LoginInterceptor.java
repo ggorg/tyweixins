@@ -2,8 +2,7 @@ package com.gen.framework.common.interceptor;
 
 import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.services.SysManagerService;
-import com.gen.framework.common.thymeleaf.Tools;
-import org.apache.commons.lang3.StringUtils;
+import com.gen.framework.common.util.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
