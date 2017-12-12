@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>登录页面</title>
+    <script type="text/javascript" src="/sysframe2/js/plugins/jquery-1.7.min.js"></script>
+    <script type="text/javascript">
+
+        function onUpload(){
+
+            var formData = new FormData($( "#form1" )[0]);
+            $.ajax({
+                url: 'http://localhost:8822/rs/do-upload' ,
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (returndata) {
+                    $("#myimg").attr("src","/rs/"+$("#myfile").val().match(/[^/\\]+$/g)+"?v="+new Date());
+
+
+                },
+               error: function (returndata) {
+                    alert(returndata);
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<body >
+	<form id="form1">
+        <input type="file" id="myfile" name="file"/>
+        <input type="button" value="upload" onclick="onUpload()"/>
+    </form>
+    <img src="" id="myimg">
+</body>
+</html>
