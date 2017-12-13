@@ -76,7 +76,7 @@ public class WeixinOauthController {
             //Pubweixin pubweixin = pubWeixinService.selectByAppid(json.get("appid").toString());
             Pubweixin pubweixin = pubWeixinService.selectByAppid(appid);
 
-
+            String openid=null;
             if (pubweixin != null) {
                 String requestUrl = ACCESS_TOKEN.replace("APPID", pubweixin.getAppid()).replace("SECRET", pubweixin.getAppsecret()).replace("CODE", code);
 
@@ -87,7 +87,7 @@ public class WeixinOauthController {
                     /** 关注状态，0未关注，1已关注，-1数据库没数据 */
                     int subscribe = -1;
                     /*用户openid */
-                    String openid = jsonObject.get("openid").toString();
+                    openid = jsonObject.get("openid").toString();
                     UserInfo ui = weixinUserService.selectByopenid(openid);
                     if (ui == null) {
                         subscribe = -1;
