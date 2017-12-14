@@ -40,7 +40,7 @@
     <div class="layui-upload">
         <button type="button" class="layui-btn" id="test1" name="file">上传图片</button>
         <div class="layui-upload-list">
-            <img class="layui-upload-img" style="width:200px;height: 200px" id="demo1">
+            <img class="layui-upload-img" style="width:200px;height: 200px" id="demo1" th:src="${messageObject?.picurl}">
             <p id="demoText"></p>
         </div>
     </div>
@@ -85,7 +85,8 @@
           ,done: function(res){
               //上传成功
               if(res.reCode == 1){
-                jQuery("[name='picurl']").val(res.data);
+                  var localObj = window.location;
+                  jQuery("[name='picurl']").val(localObj.protocol+"//"+localObj.host+'/rs/'+res.data);
               }
               return layer.msg(res.reMsg);
           }
