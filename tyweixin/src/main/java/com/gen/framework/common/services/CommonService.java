@@ -109,4 +109,7 @@ public abstract class CommonService {
         searchCondition.put(paramName,paramValue);
         return this.commonMapper.deleteObject(new CommonDeleteBean(tableName,searchCondition));
     }
+    public CommonMapper getCommonMapper(){
+        return this.commonMapper;
+    }
 }

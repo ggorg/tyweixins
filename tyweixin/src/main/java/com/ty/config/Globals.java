@@ -26,6 +26,28 @@ public class Globals {
     @Value("${ty.api.url.searchVoucherUrl}")
     private String searchVoucherUrl;
 
+    @Value("${ty.api.url.pullRedPacketUrl}")
+    private String pullRedPacketUrl;
+
+    @Value("${ty.api.url.openRedPacketUrl}")
+    private String openRedPacketUrl;
+
+    public String getOpenRedPacketUrl() {
+        return openRedPacketUrl;
+    }
+
+    public void setOpenRedPacketUrl(String openRedPacketUrl) {
+        this.openRedPacketUrl = openRedPacketUrl;
+    }
+
+    public String getPullRedPacketUrl() {
+        return pullRedPacketUrl;
+    }
+
+    public void setPullRedPacketUrl(String pullRedPacketUrl) {
+        this.pullRedPacketUrl = pullRedPacketUrl;
+    }
+
     public String getSearchBalanceUrl() {
         return searchBalanceUrl;
     }

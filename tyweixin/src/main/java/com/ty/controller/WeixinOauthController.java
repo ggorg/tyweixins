@@ -114,6 +114,7 @@ public class WeixinOauthController {
                 }
                 String jumpUrlValue=globals.getOauthJumUrlByKey(page);
                 if(StringUtils.isNotBlank(jumpUrlValue)){
+                    session.setAttribute("openid",openid);
                     AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
                     WeiXinTools.initTicket(at.getTicket(),at.getAppid());
                    return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue;
