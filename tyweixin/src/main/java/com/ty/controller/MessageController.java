@@ -1,5 +1,6 @@
 package com.ty.controller;
 
+import com.gen.framework.common.config.MainGlobals;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.entity.Message;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +38,8 @@ public class MessageController {
     private MessageService messageService;
     @Autowired
     private PubWeixinService pubWeixinService;
+    @Autowired
+    private MainGlobals mainGlobals;
 
     @RequestMapping(value = {"list", ""})
     public String list(@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model) {
@@ -43,12 +49,11 @@ public class MessageController {
                 appid = pubweixinList.get(0).getAppid();
             }
         }
-        Page<Message> list =  messageService.findList(pageNo,appid);
-        List<Message> messageList =  list.getResult();
-        model.addAttribute("menuList",messageList);
+        Page<Message> messaPage =  messageService.findList(pageNo,appid);
+        model.addAttribute("messaPage",messaPage);
         model.addAttribute("appid",appid);
         model.addAttribute("pubweixinList",pubweixinList);
-        return "pages/manager/weixin/menu";
+        return "pages/manager/weixin/message";
     }
 
     @GetMapping("edit")
@@ -62,7 +67,7 @@ public class MessageController {
                 message.setParent_id(parent_id);
                 appid = parent_message.getAppid();
                 message.setAppid(appid);
-                model.addAttribute("menuObject",message);
+                model.addAttribute("messageObject",message);
             }else if(parent_id == -1){
                 Message message = new Message();
                 message.setParent_id(parent_id);
@@ -71,12 +76,12 @@ public class MessageController {
         }catch (Exception e){
             logger.error("MessageController->edit->系统异常",e);
         }
-        return "pages/manager/weixin/menuEdit";
+        return "pages/manager/weixin/messageEdit";
     }
 
     @RequestMapping(value = "save")
     @ResponseBody
-    public ResponseVO save(Message message, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public ResponseVO save(Message message) {
         try {
             return messageService.saveOrUpdate(message);
         } catch (Exception e) {
@@ -87,7 +92,7 @@ public class MessageController {
 
     @RequestMapping(value = "delete")
     @ResponseBody
-    public ResponseVO delete(Integer id, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public ResponseVO delete(Integer id) {
         try {
             return this.messageService.delete(id);
         } catch (Exception e) {
@@ -95,4 +100,36 @@ public class MessageController {
             return new ResponseVO(-1,"删除失败",null);
         }
     }
+
+    //文件上传相关代码
+    @RequestMapping(value = "upload")
+    @ResponseBody
+    public ResponseVO upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        if (file.isEmpty()) {
+            new ResponseVO(-1,"文件为空",null);
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        logger.info("上传的文件名为：" + fileName);
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        String filePath = mainGlobals.getRsDir();
+        // 时间戳文件名
+        fileName = new Date().getTime() + suffixName;
+        File dest = new File(filePath + fileName);
+        // 检测是否存在目录
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+            return new ResponseVO(1,"上传成功",fileName);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseVO(-1,"上传失败",null);
+    }
+
 }

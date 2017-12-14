@@ -16,7 +16,7 @@ public interface MessageMapper {
     List<Message> findList(@Param("page")Page page, @Param("appid") String appid);
     /** 查询总数*/
     public int findListCount(@Param("appid") String appid);
-
+    /*根据父id查询子图文数据*/
     List<Message> findListById(@Param("id") Integer id);
     int insert(Message message);
     int delete(@Param("id") Integer id);

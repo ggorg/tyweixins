@@ -21,9 +21,8 @@ public class Message {
     private String picurl;
     /*父级编号*/
     private int parent_id;
-    /*排序*/
+    /**/
     private int sort;
-    /*创建时间*/
     private Date create_date;
 
     public int getId() {

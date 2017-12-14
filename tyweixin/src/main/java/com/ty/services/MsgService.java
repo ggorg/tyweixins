@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.util.Page;
 import com.ty.dao.MsgMapper;
 import com.ty.entity.Msg;
+import com.ty.util.CustomMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,7 +79,7 @@ public class MsgService {
      */
     public JSONObject textMessage(String appid,String openid, String content){
     	JSONObject json = new JSONObject();
-    	json = weixinInterfaceService.textMessage(appid,openid, content);
+    	json = weixinInterfaceService.sendMessage(appid,CustomMessage.TextMsg(openid,content));
     	//回复信息成功则入库
     	if(json.containsKey("errcode") && json.getInteger("errcode")==0){
     		this.saveMsg(appid, openid, content);

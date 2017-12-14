@@ -170,27 +170,21 @@ public class WeixinInterfaceService {
 		return jsonObject;
 	}
 	/**
-	 * 向用户发送文本消息
+	 * 向用户发送消息
 	 * @param appid 应用id
-	 * @param openid 用户openid
-	 * @param content 文本内容
+	 * @param content 内容
 	 * @return json 结果
 	 */
-	public JSONObject textMessage(String appid,String openid, String content) {
+	public JSONObject sendMessage(String appid,String content) {
 		// 调用接口获取access_token
 		AccessToken at = this.getTokenByAppid(appid);
 		JSONObject jsonObject = new JSONObject();
-		JSONObject jsontext = new JSONObject();
 		if (at == null) {
 			jsonObject.put("retCode", -1);
 			jsonObject.put("retMsg", "参数有误");
 		} else {
 			String requestUrl = MESSAGE_URL.replace("ACCESS_TOKEN", at.getToken());
-			jsonObject.put("touser", openid);
-			jsonObject.put("msgtype", "text");
-			jsontext.put("content", content);
-			jsonObject.put("text", jsontext);
-			jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", jsonObject.toString());
+			jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", content);
 		}
 		return jsonObject;
 	}
