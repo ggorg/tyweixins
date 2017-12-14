@@ -1,10 +1,12 @@
 package com.gen.framework.common.controller;
 
 import com.gen.framework.common.config.MainGlobals;
+import com.gen.framework.common.exception.GenException;
 import com.gen.framework.common.util.UploadFileMoveUtil;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class MainController {
     @ResponseBody
     public ResponseVO doUpload(MultipartFile file){
 
-        boolean flag=UploadFileMoveUtil.move(file,mainGlobals.getRsDir());
+        boolean flag=UploadFileMoveUtil.move(file,mainGlobals.getRsDir(), null);
         if(flag){
             return new ResponseVO(1,"上传成功",null);
         }else{
@@ -46,12 +48,43 @@ public class MainController {
     }
 
     @GetMapping("/rs/{filename:.+}")
-    public void toInputImg(@PathVariable String filename, HttpServletResponse res){
+    public void toInputImg(@PathVariable String filename,HttpServletResponse res){
+        commonInputImg(filename,null,null,res);
+    }
+    @GetMapping("/rs/{twoLevel}/{filename:.+}")
+    public void toInputTwoLevelImg(@PathVariable String filename,@PathVariable  String twoLevel,HttpServletResponse res){
+        commonInputImg(filename,twoLevel,null,res);
+    }
+    @GetMapping("/rs/{twoLevel}/{threeLevel}/{filename:.+}")
+    public void toInputTwoLevelImg(@PathVariable String filename,@PathVariable  String twoLevel,@PathVariable  String threeLevel,HttpServletResponse res){
+        commonInputImg(filename,twoLevel,threeLevel,res);
+    }
+    private void commonInputImg(String filename,String twoLevel, String threeLevel,HttpServletResponse res){
         OutputStream os=null;
         byte[] bytes=null;
         try {
             res.setContentType("image/jpeg");
-            File file=new File(mainGlobals.getRsDir(),filename);
+
+            File rsDir=new File(mainGlobals.getRsDir());
+            if(!rsDir.exists()){
+                throw new GenException(rsDir.getAbsolutePath()+"根目录不存在");
+            }
+            if(StringUtils.isNotBlank(twoLevel)){
+                rsDir=new File(rsDir,twoLevel);
+                if(!rsDir.exists()){
+                    //rsDir.mkdirs();
+                    throw new GenException(rsDir.getAbsolutePath()+"二级目录不存在");
+                }
+                if(StringUtils.isNotBlank(threeLevel)){
+                    rsDir=new File(rsDir,threeLevel);
+                    if(!rsDir.exists()){
+                        //rsDir.mkdirs();
+                        throw new GenException(rsDir.getAbsolutePath()+"三级目录不存在");
+                    }
+                }
+            }
+
+            File file=new File(rsDir,filename);
             if(file.exists()){
 
                 os=res.getOutputStream();
