@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 微信用户资料查询接口
+ * 提供给外部调用的微信接口
  * @author Jacky
  *
  */

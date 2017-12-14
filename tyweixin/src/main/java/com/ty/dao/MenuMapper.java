@@ -15,6 +15,7 @@ public interface MenuMapper {
     List<Menu> findList(@Param("page")Page page, @Param("appid")String appid);
     /** 查询总数*/
     public int findListCount(@Param("appid")String appid);
+    /*根据父id查询子菜单*/
     List<Menu> findListById(@Param("id")Integer id);
     int insert(Menu menu);
     int delete(@Param("id")Integer id);

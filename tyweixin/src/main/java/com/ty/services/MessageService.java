@@ -2,13 +2,15 @@ package com.ty.services;
 
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.core.beans.message.resp.Article;
 import com.ty.dao.MessageMapper;
 import com.ty.entity.Message;
+import com.ty.util.CustomMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +34,10 @@ public class MessageService{
     	int ret = 0;
     	Message m = messageMapper.selectById(message.getId());
     	if(m!=null){
-    		m.setCreate_date(new Date());
-    		ret = messageMapper.update(m);
+    		ret = messageMapper.update(message);
 			vo.setReMsg("修改成功");
 		}else{
-			m.setCreate_date(new Date());
-			ret = messageMapper.insert(m);
+			ret = messageMapper.insert(message);
 			vo.setReMsg("创建成功");
 		}
 		vo.setReCode(1);
@@ -83,5 +83,27 @@ public class MessageService{
      * @return
      */
     public Message selectById(Integer id){ return messageMapper.selectById(id); }
+
+    /**
+     * 发送图文信息
+     * @param openid 用户openid
+     * @param id
+     */
+    public void sendMessage(String openid,Integer id){
+        Message message = messageMapper.selectById(id);
+        List<Message>messageList = messageMapper.findListById(id);
+        List<Article> list = new ArrayList<Article>();
+        messageList.add(0,message);
+        for(Message m:messageList){
+            Article article = new Article();
+            article.setTitle(m.getTitle());
+            article.setDescription(m.getDescription());
+            article.setUrl(m.getUrl());
+            article.setPicUrl(m.getPicurl());
+            list.add(article);
+        }
+        String content = CustomMessage.NewsMsg(openid,list);
+        weixinInterfaceService.sendMessage(message.getAppid(),content);
+    }
 
 }
