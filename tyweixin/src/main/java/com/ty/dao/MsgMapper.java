@@ -1,7 +1,9 @@
 package com.ty.dao;
 
+import com.gen.framework.common.util.Page;
 import com.ty.entity.Msg;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,12 +25,11 @@ public interface MsgMapper {
     public int deleteUnCollect();
 
     /** 根据id查询消息对象 */
-    public Msg selectById(Msg msg);
+    public Msg selectById(@Param("id")Integer id);
 
-    /**
-     * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());
-     */
-    public List<Msg> findList(Msg msg);
+    List<Msg> findList(@Param("page")Page page, @Param("msg")Msg msg);
+    /** 查询总数*/
+    int findListCount(@Param("appid")String appid);
 
     /** 回复消息列表 */
     public List<Msg> replyList(Msg msg);

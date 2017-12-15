@@ -1,7 +1,5 @@
 package com.ty.services;
 
-import com.ty.core.beans.message.resp.Article;
-import com.ty.core.beans.message.resp.NewsMessage;
 import com.ty.dao.PubweixinMapper;
 import com.ty.dao.UserInfoMapper;
 import com.ty.entity.*;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,13 +68,6 @@ public class CoreService {
             // 接收到的消息
             String Content = requestMap.get("Content");
 
-            // 回复文本消息
-            com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
-            textMessage.setToUserName(fromUserName);
-            textMessage.setFromUserName(toUserName);
-            textMessage.setCreateTime(new Date().getTime());
-            textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-
             Msg msg = new Msg();
             msg.setAppid(appid);
             msg.setOpenid(fromUserName);
@@ -89,7 +79,7 @@ public class CoreService {
                 msgService.save(msg);
                 // 关键词回复处理
                 if (respContent == null || respContent.length() == 0)
-                    respMessage = autoReplys(Content, fromUserName, toUserName);
+                    respMessage = autoReplys(Content, fromUserName, pubweixin);
             }
             // 图片消息
             else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
@@ -167,7 +157,15 @@ public class CoreService {
                     if(eventRule != null){
                         // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
                         if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
-                            respContent = eventRule.getContent();
+                            // 回复文本消息
+                            // 回复文本消息
+                            com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
+                            textMessage.setToUserName(fromUserName);
+                            textMessage.setFromUserName(toUserName);
+                            textMessage.setCreateTime(new Date().getTime());
+                            textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+                            textMessage.setContent(eventRule.getContent());
+                            respContent = MessageUtil.textMessageToXml(textMessage);
                         }else{
                             respContent =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
                         }
@@ -184,22 +182,7 @@ public class CoreService {
                 // 自定义菜单点击事件
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
                     // 事件KEY值，与创建自定义菜单时指定的KEY值对应
-                    List<EventKey> eventKeys = eventKeyService.findList(appid);
-                    for(EventKey ek:eventKeys){
-                        // 轮询处理关键字回复
-                        int match = ek.getMatch();
-                        //匹配规则，1 完全匹配，0 模糊匹配
-                        if((match == 1 && eventKey.equals(ek.getKey())) || (match == 0 && eventKey.indexOf(ek.getKey())!= -1)){
-                            //根据回复规则id查询返回回复规则实体bean
-                            EventRule er = eventRuleService.selectById(ek.getRule_id());
-                            // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
-                            if(er.getContent() != null && !er.getContent().equals("")){
-                                respContent = er.getContent();
-                            }else{
-                                respContent =messageService.sendArticle(fromUserName,toUserName,er.getMessage_id());
-                            }
-                        }
-                    }
+                    respContent = autoReplys(eventKey,fromUserName, pubweixin);
                 }
                 // 二维码扫描事件
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_SCAN)) {
@@ -207,26 +190,28 @@ public class CoreService {
                     String scene_id = requestMap.get("EventKey");
                 }
             }
-//            if (respContent == null || respContent.equals("")) {
-//                respContent = "亲，暂不能识别您发送的指令(´･ω･｀)";
-//            }
-            // 返回给微信
-            if (respMessage == null || respMessage.length() == 0) {
-                if (respContent != null && respContent.length() > 0) {
-                    textMessage.setContent(respContent);
-                    respMessage = MessageUtil.textMessageToXml(textMessage);
-                } else {
-                    EventRule eventRule = eventRuleService.getAutoreply(appid);
-                    if(eventRule != null){
-                        // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
-                        if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
-                            respContent = eventRule.getContent();
-                        }else{
-                            respContent =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
-                        }
+            //无任何返回数据时,判断是否有自动回复,有则返回自动回复规则
+            if (respContent == null || respContent.equals("")) {
+//                respContent = "亲，暂不能识别您发送的指令(´･ω･｀
+                EventRule eventRule = eventRuleService.getAutoreply(appid);
+                if(eventRule != null){
+                    // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+                    if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
+                        // 回复文本消息
+                        com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
+                        textMessage.setToUserName(fromUserName);
+                        textMessage.setFromUserName(toUserName);
+                        textMessage.setCreateTime(new Date().getTime());
+                        textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+                        textMessage.setContent(eventRule.getContent());
+                        respMessage = MessageUtil.textMessageToXml(textMessage);
+                    }else{
+                        respMessage =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
                     }
-                    respMessage = respContent;
                 }
+            }
+            // 返回给微信
+            if (respMessage != null && respMessage.length() > 0) {
                 //回复消息入库
                 msgService.saveMsg(appid, fromUserName, respContent);
             }
@@ -239,22 +224,14 @@ public class CoreService {
     /**
      * 关键词自动回复
      * @param content
-     * @param fromUserName 应用appid
-     * @param toUserName 用户openid
+     * @param fromUserName 用户openid
+     * @param pubweixin 公众号信息
      * @return
      */
-    public String autoReplys(String content, String fromUserName, String toUserName) {
+    public String autoReplys(String content, String fromUserName, Pubweixin pubweixin) {
+        String toUserName = pubweixin.getOpenid();
         String respMessage = null;
-        // 创建图文消息  
-        NewsMessage newsMessage = new NewsMessage();
-        newsMessage.setToUserName(fromUserName);  
-        newsMessage.setFromUserName(toUserName);  
-        newsMessage.setCreateTime(new Date().getTime());  
-        newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);  
-        newsMessage.setFuncFlag(0);  
-
-        List<Article> articleList = new ArrayList<Article>();
-        List<EventKey> eventKeys = eventKeyService.findList(fromUserName);
+        List<EventKey> eventKeys = eventKeyService.findList(pubweixin.getAppid());
         for(EventKey ek:eventKeys){
             // 轮询处理关键字回复
             int match = ek.getMatch();
@@ -264,7 +241,14 @@ public class CoreService {
                 EventRule er = eventRuleService.selectById(ek.getRule_id());
                 // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
                 if(er.getContent() != null && !er.getContent().equals("")){
-                    respMessage = er.getContent();
+                    // 回复文本消息
+                    com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
+                    textMessage.setToUserName(fromUserName);
+                    textMessage.setFromUserName(toUserName);
+                    textMessage.setCreateTime(new Date().getTime());
+                    textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+                    textMessage.setContent(er.getContent());
+                    respMessage = MessageUtil.textMessageToXml(textMessage);
                 }else{
                     respMessage =messageService.sendArticle(fromUserName,toUserName,er.getMessage_id());
                 }

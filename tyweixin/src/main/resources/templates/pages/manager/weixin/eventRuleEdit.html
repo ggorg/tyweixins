@@ -39,7 +39,7 @@
     <div class="layui-form-item" style="margin-top: 15px">
         <label class="layui-form-label">回复内容</label>
         <div class="layui-input-block">
-            <textarea name="content" th:value="${eventRuleObject?.content}" placeholder="在本处输入内容后，本规则将会以文字（非图文）的形式回复" autocomplete="off" class="layui-textarea"></textarea>
+            <textarea name="content" th:text="${eventRuleObject?.content}" placeholder="在本处输入内容后，本规则将会以文字（非图文）的形式回复" autocomplete="off" class="layui-textarea"></textarea>
         </div>
     </div>
 

@@ -54,8 +54,6 @@ public class WeixinController {
     public String doPost(HttpServletRequest request) {
         // 调用核心业务类接收消息、处理消息
         String respMessage = coreService.processRequest(request);
-        logger.debug(String.format("respMessage: %s", respMessage));
-
         // 响应消息
         return respMessage;
     }

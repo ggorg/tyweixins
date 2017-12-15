@@ -128,8 +128,8 @@ public class MessageService{
 
     /**
      * 返回xml格式发送图文的方法
-     * @param fromUserName 应用appid
-     * @param toUserName 用户openid
+     * @param fromUserName 用户openid
+     * @param toUserName 应用appid
      * @param id 图文id
      * @return
      */
