@@ -73,6 +73,14 @@
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
+    <select id="findListAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from weixin_message
+        where appid = #{appid,jdbcType=VARCHAR}
+        order by sort asc
+    </select>
+
     <select id="findList" resultMap="BaseResultMap"  parameterType="com.gen.framework.common.util.Page">
         select
         <include refid="Base_Column_List"/>

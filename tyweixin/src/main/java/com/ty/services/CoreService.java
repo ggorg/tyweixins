@@ -4,9 +4,7 @@ import com.ty.core.beans.message.resp.Article;
 import com.ty.core.beans.message.resp.NewsMessage;
 import com.ty.dao.PubweixinMapper;
 import com.ty.dao.UserInfoMapper;
-import com.ty.entity.Msg;
-import com.ty.entity.Pubweixin;
-import com.ty.entity.UserInfo;
+import com.ty.entity.*;
 import com.ty.util.MessageUtil;
 import com.ty.util.WeixinUtil;
 import org.apache.log4j.Logger;
@@ -39,6 +37,12 @@ public class CoreService {
     private WeixinUserService weixinUserService;
     @Autowired
     private MsgService msgService;
+    @Autowired
+    private EventKeyService eventKeyService;
+    @Autowired
+    private EventRuleService eventRuleService;
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 处理微信发来的请求
@@ -83,8 +87,6 @@ public class CoreService {
                 msg.setCreateDate(new Date());
                 //入库消息管理
                 msgService.save(msg);
-                // 处理文本消息
-                respContent = handelText(Content, appid, fromUserName);
                 // 关键词回复处理
                 if (respContent == null || respContent.length() == 0)
                     respMessage = autoReplys(Content, fromUserName, toUserName);
@@ -161,6 +163,15 @@ public class CoreService {
                         // 取出场景ID
                         String scene_id = eventKey.split("qrscene_")[1];
                     }
+                    EventRule eventRule = eventRuleService.getSubscribe(appid);
+                    if(eventRule != null){
+                        // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+                        if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
+                            respContent = eventRule.getContent();
+                        }else{
+                            respContent =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
+                        }
+                    }
                 }
                 // 取消订阅
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
@@ -173,10 +184,21 @@ public class CoreService {
                 // 自定义菜单点击事件
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
                     // 事件KEY值，与创建自定义菜单时指定的KEY值对应
-                    if (eventKey.equals("11")) {
-//                        respContent = "天气预报菜单项被点击！";
-                    } else if (eventKey.equals("12")) {
-//                        respContent = "公交查询菜单项被点击！";
+                    List<EventKey> eventKeys = eventKeyService.findList(appid);
+                    for(EventKey ek:eventKeys){
+                        // 轮询处理关键字回复
+                        int match = ek.getMatch();
+                        //匹配规则，1 完全匹配，0 模糊匹配
+                        if((match == 1 && eventKey.equals(ek.getKey())) || (match == 0 && eventKey.indexOf(ek.getKey())!= -1)){
+                            //根据回复规则id查询返回回复规则实体bean
+                            EventRule er = eventRuleService.selectById(ek.getRule_id());
+                            // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+                            if(er.getContent() != null && !er.getContent().equals("")){
+                                respContent = er.getContent();
+                            }else{
+                                respContent =messageService.sendArticle(fromUserName,toUserName,er.getMessage_id());
+                            }
+                        }
                     }
                 }
                 // 二维码扫描事件
@@ -193,11 +215,20 @@ public class CoreService {
                 if (respContent != null && respContent.length() > 0) {
                     textMessage.setContent(respContent);
                     respMessage = MessageUtil.textMessageToXml(textMessage);
-                    //回复消息入库
-                    msgService.saveMsg(appid, fromUserName, respContent);
                 } else {
-                    respMessage = "";
+                    EventRule eventRule = eventRuleService.getAutoreply(appid);
+                    if(eventRule != null){
+                        // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+                        if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
+                            respContent = eventRule.getContent();
+                        }else{
+                            respContent =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
+                        }
+                    }
+                    respMessage = respContent;
                 }
+                //回复消息入库
+                msgService.saveMsg(appid, fromUserName, respContent);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,81 +236,11 @@ public class CoreService {
         return respMessage;
     }
 
-    // 接收用户发送的文本消息内容
-    public String handelText(String content, String appid, String openid) {
-        String respContent = "";
-        respContent = content;
-        return respContent;
-    }
-    
-    /**
-     * 临时发送图文的方法
-     * @param fromUserName 应用appid
-     * @param toUserName 用户openid
-     * @return
-     */
-    public String sendArticle(String fromUserName, String toUserName) {
-    	String respMessage = null;
-        // 创建图文消息  
-        NewsMessage newsMessage = new NewsMessage();
-        newsMessage.setToUserName(fromUserName);  
-        newsMessage.setFromUserName(toUserName);  
-        newsMessage.setCreateTime(new Date().getTime());  
-        newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);  
-        newsMessage.setFuncFlag(0);  
-
-        List<Article> articleList = new ArrayList<Article>();
-        /*
-        // 单图文消息  
-        Article article = new Article();  
-        article.setTitle("标题");  
-        article.setDescription("描述内容");  
-        article.setPicUrl("图片URL");  
-        article.setUrl("跳转链接");  
-        articleList.add(article);  
-        // 设置图文消息个数  
-        newsMessage.setArticleCount(articleList.size());  
-        // 设置图文消息包含的图文集合  
-        newsMessage.setArticles(articleList);  
-        // 将图文消息对象转换成xml字符串  
-        respMessage = MessageUtil.newsMessageToXml(newsMessage);  
-        */
-        /////////////////////////华丽分割线\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-        /*
-        // 多图文消息  
-        Article article1 = new Article();  
-        article1.setTitle("天才少年");  
-        article1.setDescription("来自天才少年的测试");  
-        article1.setPicUrl("http://img4q.duitang.com/uploads/item/201408/08/20140808183448_Bn2Fr.thumb.700_0.jpeg");  
-        article1.setUrl("http://baidu.com");  
-
-        Article article2 = new Article();  
-        article2.setTitle("标题2");  
-        article2.setDescription("");  
-        article2.setPicUrl("图片URL");  
-        article2.setUrl("跳转URL");  
-
-        Article article3 = new Article();  
-        article3.setTitle("标题3");  
-        article3.setDescription("");  
-        article3.setPicUrl("图片URL");  
-        article3.setUrl("跳转URL");  
-
-        articleList.add(article1);  
-        articleList.add(article2);  
-        articleList.add(article3);  
-        newsMessage.setArticleCount(articleList.size());  
-        newsMessage.setArticles(articleList);  
-        respMessage = MessageUtil.newsMessageToXml(newsMessage);
-        */
-        return respMessage;
-    }
-    
     /**
      * 关键词自动回复
      * @param content
-     * @param fromUserName
-     * @param toUserName
+     * @param fromUserName 应用appid
+     * @param toUserName 用户openid
      * @return
      */
     public String autoReplys(String content, String fromUserName, String toUserName) {
@@ -293,209 +254,21 @@ public class CoreService {
         newsMessage.setFuncFlag(0);  
 
         List<Article> articleList = new ArrayList<Article>();
-        
-        if (content.equalsIgnoreCase("JXB-178") || content.equalsIgnoreCase("JXB178") || content.equalsIgnoreCase("178")) {
-            Article article = new Article();  
-            article.setTitle("JXB-178");  
-            article.setDescription("JXB-178产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB178.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207737967&idx=1&sn=6c7d69ecf30095dcd1d14df4dd115af5#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-180T") || content.equalsIgnoreCase("JXB180T") || content.equalsIgnoreCase("180T")
-                || content.equalsIgnoreCase("JXB-180（语音版）") || content.equalsIgnoreCase("JXB180（语音版）") || content.equalsIgnoreCase("180语音")) {
-            Article article = new Article();  
-            article.setTitle("JXB-180T");  
-            article.setDescription("JXB-180（语音版）产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB180T.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207735950&idx=1&sn=6f52d08f552fe89ae9a044bf12cfe4f8#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-180") || content.equalsIgnoreCase("JXB180") || content.equalsIgnoreCase("180")) {
-            Article article = new Article();  
-            article.setTitle("JXB-180");  
-            article.setDescription("JXB-180产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB180.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207735950&idx=1&sn=6f52d08f552fe89ae9a044bf12cfe4f8#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-182T") || content.equalsIgnoreCase("JXB182T") || content.equalsIgnoreCase("182T")
-                || content.equalsIgnoreCase("JXB-182（语音版）") || content.equalsIgnoreCase("JXB182（语音版）") || content.equalsIgnoreCase("182语音")) {
-            Article article = new Article();  
-            article.setTitle("JXB-182T");  
-            article.setDescription("JXB-182（语音版）产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB182T.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207736449&idx=1&sn=e3abedb1f2b26a71295f7f6c6d66aa0e#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-182") || content.equalsIgnoreCase("JXB182") || content.equalsIgnoreCase("182")) {
-            Article article = new Article();  
-            article.setTitle("JXB-182");  
-            article.setDescription("JXB-182产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB182.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207736299&idx=1&sn=b13ba28086bf163d639ddfb49b80eb23#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-183") || content.equalsIgnoreCase("JXB183") || content.equalsIgnoreCase("183")) {
-            Article article = new Article();  
-            article.setTitle("JXB-183");  
-            article.setDescription("JXB-183产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB183.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207736811&idx=1&sn=aaf0be5ba5281f1d74fdee3a4ebb3b3c#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-186") || content.equalsIgnoreCase("JXB186") || content.equalsIgnoreCase("186")) {
-            Article article = new Article();  
-            article.setTitle("JXB-186");  
-            article.setDescription("JXB-186产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB186.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207736925&idx=1&sn=8d5aae8db9d6f6c4aa337f967fd465e1#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-188") || content.equalsIgnoreCase("JXB188") || content.equalsIgnoreCase("188")) {
-            Article article = new Article();  
-            article.setTitle("JXB-188");  
-            article.setDescription("JXB-188产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB188.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207737242&idx=1&sn=080a18b7a81a79d828f8eedcbce567be#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-189") || content.equalsIgnoreCase("JXB189") || content.equalsIgnoreCase("189")) {
-            Article article = new Article();  
-            article.setTitle("JXB-189");  
-            article.setDescription("JXB-189产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB189.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207738363&idx=1&sn=93c4cb034513d681216361d9cd0598b5#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-190") || content.equalsIgnoreCase("JXB190") || content.equalsIgnoreCase("190")) {
-            Article article = new Article();  
-            article.setTitle("JXB-190");  
-            article.setDescription("JXB-190产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB190.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207738770&idx=1&sn=cfffa6aef6aeca3607d7657d9eefc225#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-191") || content.equalsIgnoreCase("JXB191") || content.equalsIgnoreCase("191")) {
-            Article article = new Article();  
-            article.setTitle("JXB-191");  
-            article.setDescription("JXB-191产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB191.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207739512&idx=1&sn=60693464379e7b2692992bb4e8c46506#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("JXB-192") || content.equalsIgnoreCase("JXB192") || content.equalsIgnoreCase("192")) {
-            Article article = new Article();  
-            article.setTitle("JXB-192");  
-            article.setDescription("JXB-192产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JXB192.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207739966&idx=1&sn=08aca7db013f67a2f1d316bae22d4ff4#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("ET001")) {
-            Article article = new Article();  
-            article.setTitle("ET001");  
-            article.setDescription("ET001产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/ET001.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207737571&idx=1&sn=13c54a105402aef77cf1d42a1fbe2878#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage);
-        } else if (content.equalsIgnoreCase("DT001")) {
-            Article article = new Article();  
-            article.setTitle("DT001");  
-            article.setDescription("DT001产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/DT001.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207737377&idx=1&sn=e60427afa0d7362b5d0c2f7b3a3390f7#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage);
-        } else if (content.equalsIgnoreCase("DT007") || content.equalsIgnoreCase("007")) {
-            Article article = new Article();  
-            article.setTitle("DT007");  
-            article.setDescription("DT007产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/DT007.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=503866424&idx=1&sn=f9e8bc682e90688aedaab79df4819d54#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage);
-        } else if (content.equalsIgnoreCase("DT008") || content.equalsIgnoreCase("008")) {
-            Article article = new Article();  
-            article.setTitle("DT008");  
-            article.setDescription("DT008产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/DT008.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=503866440&idx=1&sn=45f54f038006174115ab47aa25d4cb6f#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage);
-        } else if (content.equalsIgnoreCase("JC-809") || content.equalsIgnoreCase("JC809") || content.equalsIgnoreCase("809")) {
-            Article article = new Article();  
-            article.setTitle("JC-809");  
-            article.setDescription("JC-809产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/JC809.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207737799&idx=1&sn=d1d1a3d7ced421aa6133fc4f47f998f2#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("LB-828") || content.equalsIgnoreCase("LB828") || content.equalsIgnoreCase("828")) {
-            Article article = new Article();  
-            article.setTitle("LB-828");  
-            article.setDescription("LB-828产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/LB828.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=207740075&idx=1&sn=42a3db9c9737eada85364de85d2a3d09#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("PM001")) {
-            Article article = new Article();  
-            article.setTitle("PM001");  
-            article.setDescription("PM001产品使用说明");  
-            article.setPicUrl("http://wx.berrcom.cc/img/PM001.jpg");  
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=401141153&idx=1&sn=6d27dce1684ce78cf5447d5f67d240a8#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
-        } else if (content.equalsIgnoreCase("TB001")) {
-            Article article = new Article();
-            article.setTitle("TB001");
-            article.setDescription("TB001产品使用说明");
-            article.setPicUrl("http://wx.berrcom.cc/img/TB001.jpg");
-            article.setUrl("http://mp.weixin.qq.com/s?__biz=MzAxMzU4ODg1Mw==&mid=401140731&idx=1&sn=185674c84f453ea29089dbc074982f7d#rd");  
-            articleList.add(article);  
-            newsMessage.setArticleCount(articleList.size());  
-            newsMessage.setArticles(articleList);  
-            respMessage = MessageUtil.newsMessageToXml(newsMessage); 
+        List<EventKey> eventKeys = eventKeyService.findList(fromUserName);
+        for(EventKey ek:eventKeys){
+            // 轮询处理关键字回复
+            int match = ek.getMatch();
+            //匹配规则，1 完全匹配，0 模糊匹配
+            if((match == 1 && content.equals(ek.getKey())) || (match == 0 && (content.indexOf(ek.getKey())!= -1 || content.equalsIgnoreCase(ek.getKey())))){
+                //根据回复规则id查询返回回复规则实体bean
+                EventRule er = eventRuleService.selectById(ek.getRule_id());
+                // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+                if(er.getContent() != null && !er.getContent().equals("")){
+                    respMessage = er.getContent();
+                }else{
+                    respMessage =messageService.sendArticle(fromUserName,toUserName,er.getMessage_id());
+                }
+            }
         }
         return respMessage;
     }

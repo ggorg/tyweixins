@@ -5,16 +5,19 @@ import com.gen.framework.common.config.MainGlobals;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.core.beans.message.resp.Article;
+import com.ty.core.beans.message.resp.NewsMessage;
 import com.ty.dao.MessageMapper;
 import com.ty.entity.Message;
 import com.ty.util.CommonUtil;
 import com.ty.util.CustomMessage;
+import com.ty.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +88,15 @@ public class MessageService{
 	}
 
     /**
+     * 查询所有图文
+     * @param appid
+     * @return
+     */
+    public List<Message> findListAll(String appid){
+        return messageMapper.findListAll(appid);
+    }
+
+    /**
      * 根据id返回图文消息
      * @param id 主键id
      * @return
@@ -112,6 +124,40 @@ public class MessageService{
         String content = CustomMessage.NewsMsg(openid,list);
         weixinInterfaceService.sendMessage(message.getAppid(),content);
         return new ResponseVO(1,"成功",null);
+    }
+
+    /**
+     * 返回xml格式发送图文的方法
+     * @param fromUserName 应用appid
+     * @param toUserName 用户openid
+     * @param id 图文id
+     * @return
+     */
+    public String sendArticle(String fromUserName, String toUserName,Integer id) {
+        String respMessage = null;
+        // 创建图文消息
+        NewsMessage newsMessage = new NewsMessage();
+        newsMessage.setToUserName(fromUserName);
+        newsMessage.setFromUserName(toUserName);
+        newsMessage.setCreateTime(new Date().getTime());
+        newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+        newsMessage.setFuncFlag(0);
+        Message message = messageMapper.selectById(id);
+        List<Message>messageList = messageMapper.findListById(id);
+        List<Article> articleList = new ArrayList<Article>();
+        messageList.add(0,message);
+        for(Message m:messageList){
+            Article article = new Article();
+            article.setTitle(m.getTitle());
+            article.setDescription(m.getDescription());
+            article.setUrl(m.getUrl());
+            article.setPicUrl(m.getPicurl());
+            articleList.add(article);
+        }
+        newsMessage.setArticleCount(articleList.size());
+        newsMessage.setArticles(articleList);
+        respMessage = MessageUtil.newsMessageToXml(newsMessage);
+        return respMessage;
     }
 
     /**

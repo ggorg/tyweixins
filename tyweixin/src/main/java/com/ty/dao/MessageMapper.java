@@ -14,6 +14,8 @@ import java.util.List;
 @Mapper
 public interface MessageMapper {
     List<Message> findList(@Param("page")Page page, @Param("appid") String appid);
+    /** 不分页*/
+    List<Message> findListAll(@Param("appid") String appid);
     /** 查询总数*/
     public int findListCount(@Param("appid") String appid);
     /*根据父id查询子图文数据*/
