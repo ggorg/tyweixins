@@ -89,7 +89,7 @@ public class MessageService{
      * @param openid 用户openid
      * @param id
      */
-    public void sendMessage(String openid,Integer id){
+    public ResponseVO sendMessage(String openid,Integer id){
         Message message = messageMapper.selectById(id);
         List<Message>messageList = messageMapper.findListById(id);
         List<Article> list = new ArrayList<Article>();
@@ -104,6 +104,37 @@ public class MessageService{
         }
         String content = CustomMessage.NewsMsg(openid,list);
         weixinInterfaceService.sendMessage(message.getAppid(),content);
+        return new ResponseVO(1,"成功",null);
+    }
+
+    /**
+     * 批量推送图文接口
+     * @param appid 公众号应用id
+     * @param openids 用户openid集合
+     * @param title 图文标题
+     * @param description 图文描述
+     * @param url 跳转url
+     * @param picurl 图片url
+     * @return
+     */
+    public ResponseVO sendMessage(String appid,List<String>openids,String title,String description,String url,String picurl){
+        List<Article> list = new ArrayList<Article>();
+        Article article = new Article();
+        article.setTitle(title);
+        article.setDescription(description);
+        article.setUrl(url);
+        article.setPicUrl(picurl);
+        list.add(article);
+        try {
+            for(String openid:openids){
+                String content = CustomMessage.NewsMsg(openid,list);
+                weixinInterfaceService.sendMessage(appid,content);
+            }
+            return new ResponseVO(1,"成功",null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseVO(-1,"失败",null);
+        }
     }
 
 }
