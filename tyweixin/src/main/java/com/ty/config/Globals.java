@@ -31,6 +31,16 @@ public class Globals {
 
     @Value("${ty.api.url.openRedPacketUrl}")
     private String openRedPacketUrl;
+    @Value("${ty.msg.default.picUrl}")
+    private String defaultPicUrl;
+
+    public String getDefaultPicUrl() {
+        return defaultPicUrl;
+    }
+
+    public void setDefaultPicUrl(String defaultPicUrl) {
+        this.defaultPicUrl = defaultPicUrl;
+    }
 
     public String getOpenRedPacketUrl() {
         return openRedPacketUrl;

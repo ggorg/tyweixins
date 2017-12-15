@@ -10,6 +10,7 @@ import com.ty.enums.ActEnum;
 import com.ty.entity.TyBalanceTradeDetail;
 import com.ty.entity.TyUser;
 import com.ty.util.HttpUtil;
+import com.ty.util.TydicDES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -42,12 +43,12 @@ public class TyBalanceService extends CommonService {
         param.put("act_code", ActEnum.act2.getCode());
         String callBackStr=null;
         if(globals.getSearchBalanceUrl().startsWith("http")){
-            callBackStr=HttpUtil.doPost(globals.getSearchBalanceUrl(),param.toJSONString());
+            callBackStr=HttpUtil.doPost(globals.getSearchBalanceUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
-            JSONObject callBackJson=JSONObject.parseObject(callBackStr);
+            JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data")){
                     JSONObject data=callBackJson.getJSONObject("data");
@@ -57,15 +58,15 @@ public class TyBalanceService extends CommonService {
                         ResponseVO re=new ResponseVO();
                         re.setReCode(1);
                         re.setReMsg("成功");
-                        Map dataMap=new HashMap();
-                        dataMap.put("balanceVal",balanceVal);
-                        re.setData(dataMap);
+                        //Map dataMap=new HashMap();
+                        //dataMap.put("balanceVal",balanceVal);
+                        re.setData(balanceVal);
                         return re;
                     }
                 }
             }
         }
-        return new ResponseVO(-1,"操作失败",null);
+        return new ResponseVO(-1,"操作失败", Tools.getRealAmount("0"));
     }
     public ResponseVO getBalanceDetail(String openid)throws Exception{
         if(StringUtils.isBlank(openid)){
@@ -80,12 +81,12 @@ public class TyBalanceService extends CommonService {
         param.put("act_code", ActEnum.act2.getCode());
         String callBackStr=null;
         if(globals.getSearchBalanceDetailUrl().startsWith("http")){
-            callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),param.toJSONString());
+            callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceDetailUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
-            JSONObject callBackJson=JSONObject.parseObject(callBackStr);
+            JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data")){
                     JSONObject data=callBackJson.getJSONObject("data");

@@ -2,6 +2,7 @@ package com.gen.framework.common.util;
 
 import com.ty.util.WeiXinTools;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -232,6 +233,44 @@ public final class Tools {
 		return (Integer)session.getAttribute("parentId");
 
 
+	}
+	public static void setCookie(String key,String value){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+
+		HttpServletResponse response = attrs.getResponse();
+		HttpServletRequest request=attrs.getRequest();
+		Cookie[] cookies=request.getCookies();
+		if(cookies!=null){
+			for(Cookie c:cookies){
+				if(c.getName().equals(key)){
+					c.setValue(value);
+
+					response.addCookie(c);
+					return;
+				}
+			}
+		}
+
+		//StringBuffer build
+		Cookie cookie = new Cookie(key, value);
+		cookie.setDomain("gg123.club");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+	}
+	public static String getCookie(String key){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request=attrs.getRequest();
+		Cookie[] cookies=request.getCookies();
+		if(cookies!=null){
+			for(Cookie c:cookies){
+				if(c.getName().equals(key)){
+					return c.getValue();
+				}
+			}
+		}
+
+		return null;
 	}
 	public static void clearLoginSession(){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

@@ -3,6 +3,7 @@ package com.ty.controller;
 import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
+import com.gen.framework.common.util.Tools;
 import com.ty.config.Globals;
 import com.ty.core.pojo.AccessToken;
 import com.ty.entity.Pubweixin;
@@ -114,7 +115,7 @@ public class WeixinOauthController {
                 }
                 String jumpUrlValue=globals.getOauthJumUrlByKey(page);
                 if(StringUtils.isNotBlank(jumpUrlValue)){
-                    session.setAttribute("openid",openid);
+                    Tools.setCookie("openid",openid);
                     AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
                     WeiXinTools.initTicket(at.getTicket(),at.getAppid());
                    return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue;
@@ -140,7 +141,7 @@ public class WeixinOauthController {
 
     public static void main(String[] args) {
         Base32 base32 = new Base32();
-        String abc = "{\"appid\":\"wxd5ba1ab308c1908b\",\"page\":\"bind-telphone\"}";
+        String abc = "{\"appid\":\"wxd5ba1ab308c1908b\",\"page\":\"voucher\"}";
         logger.info(abc);
 
         System.out.println(CommonUtil.base32Encode(abc));
