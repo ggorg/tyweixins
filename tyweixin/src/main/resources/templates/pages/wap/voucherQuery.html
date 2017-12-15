@@ -18,22 +18,16 @@
                 <!--可使用 start-->
                 <li class="pd-tab" data-type="0">
                     <ul class="voucher-list">
-                        <li>
+                        <li th:if="${noExpire!=null}" th:each="obj:${noExpire}">
                             <div class="voucher-con">
                                 <span class="vouche"></span>
-                                <span class="name">代金券名称</span>
-                                <span class="money">30<em>元</em></span>
-                                <span class="time">有效期：2017.12.05-2017.12.20</span>
+                                <span class="name">代金券编号</span>
+                                <span class="money" th:inline="text">[[${obj['tvCode']}]]</span>
+                                <span class="time" th:inline="text">有效期：[[${obj['tvBeginTime']}]]-[[${obj['tvEndTime']}]]</span>
+                                <span class="time" th:text="${obj['tvRemark']}">说明</span>
                             </div>
                         </li>
-                        <li>
-                            <div class="voucher-con">
-                                <span class="vouche"></span>
-                                <span class="name">代金券名称</span>
-                                <span class="money">30<em>元</em></span>
-                                <span class="time">有效期：2017.12.05-2017.12.20</span>
-                            </div>
-                        </li>
+
 
                     </ul>
                 </li>

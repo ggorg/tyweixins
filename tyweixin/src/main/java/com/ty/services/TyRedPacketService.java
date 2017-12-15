@@ -14,6 +14,7 @@ import com.ty.entity.TyUser;
 import com.ty.entity.UserInfo;
 import com.ty.enums.ActEnum;
 import com.ty.util.HttpUtil;
+import com.ty.util.TydicDES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -54,12 +55,12 @@ public class TyRedPacketService extends CommonService {
                     param.put("pay_user",paramMap.get("tuTelphone"));
                     param.put("act_code", ActEnum.act4.getCode());
                     if(globals.getPullRedPacketUrl().startsWith("http")){
-                        callBackStr=HttpUtil.doPost(globals.getPullRedPacketUrl(),param.toJSONString());
+                        callBackStr=HttpUtil.doPost(globals.getPullRedPacketUrl(), TydicDES.encodeValue(param.toJSONString()));
                     }else{
                         callBackStr= FileUtils.readFileToString(new File(globals.getPullRedPacketUrl()));
                     }
                     if(StringUtils.isNotBlank(callBackStr)){
-                        JSONObject callBackJson=JSONObject.parseObject(callBackStr);
+                        JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
                         if(callBackJson.containsKey("status") && callBackJson.getString("status").equals("0")){
                             if(callBackJson.containsKey("data") && !callBackJson.getJSONArray("data").isEmpty()){
                                 JSONArray jsonArray=callBackJson.getJSONArray("data");
@@ -108,35 +109,57 @@ public class TyRedPacketService extends CommonService {
         condition.put("tUid",tyUser.getId());
         condition.put("trIsOpen",false);
         List<Map> tyRedPackList=this.commonList("ty_red_packet",null,null,null,condition);
-        if(tyRedPackList!=null && !tyRedPackList.isEmpty()){
-            JSONObject param=null;
-            Map updateMap=null;
-            List amount=new ArrayList();
-            for(Map map:tyRedPackList){
-                updateMap=new HashMap();
-                updateMap.put("trIsOpen",true);
-                updateMap.put("updateTime",new Date());
-                this.commonUpdateBySingleSearchParam("ty_red_packet",updateMap,"tUid",tyUser.getId());
-                param=new JSONObject();
-                param.put("pay_user",tyUser.getTuTelphone());
-                param.put("act_code", ActEnum.act7.getCode());
-                param.put("efCampaignId", map.get("trActivityId"));
-                param.put("packetId", map.get("trFromId"));
-                param.put("packetValue", map.get("trAmount").toString());
-                amount.add(Tools.getRealAmount(map.get("trAmount").toString()));
-                String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),param.toJSONString());
-                if(StringUtils.isBlank(callBackStr)){
-                    throw new GenException("openRedPacket->红包充值返回参数异常");
-                }
-
-                JSONObject callBackJson=JSONObject.parseObject(callBackStr);
-                if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
-                    throw new GenException("openRedPacket->红包充值失败");
-                }
-
-            }
-            return new ResponseVO(1,"红包充值成功",amount);
+        if(tyRedPackList==null || tyRedPackList.isEmpty()){
+            return new ResponseVO(-2,"抱歉，没有红包可领取",null);
         }
-        return new ResponseVO(-2,"红包充值失败",null);
+
+        JSONObject param=null;
+        Map updateMap=null;
+        List amount=new ArrayList();
+        for(Map map:tyRedPackList){
+            updateMap=new HashMap();
+            updateMap.put("trIsOpen",true);
+            updateMap.put("updateTime",new Date());
+            this.commonUpdateBySingleSearchParam("ty_red_packet",updateMap,"tUid",tyUser.getId());
+            param=new JSONObject();
+            param.put("pay_user",tyUser.getTuTelphone());
+            param.put("act_code", ActEnum.act7.getCode());
+            param.put("efCampaignId", map.get("trActivityId"));
+            param.put("packetId", map.get("trFromId"));
+            param.put("packetValue", map.get("trAmount").toString());
+            amount.add(Tools.getRealAmount(map.get("trAmount").toString()));
+            String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
+            if(StringUtils.isBlank(callBackStr)){
+                throw new GenException("openRedPacket->充值红包返回参数异常");
+            }
+
+            JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
+                throw new GenException("openRedPacket->充值红包失败");
+            }
+
+        }
+        return new ResponseVO(1,"充值红包领取成功",amount);
+
+
+    }
+    public ResponseVO getRedPacketSum(String openid)throws Exception{
+        UserInfo user=this.weixinUserService.selectByopenid(openid);
+        if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()=="未关注"){
+            return new ResponseVO(-2,"请先关注翼支付关众号",null);
+        }
+        TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuOpenId",openid, TyUser.class);
+        if(tyUser==null || StringUtils.isBlank(tyUser.getTuTelphone())){
+            return new ResponseVO(-2,"抱歉，请绑定手机号",null);
+        }
+        Map condition=new HashMap();
+        condition.put("tUid",tyUser.getId());
+        condition.put("trIsOpen",true);
+        CommonSearchBean csb=new CommonSearchBean("ty_red_packet",null,"t1.sum(t1.trAmount) as rpSum",null,null,condition);
+        List<Map> dataList=this.getCommonMapper().selectObjects(csb);
+        if(dataList!=null && !dataList.isEmpty()){
+            return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount(dataList.get(0).get("rpSum").toString()));
+        }
+        return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount("0"));
     }
 }

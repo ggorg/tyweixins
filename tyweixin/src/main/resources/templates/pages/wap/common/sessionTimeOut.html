@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <title>翼支付-公众号-绑定手机</title>
+    <th:block th:include="pages/wap/common/resources::wapresources-head"></th:block>
+    <link rel="stylesheet" href="/wap/css/bindingPhone.css">
+</head>
+<body>
+
+<div class="scroll scroll-active">
+    <div class="content">
+        <div class="suc-con">
+            <span class="icon-suc"></span>
+            <span class="sp1" onclick="tyCloseWin()">访问失败</span>
+
+        </div>
+    </div>
+</div>
+</body>
+<th:block th:include="pages/wap/common/resources::wapresources-foot"></th:block>
+<script>
+    (function() {
+        FastClick.attach(document.body);
+    })();
+</script>
+
+</html>

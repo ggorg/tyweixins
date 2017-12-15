@@ -17,7 +17,7 @@
         </div>
         <div class="avatar-con">
             <div class="avatar">
-                <img src="../images/avatar.png" alt="">
+                <img src="/wap/images/avatar.png" alt="">
             </div>
             <p>欢迎您，GT（<span>未绑定手机</span>）</p>
             <!--已绑定
@@ -28,12 +28,12 @@
         <div class="main">
             <div class="con">
                 <span>可用余额</span>
-                <span>4210.35<em>元</em></span>
+                <span th:inline="text">[[${blanceSum}]]<em>元</em></span>
                 <a href="">查看余额明细</a>
             </div>
             <div class="con">
-                <span>可用余额</span>
-                <span>4210.35<em>元</em></span>
+                <span>红包</span>
+                <span th:inline="text">4210.35<em>元</em></span>
                 <a href="redpacketRecord.html">查看红包明细</a>
             </div>
         </div>

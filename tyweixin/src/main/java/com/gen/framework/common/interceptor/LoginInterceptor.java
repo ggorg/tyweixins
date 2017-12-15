@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+
 public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Value("${gen.framework.menus.filter.urls}")
     private String filterUrls;

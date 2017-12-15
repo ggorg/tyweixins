@@ -2,10 +2,13 @@ package com.ty.services;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.beans.CommonChildBean;
+import com.gen.framework.common.beans.CommonSearchBean;
 import com.gen.framework.common.services.CommonService;
 import com.ty.config.Globals;
 import com.ty.enums.ActEnum;
 import com.ty.util.HttpUtil;
+import com.ty.util.TydicDES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @EnableAsync
 @Service
@@ -37,12 +42,12 @@ public class TyVoucherService extends CommonService {
 
         String callBackStr=null;
         if(globals.getSearchVoucherUrl().startsWith("http")){
-            callBackStr= HttpUtil.doPost(globals.getSearchVoucherUrl(),param.toJSONString());
+            callBackStr= HttpUtil.doPost(globals.getSearchVoucherUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchVoucherUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
-            JSONObject callBackJson= JSONObject.parseObject(callBackStr);
+            JSONObject callBackJson= JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data") && !callBackJson.getJSONArray("data").isEmpty()){
                     JSONArray jsonArray=callBackJson.getJSONArray("data");
@@ -65,5 +70,24 @@ public class TyVoucherService extends CommonService {
             }
         }
 
+    }
+    public Map findVoucheies(String openid){
+        Map childCondition=new HashMap();
+        childCondition.put("tuOpenId",openid);
+
+
+        CommonSearchBean csb=new CommonSearchBean("ty_voucher",  null,"t1.*",null,null,null,new CommonChildBean("ty_user","id","tUid",childCondition));
+        List<Map> dataList=this.getCommonMapper().selectObjects(csb);
+        if(dataList!=null && !dataList.isEmpty()){
+            Date currentDate=new Date();
+
+            List noExpire=dataList.stream().filter(k->currentDate.before((Date)k.get("tvEndTime"))).collect(Collectors.toList());
+            List expire=dataList.stream().filter(k->currentDate.after((Date)k.get("tvEndTime"))).collect(Collectors.toList());
+            Map map=new HashMap();
+            map.put("noExpire",noExpire);
+            map.put("expire",expire);
+            return map;
+        }
+        return null;
     }
 }

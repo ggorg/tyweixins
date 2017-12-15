@@ -37,4 +37,13 @@ public class ResponseVO<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseVO{" +
+                "reCode=" + reCode +
+                ", reMsg='" + reMsg + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }
