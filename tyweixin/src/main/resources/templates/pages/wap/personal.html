@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no" />
-    <meta name="format-detection" content="telephone=no">
+<html xmlns:th="http://www.thymeleaf.org">
+
+
     <title>翼支付-公众号-个人中心</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/personal.css">
-    <script src="../js/lib/adapt.js"></script>
+    <th:block th:include="pages/wap/common/resources::wapresources-head"></th:block>
+    <link rel="stylesheet" href="/wap/css/personal.css">
 </head>
 <body>
 
@@ -43,8 +40,7 @@
     </div>
 </div>
 </body>
-<script src="../js/lib/fastclick-jquery.js"></script>
-<script src="../js/common/util.js" type="text/javascript" charset="utf-8"></script>
+<th:block th:include="pages/wap/common/resources::wapresources-foot"></th:block>
 <script>
     (function() {
         FastClick.attach(document.body);

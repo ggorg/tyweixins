@@ -1,15 +1,10 @@
 <!DOCTYPE html>
-<html>
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no" />
-    <meta name="format-detection" content="telephone=no">
+
     <title>翼支付-公众号-代金券查询</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/voucherQuery.css">
-    <script src="../js/lib/adapt.js"></script>
+    <th:block th:include="pages/wap/common/resources::wapresources-head"></th:block>
+    <link rel="stylesheet" href="/wap/css/voucherQuery.css">
 </head>
 <body>
 <div class="scroll scroll-active">
@@ -114,9 +109,8 @@
 
 </div>
 </body>
-<script src="../js/lib/fastclick-jquery.js"></script>
-<script src="../js/common/util.js" type="text/javascript" charset="utf-8"></script>
-<script src="../js/balanceInquiries.js" type="text/javascript" charset="utf-8"></script>
+<th:block th:include="pages/wap/common/resources::wapresources-foot"></th:block>
+<script src="/wap/js/balanceInquiries.js" type="text/javascript" charset="utf-8"></script>
 <script>
     (function() {
         FastClick.attach(document.body);

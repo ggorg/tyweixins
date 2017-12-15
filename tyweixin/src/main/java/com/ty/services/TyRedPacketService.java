@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.*;
@@ -32,20 +34,22 @@ public class TyRedPacketService extends CommonService {
     @Autowired
     private WeixinUserService weixinUserService;
 
-    public ResponseVO<List> pullRedPacket()throws Exception{
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ResponseVO<Map> pullRedPacket()throws Exception{
         Map condition=new HashMap();
         condition.put("subscribe",1);
         CommonSearchBean csb=new CommonSearchBean("ty_user",null,new CommonChildBean("weixin_user","openid","tuOpenId",condition));
-        csb.setCustom("t1.*");
+        csb.setCustom("t1.*,ct0.appid");
         List<Map> objs=this.getCommonMapper().selectObjects(csb);
-        List openidList=new ArrayList();
+        Map<String,String> openidMap=new HashMap<String,String>();
         if(objs!=null && !objs.isEmpty()){
             JSONObject param=null;
             String callBackStr=null;
             Map insertMap=null;
             for(Map paramMap:objs){
                 if(paramMap.containsKey("tuTelphone")){
-                    openidList.add(paramMap.get("tuOpenId"));
+                    openidMap.put(paramMap.get("tuOpenId").toString(),paramMap.get("appid").toString());
                     param=new JSONObject();
                     param.put("pay_user",paramMap.get("tuTelphone"));
                     param.put("act_code", ActEnum.act4.getCode());
@@ -72,6 +76,7 @@ public class TyRedPacketService extends CommonService {
                                     insertMap.put("trSendDate", DateUtils.parseDate(dataJson.getString("sendDate"),"yyyy-MM-dd HH:mm:ss"));
                                     insertMap.put("trIsOpen",false);
                                     insertMap.put("updateTime",new Date());
+
                                     if(rp==null){
                                         this.commonInsertMap("ty_red_packet",insertMap);
                                     }else{
@@ -86,7 +91,7 @@ public class TyRedPacketService extends CommonService {
                     }
                 }
             }
-            return new ResponseVO(1,"红包获取成功",openidList);
+            return new ResponseVO(1,"红包获取成功",openidMap);
         }
         return new ResponseVO(-2,"红包获取失败",null);
     }
