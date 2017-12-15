@@ -20,7 +20,7 @@
         id,
         appid,
         title,
-        description
+        description,
         url,
         picurl,
         parent_id,
