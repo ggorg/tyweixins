@@ -1,15 +1,19 @@
 package com.ty.services;
 
+import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.config.MainGlobals;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.core.beans.message.resp.Article;
 import com.ty.dao.MessageMapper;
 import com.ty.entity.Message;
+import com.ty.util.CommonUtil;
 import com.ty.util.CustomMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,8 @@ public class MessageService{
     private MessageMapper messageMapper;
 	@Autowired
 	private WeixinInterfaceService weixinInterfaceService;
+    @Autowired
+    private MainGlobals mainGlobals;
     
     /**
      * 添加图文消息
@@ -113,23 +119,34 @@ public class MessageService{
      * @param map key<openid>:value<appid>
      * @param title 图文标题
      * @param description 图文描述
-     * @param url 跳转url
      * @param picurl 图片url
+     * @param page state参数
+     * @param param state参数
      * @return
      */
-    public ResponseVO sendMessage(Map<String,String> map, String title, String description, String url, String picurl){
-        List<Article> list = new ArrayList<Article>();
-        Article article = new Article();
-        article.setTitle(title);
-        article.setDescription(description);
-        article.setUrl(url);
-        article.setPicUrl(picurl);
-        list.add(article);
+    public ResponseVO sendMessage(Map<String, String> map, String title, String description, String picurl, String page, String param){
         try {
             for (String key : map.keySet()) {
-                String content = CustomMessage.NewsMsg(key,list);
-                weixinInterfaceService.sendMessage(map.get(key),content);
+                String appid = map.get(key);
+                JSONObject state = new JSONObject();
+                state.put("appid",appid);
+                state.put("page",page);
+                state.put("param",param);
+                StringBuffer oauthUrl = new StringBuffer();
+                oauthUrl = oauthUrl.append("https://open.weixin.qq.com/connect/oauth2/authorize?appid=").append(appid);
+                oauthUrl = oauthUrl.append("&redirect_uri=").append(URLEncoder.encode(mainGlobals.getRedirectUri(),"utf-8"));
+                oauthUrl = oauthUrl.append("&response_type=code&scope=snsapi_userinfo&state=");
+                oauthUrl = oauthUrl.append(CommonUtil.base32Encode(state.toString())).append("#wechat_redirect");
 
+                List<Article> list = new ArrayList<Article>();
+                Article article = new Article();
+                article.setTitle(title);
+                article.setDescription(description);
+                article.setUrl(oauthUrl.toString());
+                article.setPicUrl(picurl);
+                list.add(article);
+                String content = CustomMessage.NewsMsg(key,list);
+                weixinInterfaceService.sendMessage(appid,content);
             }
             return new ResponseVO(1,"成功",null);
         } catch (Exception e) {
