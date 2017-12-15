@@ -22,7 +22,7 @@
         title,
         description
         url,
-        picurl
+        picurl,
         parent_id,
         sort,
         create_date

@@ -49,8 +49,8 @@ public class MessageController {
                 appid = pubweixinList.get(0).getAppid();
             }
         }
-        Page<Message> messaPage =  messageService.findList(pageNo,appid);
-        model.addAttribute("messaPage",messaPage);
+        Page<Message> messagePage =  messageService.findList(pageNo,appid);
+        model.addAttribute("messagePage",messagePage);
         model.addAttribute("appid",appid);
         model.addAttribute("pubweixinList",pubweixinList);
         return "pages/manager/weixin/message";
