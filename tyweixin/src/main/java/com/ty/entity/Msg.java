@@ -26,7 +26,7 @@ public class Msg{
 	/** 文件路径*/
 	private String filepath;
 	/** 创建时间*/
-	private Date createDate;
+	private Date create_date;
 	/** 备注*/
 	private String remark;
 	/** 回复标志（1已回复，0未回复）*/
@@ -91,11 +91,12 @@ public class Msg{
 	public void setFilepath(String filepath) {
 		this.filepath = filepath;
 	}
-	public Date getCreateDate() {
-		return createDate;
+	public Date getCreate_date() {
+		return create_date;
 	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
 	}
 	public String getReply() {
 		return reply;

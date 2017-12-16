@@ -16,7 +16,8 @@
         <result property="fileid" column="fileid"/>
         <result property="picurl" column="picurl"/>
         <result property="remark" column="remark"/>
-        <result property="createDate" column="create_date"/>
+        <result property="create_date" column="create_date"/>
+        <result property="userInfo.headimgurl" column="userInfo.headimgurl"/>
         <result property="userInfo.nickname" column="userInfo.nickname"/>
         <result property="userInfo.sex" column="userInfo.sex"/>
         <result property="userInfo.remark" column="userInfo.remark"/>
@@ -35,6 +36,7 @@
         a.picurl,
         a.remark,
         a.create_date,
+        u.headimgurl AS "userInfo.headimgurl",
         u.nickname AS "userInfo.nickname",
 		u.sex AS "userInfo.sex",
         u.subscribe AS "userInfo.subscribe",

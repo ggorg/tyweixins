@@ -36,11 +36,12 @@
                                 </div>
                             </div>
                             <div class="layui-inline">
-                                <label class="layui-form-label">昵称</label>
+                                <label class="layui-form-label">昵 称</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="userInfo.nickname" placeholder="请输入昵称" th:value="${msg.userInfo?.nickname}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
+                            <br>
                             <div class="layui-inline">
                                 <label class="layui-form-label">openid</label>
                                 <div class="layui-input-inline">
@@ -83,8 +84,8 @@
 
                     <tbody>
                     <tr th:each="obj:${msgPage?.result}">
-                        <td><img th:attr="src=${obj.userInfo.headimgurl}" th:width="40px" th:height="40px"></td>
-                        <td th:text="${obj.userInfo.nickname}">Internet Explorer 4.0</td>
+                        <td><img th:attr="src=${obj['userInfo']['headimgurl']}" th:width="40px" th:height="40px"></td>
+                        <td th:text="${obj['userInfo']['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
                         <td th:text="${obj['content']}">Win 95+</td>
                         <td th:text="${#dates.format(obj['create_date'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>

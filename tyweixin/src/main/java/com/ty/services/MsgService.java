@@ -6,7 +6,6 @@ import com.ty.entity.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -57,7 +56,6 @@ public class MsgService {
     	msg.setContent(content);
     	msg.setOfficial("1");
     	msg.setMsgtype("1");
-    	msg.setCreateDate(new Date());
     	//回复信息成功则入库
 		msgMapper.save(msg);
     }
