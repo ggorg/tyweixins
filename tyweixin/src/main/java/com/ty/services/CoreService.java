@@ -52,9 +52,6 @@ public class CoreService {
         // 第三方用户唯一凭证
         String appid = "";
         try {
-            // 默认返回的文本消息内容
-            String respContent = "";
-            System.out.println("request = [" + request + "]");
             // xml请求解析
             Map<String, String> requestMap = MessageUtil.parseXml(request);
             // 发送方帐号（open_id）
@@ -78,11 +75,9 @@ public class CoreService {
                 //入库消息管理
                 msgService.save(msg);
                 // 关键词回复处理
-                if (respContent == null || respContent.length() == 0)
-                    respMessage = autoReplys(Content, fromUserName, pubweixin);
-            }
-            // 图片消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
+                respMessage = autoReplys(Content, fromUserName, pubweixin);
+                // 图片消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
                 //图片标识
                 msg.setMsgtype("2");
                 //图片链接
@@ -91,43 +86,36 @@ public class CoreService {
                 msg.setCreateDate(new Date());
                 //入库消息管理
                 msgService.save(msg);
-            }
-            // 地理位置消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LOCATION)) {
+             // 地理位置消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LOCATION)) {
 //                respContent = "您发送的是地理位置消息！";
-            }
-            // 链接消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LINK)) {
+             // 链接消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_LINK)) {
 //                respContent = "您发送的是链接消息！";
-            }
-            // 音频消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)) {
+             // 音频消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)) {
 //                respContent = "您发送的是音频消息！";
             	msg.setMsgtype("5");
             	msg.setContent("[音频]");
                 msg.setCreateDate(new Date());
                 //入库消息管理
                 msgService.save(msg);
-            }
-            // 视频消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)) {
+             // 视频消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)) {
             	msg.setMsgtype("4");
             	msg.setContent("[视频]");
                 msg.setCreateDate(new Date());
                 //入库消息管理
                 msgService.save(msg);
-            }
-            // 小视频消息
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
+             // 小视频消息
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
             	msg.setMsgtype("5");
             	msg.setContent("[小视频]");
                 msg.setCreateDate(new Date());
                 //入库消息管理
                 msgService.save(msg);
-                
-            }
-            // 事件推送
-            else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)) {
+                // 事件推送
+            }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)) {
                 // 事件类型
                 String eventType = requestMap.get("Event");
                 String eventKey = requestMap.get("EventKey");
@@ -154,69 +142,59 @@ public class CoreService {
                         String scene_id = eventKey.split("qrscene_")[1];
                     }
                     EventRule eventRule = eventRuleService.getSubscribe(appid);
-                    if(eventRule != null){
-                        // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
-                        if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
-                            // 回复文本消息
-                            // 回复文本消息
-                            com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
-                            textMessage.setToUserName(fromUserName);
-                            textMessage.setFromUserName(toUserName);
-                            textMessage.setCreateTime(new Date().getTime());
-                            textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-                            textMessage.setContent(eventRule.getContent());
-                            respContent = MessageUtil.textMessageToXml(textMessage);
-                        }else{
-                            respContent =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
-                        }
-                    }
-                }
-                // 取消订阅
-                else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
+                    respMessage = eventRuleReplys(eventRule,fromUserName,pubweixin);
+                 // 取消订阅
+                }else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
                     //取消订阅后用户再收不到公众号发送的消息，因此不需要回复消息
                     UserInfo userInfo = new UserInfo();
                     userInfo.setOpenid(fromUserName);
                     userInfo.setSubscribe("0");
                     userInfoMapper.update(userInfo);
-                }
-                // 自定义菜单点击事件
-                else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
+                 // 自定义菜单点击事件
+                }else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
                     // 事件KEY值，与创建自定义菜单时指定的KEY值对应
-                    respContent = autoReplys(eventKey,fromUserName, pubweixin);
-                }
-                // 二维码扫描事件
-                else if (eventType.equals(MessageUtil.EVENT_TYPE_SCAN)) {
+                    respMessage = autoReplys(eventKey,fromUserName, pubweixin);
+                 // 二维码扫描事件
+                }else if (eventType.equals(MessageUtil.EVENT_TYPE_SCAN)) {
                     // 取出场景ID
                     String scene_id = requestMap.get("EventKey");
                 }
             }
             //无任何返回数据时,判断是否有自动回复,有则返回自动回复规则
-            if (respContent == null || respContent.equals("")) {
+            if (respMessage == null || respMessage.equals("")) {
 //                respContent = "亲，暂不能识别您发送的指令(´･ω･｀
                 EventRule eventRule = eventRuleService.getAutoreply(appid);
-                if(eventRule != null){
-                    // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
-                    if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
-                        // 回复文本消息
-                        com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
-                        textMessage.setToUserName(fromUserName);
-                        textMessage.setFromUserName(toUserName);
-                        textMessage.setCreateTime(new Date().getTime());
-                        textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-                        textMessage.setContent(eventRule.getContent());
-                        respMessage = MessageUtil.textMessageToXml(textMessage);
-                    }else{
-                        respMessage =messageService.sendArticle(fromUserName,toUserName,eventRule.getMessage_id());
-                    }
-                }
-            }
-            // 返回给微信
-            if (respMessage != null && respMessage.length() > 0) {
-                //回复消息入库
-                msgService.saveMsg(appid, fromUserName, respContent);
+                respMessage = eventRuleReplys(eventRule,fromUserName,pubweixin);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return respMessage;
+    }
+
+    /**
+     * 回复规则自动回复以及关注后回复触发回复封装
+     * @param eventRule 回复规则
+     * @param fromUserName 用户openid
+     * @param pubweixin
+     * @return
+     */
+    public String eventRuleReplys(EventRule eventRule, String fromUserName, Pubweixin pubweixin){
+        String respMessage = null;
+        if(eventRule != null){
+            // 判断回复规则里的回复文字字段是否为空,优先级别为文字,然后是图文
+            if(eventRule.getContent() != null && !eventRule.getContent().equals("")){
+                // 回复文本消息
+                com.ty.core.beans.message.req.TextMessage textMessage = new com.ty.core.beans.message.req.TextMessage();
+                textMessage.setToUserName(fromUserName);
+                textMessage.setFromUserName(pubweixin.getOpenid());
+                textMessage.setCreateTime(new Date().getTime());
+                textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+                textMessage.setContent(eventRule.getContent());
+                respMessage = MessageUtil.textMessageToXml(textMessage);
+            }else{
+                respMessage =messageService.sendArticle(fromUserName,pubweixin.getOpenid(),eventRule.getMessage_id());
+            }
         }
         return respMessage;
     }
