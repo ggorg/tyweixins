@@ -1,11 +1,13 @@
 package com.ty.services;
 
+import com.gen.framework.common.util.Page;
 import com.ty.dao.MsgMapper;
 import com.ty.entity.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -26,7 +28,21 @@ public class MsgService {
 	public int save(Msg msg) {
 		return msgMapper.save(msg);
 	}
-	
+
+    /**
+     * 根据appid查询关键字回复
+     * @param pageNum 页数
+     * @param msg 消息实体类
+     * @return
+     */
+    public Page findList(Integer pageNum, Msg msg){
+        Page<Msg>page = new Page<Msg>(pageNum,15);
+        List<Msg> list = msgMapper.findList(page,msg);
+        int total = msgMapper.findListCount(msg);
+        page.setResult(list);
+        page.setTotal(total);
+        return page;
+    }
 
     /**
      * 将公众号回复的信息入库

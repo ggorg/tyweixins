@@ -12,16 +12,24 @@
         <result property="message_id" column="message_id"/>
         <result property="content" column="content"/>
         <result property="create_date" column="create_date"/>
+        <result property="message.title" column="message.title"/>
+        <result property="message.picurl" column="message.picurl"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,
-        appid,
-        title,
+        a.id,
+        a.appid,
+        a.title,
         event_type,
         message_id,
         content,
-        create_date
+        a.create_date,
+        m.title AS "message.title",
+        m.picurl AS "message.picurl"
+    </sql>
+
+    <sql id="baseJoins">
+        LEFT JOIN weixin_message m ON m.id = a.message_id
     </sql>
 
     <insert id="insert" parameterType="com.ty.entity.EventRule">
@@ -64,8 +72,9 @@
     <select id="findList" resultMap="BaseResultMap"  parameterType="com.gen.framework.common.util.Page">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_rule
-        where appid = #{appid,jdbcType=VARCHAR}
+        from weixin_event_rule a
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
         order by create_date desc
         <!-- 数据范围过滤 -->
         <choose>
@@ -85,22 +94,25 @@
     <select id="findListAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_rule
-        where appid = #{appid,jdbcType=VARCHAR}
+        from weixin_event_rule a
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
     </select>
 
     <select id="selectById" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_rule
-        where id = #{id,jdbcType=INTEGER}
+        from weixin_event_rule a
+        <include refid="baseJoins"/>
+        where a.id = #{id,jdbcType=INTEGER}
     </select>
 
     <select id="getSubscribe" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_rule
-        where appid = #{appid,jdbcType=VARCHAR}
+        from weixin_event_rule a
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
         and event_type = 1
         limit 1
     </select>
@@ -109,7 +121,8 @@
         select
         <include refid="Base_Column_List"/>
         from weixin_event_rule
-        where appid = #{appid,jdbcType=VARCHAR}
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
         and event_type = 2
         limit 1
     </select>
