@@ -29,7 +29,7 @@ public interface MsgMapper {
 
     List<Msg> findList(@Param("page")Page page, @Param("msg")Msg msg);
     /** 查询总数*/
-    int findListCount(@Param("appid")String appid);
+    int findListCount(@Param("msg")Msg msg);
 
     /** 回复消息列表 */
     public List<Msg> replyList(Msg msg);

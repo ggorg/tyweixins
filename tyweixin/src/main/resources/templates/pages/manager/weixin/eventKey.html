@@ -61,7 +61,7 @@
                     <tr th:each="obj:${eventKeyPage?.result}">
                         <td th:text="${obj['id']}">Trident</td>
                         <td th:text="${obj['key']}">Internet Explorer 4.0</td>
-                        <td th:text="${obj['rule_id']}">Win 95+</td>
+                        <td th:text="${obj['eventRule']['title']}">Win 95+</td>
                         <td th:switch="${obj['match']}">
                             <span th:case="1">完全匹配</span>
                             <span th:case="0">模糊匹配</span>
@@ -71,6 +71,7 @@
                                 <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'340px\',\'修改回复规则\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
                                 <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\')'" >删除</button>
                             </div>
+                        </td>
                     </tr>
 
                     </tbody>

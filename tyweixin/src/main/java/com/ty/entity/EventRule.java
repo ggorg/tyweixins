@@ -22,6 +22,8 @@ public class EventRule {
     /** 创建时间*/
     private Date create_date;
 
+    private Message message;
+
     public String getAppid() {
         return appid;
     }
@@ -77,4 +79,8 @@ public class EventRule {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public Message getMessage() { return message; }
+
+    public void setMessage(Message message) { this.message = message; }
 }

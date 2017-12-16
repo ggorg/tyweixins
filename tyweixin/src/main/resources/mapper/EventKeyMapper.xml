@@ -11,15 +11,21 @@
         <result property="rule_id" column="rule_id"/>
         <result property="match" column="match"/>
         <result property="create_date" column="create_date"/>
+        <result property="eventRule.title" column="eventRule.title"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,
-        appid,
+        a.id,
+        a.appid,
         `key`,
         rule_id,
         `match`,
-        create_date
+        a.create_date,
+        u.title AS "eventRule.title"
+    </sql>
+
+    <sql id="baseJoins">
+        LEFT JOIN weixin_event_rule u ON u.id = a.rule_id
     </sql>
 
     <insert id="insert" parameterType="com.ty.entity.EventKey">
@@ -58,8 +64,9 @@
     <select id="findList" resultMap="BaseResultMap"  parameterType="com.gen.framework.common.util.Page">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_key
-        where appid = #{appid,jdbcType=VARCHAR}
+        from weixin_event_key a
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
         order by create_date desc
         <!-- 数据范围过滤 -->
         <choose>
@@ -79,15 +86,17 @@
     <select id="findListAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_key
-        where appid = #{appid,jdbcType=VARCHAR}
+        from weixin_event_key a
+        <include refid="baseJoins"/>
+        where a.appid = #{appid,jdbcType=VARCHAR}
     </select>
 
     <select id="selectById" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_key
-        where id = #{id,jdbcType=INTEGER}
+        from weixin_event_key a
+        <include refid="baseJoins"/>
+        where a.id = #{id,jdbcType=INTEGER}
     </select>
 
 </mapper>

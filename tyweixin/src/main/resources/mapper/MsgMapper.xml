@@ -16,7 +16,8 @@
         <result property="fileid" column="fileid"/>
         <result property="picurl" column="picurl"/>
         <result property="remark" column="remark"/>
-        <result property="createDate" column="create_date"/>
+        <result property="create_date" column="create_date"/>
+        <result property="userInfo.headimgurl" column="userInfo.headimgurl"/>
         <result property="userInfo.nickname" column="userInfo.nickname"/>
         <result property="userInfo.sex" column="userInfo.sex"/>
         <result property="userInfo.remark" column="userInfo.remark"/>
@@ -35,7 +36,7 @@
         a.picurl,
         a.remark,
         a.create_date,
-        ms.is_zy AS member,
+        u.headimgurl AS "userInfo.headimgurl",
         u.nickname AS "userInfo.nickname",
 		u.sex AS "userInfo.sex",
         u.subscribe AS "userInfo.subscribe",
@@ -147,9 +148,9 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_msg a
-       INNER JOIN (SELECT MAX(id) id FROM weixin_msg WHERE official = 0 GROUP BY openid) t ON a.id = t.id
         <include refid="baseJoins"/>
-        where 1 = 1
+        where a.appid = #{msg.appid,jdbcType=VARCHAR}
+        and official = 0
         <if test="msg.content != null and msg.content != ''">
 	        and content like
 	        CONCAT('%', upper(#{msg.content}), '%')
@@ -177,13 +178,13 @@
         </choose>
     </select>
 
-    <select id="findListCount" resultType="com.ty.entity.Msg">
+    <select id="findListCount" resultType="int">
         SELECT
         count(*)
         FROM weixin_msg a
-       INNER JOIN (SELECT MAX(id) id FROM weixin_msg WHERE official = 0 GROUP BY openid) t ON a.id = t.id
         <include refid="baseJoins"/>
-        where 1 = 1
+        where a.appid = #{msg.appid,jdbcType=VARCHAR}
+        and official = 0
         <if test="msg.content != null and msg.content != ''">
 	        and content like
 	        CONCAT('%', upper(#{msg.content}), '%')
@@ -210,7 +211,7 @@
         <include refid="Base_Column_List"/>
         FROM weixin_msg a
         <include refid="baseJoins"/>
-        where 1 = 1
+        where a.appid = #{msg.appid,jdbcType=VARCHAR}
         <if test="msg.content != null and msg.content != ''">
             and content like
             CONCAT('%', upper(#{msg.content}), '%')

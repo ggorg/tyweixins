@@ -21,6 +21,8 @@ public class EventKey {
     /** 创建时间*/
     private Date create_date;
 
+    private EventRule eventRule;
+
     public String getAppid() {
         return appid;
     }
@@ -68,4 +70,8 @@ public class EventKey {
     public void setRule_id(int rule_id) {
         this.rule_id = rule_id;
     }
+
+    public EventRule getEventRule() { return eventRule; }
+
+    public void setEventRule(EventRule eventRule) { this.eventRule = eventRule; }
 }
