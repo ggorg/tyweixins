@@ -34,6 +34,17 @@ public class Globals {
     @Value("${ty.msg.default.picUrl}")
     private String defaultPicUrl;
 
+    @Value("${ty.test.openid}")
+    private String testOpenid;
+
+    public String getTestOpenid() {
+        return testOpenid;
+    }
+
+    public void setTestOpenid(String testOpenid) {
+        this.testOpenid = testOpenid;
+    }
+
     public String getDefaultPicUrl() {
         return defaultPicUrl;
     }

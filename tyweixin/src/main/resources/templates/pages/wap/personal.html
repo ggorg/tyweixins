@@ -12,28 +12,29 @@
 
 <div class="scroll scroll-active">
     <div class="content">
-        <div class="top-txt">
-            您还没绑定手机号，为了您的福利，<a href="">请立即前往绑定</a>
+        <div class="top-txt" th:if="${bind==null}">
+            您还没绑定手机号，为了您的福利，<a href="to-bind-telphone" th:href="'to-bind-telphone?token='+${#httpServletRequest.getParameter('token')}">请立即前往绑定</a>
         </div>
         <div class="avatar-con">
             <div class="avatar">
                 <img src="/wap/images/avatar.png" alt="">
             </div>
-            <p>欢迎您，GT（<span>未绑定手机</span>）</p>
+            <p th:inline="text">欢迎您，[[${name}]]（<span th:text="${bind!=null?bind:'未绑定手机'}"></span>）</p>
             <!--已绑定
             <p>欢迎您，GT（<span>13568748411</span>）</p>
-            -->
+
             <a href="">更换登记账号</a>
+            -->
         </div>
         <div class="main">
             <div class="con">
                 <span>可用余额</span>
                 <span th:inline="text">[[${blanceSum}]]<em>元</em></span>
-                <a href="">查看余额明细</a>
+                <a th:href="'to-balance-detail?token='+${#httpServletRequest.getParameter('token')}">查看余额明细</a>
             </div>
             <div class="con">
-                <span>红包</span>
-                <span th:inline="text">4210.35<em>元</em></span>
+                <span>己领取的红包总额</span>
+                <span th:inline="text">[[${rpSum}]]<em>元</em></span>
                 <a href="redpacketRecord.html">查看红包明细</a>
             </div>
         </div>

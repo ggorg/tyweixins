@@ -1,6 +1,9 @@
 package com.gen.framework.common.util;
 
+import com.thoughtworks.xstream.core.util.Base64Encoder;
 import com.ty.util.WeiXinTools;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -10,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +26,7 @@ import java.util.List;
  *
  */
 public final class Tools {
-
+	private static ThreadLocal<String> openid=new ThreadLocal();
 
 	/**
 	 * 分析值，为空或错误时使用默认值
@@ -207,6 +211,11 @@ public final class Tools {
 		}
 		return true;
 	}
+	public static Object getSession(String key){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpSession session=attrs.getRequest().getSession();
+		return session.getAttribute(key);
+	}
 	public static void setSession(String key,Object obj){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpSession session=attrs.getRequest().getSession();
@@ -234,43 +243,18 @@ public final class Tools {
 
 
 	}
-	public static void setCookie(String key,String value){
-		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-
-		HttpServletResponse response = attrs.getResponse();
-		HttpServletRequest request=attrs.getRequest();
-		Cookie[] cookies=request.getCookies();
-		if(cookies!=null){
-			for(Cookie c:cookies){
-				if(c.getName().equals(key)){
-					c.setValue(value);
-
-					response.addCookie(c);
-					return;
-				}
-			}
-		}
-
-		//StringBuffer build
-		Cookie cookie = new Cookie(key, value);
-		cookie.setDomain("gg123.club");
-		cookie.setPath("/");
-		response.addCookie(cookie);
+	public static String getOpenidByThreadLocal(){
+		String openidstr=openid.get();
+		return openidstr;
 	}
-	public static String getCookie(String key){
-		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request=attrs.getRequest();
-		Cookie[] cookies=request.getCookies();
-		if(cookies!=null){
-			for(Cookie c:cookies){
-				if(c.getName().equals(key)){
-					return c.getValue();
-				}
-			}
-		}
-
+	public static String setOpenidByThreadLocal(String token){
+		String value=MyEncryptUtil.getRealValue(token);
+		if(StringUtils.isBlank(value)){
 		return null;
+		}
+		openid.set(value);
+		return value;
 	}
 	public static void clearLoginSession(){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -315,6 +299,41 @@ public final class Tools {
 			url=request.getRequestURL().append("?").append(request.getQueryString()).toString();
 		}
 		return WeiXinTools.initJssdk(url,jsApiList);
+	}
+	public static void setCookie(String key,String value){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+
+		HttpServletResponse response = attrs.getResponse();
+		HttpServletRequest request=attrs.getRequest();
+		try {
+
+			System.out.println("i am cookie:"+value);
+			Cookie cookie=new Cookie(key,MyEncryptUtil.encry(value));
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static String getCookie(String key){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request=attrs.getRequest();
+		try {
+			Cookie[] cookies=request.getCookies();
+			if(cookies!=null && cookies.length>0){
+				for(Cookie c:cookies){
+					if(c.getName().equals(key)){
+						return MyEncryptUtil.getRealValue(c.getValue());
+
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 
 }

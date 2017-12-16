@@ -40,15 +40,13 @@ public class BindIterceptor extends HandlerInterceptorAdapter {
         }
 
 
-        if(prefixPath.matches("^("+wapPrefixUrls+")$")){
-
-            String openid=Tools.getCookie("openid");
+        if(prefixPath.matches("^("+wapPrefixUrls+")$") && !path.equals("/wap/to-sessionTimeOut")){
+            String openid=Tools.setOpenidByThreadLocal(request.getParameter("token"));
             if(StringUtils.isBlank(openid)){
                 response.sendRedirect("/wap/to-sessionTimeOut");
                 return false;
             }
-            System.out.println("wegwd:"+path.matches("^("+filterUrls+")$"));
-            System.out.println("wegw:"+tyBindService.checkIsBind(openid));
+
             if(!path.matches("^("+filterUrls+")$") && tyBindService.checkIsBind(openid)==null){
                 response.sendRedirect("/wap/to-bind-telphone");
                 return false;

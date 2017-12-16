@@ -2,10 +2,8 @@ package com.ty.controller;
 
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
-import com.ty.services.TyBalanceService;
-import com.ty.services.TyBindService;
-import com.ty.services.TyRedPacketService;
-import com.ty.services.TyVoucherService;
+import com.ty.entity.UserInfo;
+import com.ty.services.*;
 import com.ty.timer.TyTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +33,20 @@ public class WapController {
 
     @Autowired
     private TyVoucherService tyVoucherService;
+
+    @Autowired
+    private WeixinUserService weixinUserService;
     @GetMapping("/to-bind-telphone")
     public String toBindTelphone(){
         Tools.noCachePage();
+
         return "pages/wap/bindingPhone";
     }
     @PostMapping("/do-send-vaild-code")
     @ResponseBody
-    public ResponseVO doSendVaildCode(String telphone, @CookieValue("openid")String openid){
+    public ResponseVO doSendVaildCode(String telphone){
         try {
-            return this.tyBindService.sendVaildCode(telphone,openid);
+            return this.tyBindService.sendVaildCode(telphone,Tools.getOpenidByThreadLocal());
         }catch (Exception e){
             logger.error("WapController->doSendVaildCode->系统异常",e);
 
@@ -54,11 +56,11 @@ public class WapController {
 
     @PostMapping("/do-bind")
     @ResponseBody
-    public ResponseVO doBind(String telphone,String code,@CookieValue("openid")String openid){
+    public ResponseVO doBind(String telphone,String code){
         try {
-            ResponseVO res= this.tyBindService.vaildeCode(telphone,code,openid);
+            ResponseVO res= this.tyBindService.vaildeCode(telphone,code,Tools.getOpenidByThreadLocal());
             if(res.getReCode()==1){
-                return tyBindService.bind(telphone,openid);
+                return tyBindService.bind(telphone,Tools.getOpenidByThreadLocal());
                 //this.channelApiService.bind()
             }
             return res;
@@ -69,10 +71,29 @@ public class WapController {
         return new ResponseVO(-1,"绑定失败",null);
     }
     @GetMapping("/to-myself-center")
-    public String toMyselfCenter(@CookieValue("openid")String openid,Model model){
+    public String toMyselfCenter(Model model){
         try {
-            model.addAttribute("blanceSum",this.tyBalanceService.getBalance(openid).getData());
-            model.addAttribute("rpSum",this.redPacketService.getRedPacketSum(openid));
+
+            ResponseVO resBlance=this.tyBalanceService.getBalance(Tools.getOpenidByThreadLocal());
+            if(resBlance.getReCode()==1){
+                model.addAttribute("blanceSum",resBlance.getData());
+
+            }
+            ResponseVO resRp=this.redPacketService.getRedPacketSum(Tools.getOpenidByThreadLocal());
+            if(resRp.getReCode()==1){
+                model.addAttribute("rpSum",resRp.getData());
+
+            }
+            UserInfo user=weixinUserService.selectByopenid(Tools.getOpenidByThreadLocal());
+            model.addAttribute("name",user.getNickname());
+            if(resBlance.getReCode()==1 && resRp.getReCode()==1){
+                Map map=tyBindService.checkIsBind(Tools.getOpenidByThreadLocal());
+                if(map!=null){
+                    model.addAttribute("bind",map.get("tuTelphone"));
+
+                }
+            }
+
 
         }catch (Exception e){
             logger.error("WapController->toMyselfCenter->系统异常",e);
@@ -80,9 +101,9 @@ public class WapController {
         return "pages/wap/personal";
     }
     @GetMapping("/to-balance-detail")
-    public String toBalanceDetail(@CookieValue("openid")String openid, Model model){
+    public String toBalanceDetail( Model model){
         try {
-            model.addAllAttributes((Map)this.tyBalanceService.getBalanceDetail(openid).getData());
+            model.addAllAttributes((Map)this.tyBalanceService.getBalanceDetail(Tools.getOpenidByThreadLocal()).getData());
         }catch (Exception e){
             logger.error("WapController->toBalanceDetail->系统异常",e);
         }
@@ -107,18 +128,18 @@ public class WapController {
 
     @PostMapping("/do-open-red-packet")
     @ResponseBody
-    public ResponseVO doOpenRedPacket(@CookieValue("openid")String openid){
+    public ResponseVO doOpenRedPacket(){
         try {
-            return this.redPacketService.openRedPacket(openid);
+            return this.redPacketService.openRedPacket(Tools.getOpenidByThreadLocal());
         }catch (Exception e){
             logger.error("WapController->doOpenRedPacket->系统异常",e);
             return new ResponseVO(-1,"红包领取失败",null);
         }
     }
     @GetMapping("/to-voucher")
-    public String toVoucher(@CookieValue("openid")String openid,Model model){
+    public String toVoucher(Model model){
         try {
-            model.addAllAttributes(this.tyVoucherService.findVoucheies(openid));
+            model.addAllAttributes(this.tyVoucherService.findVoucheies(Tools.getOpenidByThreadLocal()));
         }catch (Exception e){
             logger.error("WapController->toVoucher->系统异常",e);
         }

@@ -3,6 +3,7 @@ package com.ty.controller;
 import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.util.Tools;
 import com.ty.config.Globals;
 import com.ty.core.pojo.AccessToken;
@@ -115,10 +116,13 @@ public class WeixinOauthController {
                 }
                 String jumpUrlValue=globals.getOauthJumUrlByKey(page);
                 if(StringUtils.isNotBlank(jumpUrlValue)){
-                    Tools.setCookie("openid",openid);
+
                     AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
                     WeiXinTools.initTicket(at.getTicket(),at.getAppid());
-                   return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue;
+
+
+                   return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue+"?token="+MyEncryptUtil.encry(StringUtils.isBlank(this.globals.getTestOpenid())?openid:this.globals.getTestOpenid());
+
                 }
             }
         }

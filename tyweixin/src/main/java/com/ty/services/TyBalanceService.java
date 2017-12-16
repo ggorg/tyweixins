@@ -78,7 +78,7 @@ public class TyBalanceService extends CommonService {
         }
         JSONObject param=new JSONObject();
         param.put("pay_user",tyuser.getTuTelphone());
-        param.put("act_code", ActEnum.act2.getCode());
+        param.put("act_code", ActEnum.act1.getCode());
         String callBackStr=null;
         if(globals.getSearchBalanceDetailUrl().startsWith("http")){
             callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),TydicDES.encodeValue(param.toJSONString()));

@@ -155,10 +155,10 @@ public class TyRedPacketService extends CommonService {
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
         condition.put("trIsOpen",true);
-        CommonSearchBean csb=new CommonSearchBean("ty_red_packet",null,"t1.sum(t1.trAmount) as rpSum",null,null,condition);
+        CommonSearchBean csb=new CommonSearchBean("ty_red_packet",null,"sum(t1.trAmount) as rpSum",null,null,condition);
         List<Map> dataList=this.getCommonMapper().selectObjects(csb);
-        if(dataList!=null && !dataList.isEmpty()){
-            return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount(dataList.get(0).get("rpSum").toString()));
+        if(dataList!=null && !dataList.isEmpty() && dataList.size()>0){
+            return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount(dataList.get(0)==null?"0":dataList.get(0).get("rpSum").toString()));
         }
         return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount("0"));
     }
