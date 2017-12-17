@@ -18,20 +18,20 @@
         <i class="piaofu pos-a"></i>
         <div class="main pos-r">
             <div class="txt-box">
-                <p class="txt-ani">百万现金红包<span>邀请好友一起抢</span></p>
+                <p class="txt-ani">翼支付充值红包领取</p>
             </div>
-            <div class="red-packet" style="display: block">
-                <span class="tips">点击瓜分红包</span>
-                <a href="javascript:;" class="btn-open bg-size" id="btnOpen">
+            <div class="red-packet"  th:if="${rpNum>0 and isOpen==null}">
+                <span class="tips">点击领取红包</span>
+                <a th:href="'do-open-red-packet?token='+${#httpServletRequest.getParameter('token')}" class="btn-open bg-size" id="btnOpen">
                     <span class="btn-open-bg bg-size bouncein"></span>
                     <span class="kai bg-size"></span>
                 </a>
             </div>
 
-            <div class="red-packet red-packet-none" style="display: none">
-               <i></i>
-                <span>手慢了，红包领取完了！</span>
-                <a href="">查看领取详情></a>
+            <div class="red-packet red-packet-none" th:if="${isOpen!=null}">
+
+                <span th:text="${rpNum>0?'恭喜你，领取到'+rpNum+'个红包':'抱歉，红包领取完了！'}">抱歉，红包领取完了！</span>
+                <a th:href="'to-red-packet-record?token='+${#httpServletRequest.getParameter('token')}">查看领取详情></a>
             </div>
             <a href="javascript:;" class="btn-rule" id="showRule">活动规则</a>
 
@@ -40,7 +40,7 @@
 </div>
 
 <!--规则-->
-<div class="mask rule-mask hide" id="ruleMask" >
+<div class="mask rule-mask hide" id="ruleMask_s" >
     <div class="pop-container">
         <div class="pop-rule">
             <div class="title">活动规则</div>

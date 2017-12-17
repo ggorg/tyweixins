@@ -13,12 +13,13 @@
     <div class="content inup-content">
         <section class="sign-up">
             <form class="form-sign">
+                <input type="hidden" id="token" name="token" th:value="${#httpServletRequest.getParameter('token')}"/>
                 <div class="input-wrapper with-phone">
                     <span class="area-code">+86</span>
-                    <input type="tel" name="" value="" placeholder="请输入手机号码" maxlength="11" id="tel">
+                    <input type="tel" name="telphone" value="" placeholder="请输入手机号码" maxlength="11" id="tel">
                 </div>
                 <div class="input-wrapper with-code">
-                    <input type="tel" name="" value="" placeholder="验证码" maxlength="6" id="code">
+                    <input type="tel" name="code" value="" placeholder="验证码" maxlength="6" id="code">
                     <div class="btn-input-wrapper code-sms">
                         获取验证码
                     </div>

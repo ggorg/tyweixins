@@ -40,15 +40,15 @@ public class BindIterceptor extends HandlerInterceptorAdapter {
         }
 
 
-        if(prefixPath.matches("^("+wapPrefixUrls+")$") && !path.equals("/wap/to-sessionTimeOut")){
+        if(prefixPath.matches("^("+wapPrefixUrls+")$") && !path.equals("/wap/to-error")){
             String openid=Tools.setOpenidByThreadLocal(request.getParameter("token"));
             if(StringUtils.isBlank(openid)){
-                response.sendRedirect("/wap/to-sessionTimeOut");
+                response.sendRedirect("/wap/to-error");
                 return false;
             }
 
             if(!path.matches("^("+filterUrls+")$") && tyBindService.checkIsBind(openid)==null){
-                response.sendRedirect("/wap/to-bind-telphone");
+                response.sendRedirect("/wap/to-bind-telphone?token="+request.getParameter("token"));
                 return false;
             }
         }

@@ -138,6 +138,7 @@ public class TyBindService extends CommonService {
         param.put("tuOpenId",openid);
         param.put("tuTelphone",telphone);
         param.put("updateTime",new Date());
+       // param.put("tuDisabled",false);
         ResponseVO<Integer> vo=null;
         if(tyUser==null){
             param.put("createTime",new Date());

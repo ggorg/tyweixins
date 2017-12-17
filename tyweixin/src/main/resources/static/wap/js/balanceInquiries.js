@@ -10,9 +10,9 @@
         $('.pd-tab').hide();
         thisList.show();
 
-        if(thisList.find('.detail-list li').length == 0) {
+        /*if(thisList.find('.detail-list li').length == 0) {
             loadRecordList();
-        }
+        }*/
 
 
     });

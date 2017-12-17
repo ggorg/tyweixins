@@ -25,17 +25,12 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${currentMonth!=null?currentMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${currentMonth['transCount']!=null?currentMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(currentMonth!=null?currentMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(currentMonth['transSumAmt']!=null?currentMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
-                            <div class="fl">
-                                <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
-                            </div>
-                            <div class="fl">
-                                <p>2210.35<span class="unit">元</span><span>当月消费总额</span></p>
-                            </div>
+
                         </div>
                     </div>
 
@@ -52,7 +47,6 @@
                             </div>
                         </li>
 
-
                     </ul>
                 </li>
                 <li class="pd-tab" data-type="1">
@@ -62,17 +56,12 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${lastMonth!=null?lastMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${lastMonth['transCount']!=null?lastMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(lastMonth!=null?lastMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(lastMonth['transSumAmt']!=null?lastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
-                            <div class="fl">
-                                <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
-                            </div>
-                            <div class="fl">
-                                <p>2210.35<span class="unit">元</span><span>当月消费总额</span></p>
-                            </div>
+
                         </div>
                     </div>
 
@@ -97,17 +86,12 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${beforeLastMonth!=null?beforeLastMonth['transCount']:''}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${beforeLastMonth['transCount']!=null?beforeLastMonth['transCount']:'0.00'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(beforeLastMonth!=null?beforeLastMonth['transSumAmt']+'':'')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(beforeLastMonth['transSumAmt']!=null?beforeLastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
-                            <div class="fl">
-                                <p>12.56<span class="unit">元</span><span>当月返利金额</span></p>
-                            </div>
-                            <div class="fl">
-                                <p>2210.35<span class="unit">元</span><span>当月消费总额</span></p>
-                            </div>
+
                         </div>
                     </div>
 

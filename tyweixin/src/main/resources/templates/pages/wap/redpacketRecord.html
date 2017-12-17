@@ -24,11 +24,17 @@
                         </div>
                     </section>
                     <ul class="record-list">
-                        <!--<li class="invest-tr" data-id="10">-->
-                            <!--<span class="name">翼支付红包</span>-->
-                            <!--<span class="time">2017.12.05  14:26:30</span>-->
-                            <!--<span class="money">+30.00</span>-->
-                        <!--</li>-->
+                        <li th:if="${rpRecord!=null and !#lists.isEmpty(rpRecord)}" th:each="obj:${rpRecord}" class="record-tr" data-id="10">
+                            <span class="name" >翼支付充值红包</span>
+                            <span class="time" th:text="${obj.updateTime}">2017.12.05  14:26:30</span>
+                            <span class="money" th:text="${#TdTool.getRealAmount(obj.trAmount)}">+30.00</span>
+                        </li>
+
+                            <li th:if="${rpRecord==null or #lists.isEmpty(rpRecord) or #lists.size(rpRecord)==0}"  class="record-tr" data-id="10">
+                                <span class="name" >无红包</span>
+
+                            </li>
+
                     </ul>
                 </div>
             </div>

@@ -89,62 +89,72 @@ public class TyBalanceService extends CommonService {
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data")){
-                    JSONObject data=callBackJson.getJSONObject("data");
-
+                    //JSONObject data=callBackJson.getJSONObject("data");
+                    JSONArray datas=callBackJson.getJSONArray("data");
                     Date currentDate=new Date();
                     String currentMonthDate= DateFormatUtils.format(currentDate,"yyyy-MM");
                     String lastMonthDate=DateFormatUtils.format( DateUtils.addMonths(currentDate,-1),"yyyy-MM");
                     String beforeLastMonthDate=DateFormatUtils.format( DateUtils.addMonths(currentDate,-2),"yyyy-MM");
-                    if(data!=null && data.containsKey("tradeDetail")){
-                        JSONArray array=data.getJSONArray("tradeDetail");
-                        if(array!=null){
-                            JSONObject jo=null;
-                            String orderDate=null;
-                            Map currentMonthMap=new HashMap();
-                            Map lastMonthMap=new HashMap();
-                            Map beforeLastMonthMap=new HashMap();
+                    if(datas!=null && !datas.isEmpty() && datas.size()>0){
+                        JSONObject jo=null;
+                        String orderDate=null;
+                        Map currentMonthMap=new HashMap();
+                        Map lastMonthMap=new HashMap();
+                        Map beforeLastMonthMap=new HashMap();
 
-                            List currentMonthList=new ArrayList();
-                            List lastMonthList=new ArrayList();
-                            List beforeLastMonthList=new ArrayList();
+                        List currentMonthList=new ArrayList();
+                        List lastMonthList=new ArrayList();
+                        List beforeLastMonthList=new ArrayList();
 
-                            currentMonthMap.put("list",currentMonthList);
-                            lastMonthMap.put("list",lastMonthList);
-                            beforeLastMonthMap.put("list",beforeLastMonthList);
+                        currentMonthMap.put("list",currentMonthList);
+                        lastMonthMap.put("list",lastMonthList);
+                        beforeLastMonthMap.put("list",beforeLastMonthList);
 
-                            Map mainMap=new HashMap();
-                            mainMap.put("currentMonth",currentMonthMap);
-                            mainMap.put("lastMonth",lastMonthMap);
-                            mainMap.put("beforeLastMonth",beforeLastMonthMap);
-                            TyBalanceTradeDetail td=null;
-                            Integer transSumAmt=0;
-                            Integer transAmt=0;
-                            for(int i=0;i<array.size();i++){
-                                jo=array.getJSONObject(i);
-                                td=jo.toJavaObject(TyBalanceTradeDetail.class);
-                                orderDate=StringUtils.isNotBlank(td.getOrderDate())?td.getOrderDate():"";
-                                transAmt=StringUtils.isBlank(td.getTrnanAmt())?0:Integer.parseInt(td.getTrnanAmt());
-                                if(orderDate.startsWith(currentMonthDate)){
-                                    currentMonthList.add(td);
+                        Map mainMap=new HashMap();
+                        mainMap.put("currentMonth",currentMonthMap);
+                        mainMap.put("lastMonth",lastMonthMap);
+                        mainMap.put("beforeLastMonth",beforeLastMonthMap);
+                        TyBalanceTradeDetail td=null;
+                        Integer transSumAmt=0;
+                        Integer transAmt=0;
+                        JSONObject data=null;
+                        for(int d=0;d<datas.size();d++){
+                            data=datas.getJSONObject(d);
+                            if(data!=null && data.containsKey("tradeDetail")){
+                                JSONArray array=data.getJSONArray("tradeDetail");
+                                if(array!=null){
 
-                                    transSumAmt=currentMonthMap.containsKey("transSumAmt")?(Integer)currentMonthMap.get("transSumAmt"):0;
-                                    currentMonthMap.put("transSumAmt",transSumAmt+transAmt);
-                                    currentMonthMap.put("transCount",currentMonthList.size());
-                                }else if(orderDate.startsWith(lastMonthDate)){
-                                    lastMonthList.add(td);
-                                    transSumAmt=lastMonthMap.containsKey("transSumAmt")?(Integer)lastMonthMap.get("transSumAmt"):0;
-                                    lastMonthMap.put("transSumAmt",transSumAmt+transAmt);
-                                    lastMonthMap.put("transCount",lastMonthList.size());
-                                }else if(orderDate.startsWith(beforeLastMonthDate)){
-                                    beforeLastMonthList.add(td);
-                                    transSumAmt=beforeLastMonthMap.containsKey("transSumAmt")?(Integer)beforeLastMonthMap.get("transSumAmt"):0;
-                                    beforeLastMonthMap.put("transSumAmt",transSumAmt+transAmt);
-                                    beforeLastMonthMap.put("transCount",beforeLastMonthList.size());
+                                    for(int i=0;i<array.size();i++){
+                                        jo=array.getJSONObject(i);
+                                        td=jo.toJavaObject(TyBalanceTradeDetail.class);
+                                        orderDate=StringUtils.isNotBlank(td.getOrderDate())?td.getOrderDate():"";
+                                        transAmt=StringUtils.isBlank(td.getTrnanAmt())?0:Integer.parseInt(td.getTrnanAmt());
+                                        if(orderDate.startsWith(currentMonthDate)){
+                                            currentMonthList.add(td);
+
+                                            transSumAmt=currentMonthMap.containsKey("transSumAmt")?(Integer)currentMonthMap.get("transSumAmt"):0;
+                                            currentMonthMap.put("transSumAmt",transSumAmt+transAmt);
+                                            currentMonthMap.put("transCount",currentMonthList.size());
+                                        }else if(orderDate.startsWith(lastMonthDate)){
+                                            lastMonthList.add(td);
+                                            transSumAmt=lastMonthMap.containsKey("transSumAmt")?(Integer)lastMonthMap.get("transSumAmt"):0;
+                                            lastMonthMap.put("transSumAmt",transSumAmt+transAmt);
+                                            lastMonthMap.put("transCount",lastMonthList.size());
+                                        }else if(orderDate.startsWith(beforeLastMonthDate)){
+                                            beforeLastMonthList.add(td);
+                                            transSumAmt=beforeLastMonthMap.containsKey("transSumAmt")?(Integer)beforeLastMonthMap.get("transSumAmt"):0;
+                                            beforeLastMonthMap.put("transSumAmt",transSumAmt+transAmt);
+                                            beforeLastMonthMap.put("transCount",beforeLastMonthList.size());
+                                        }
+                                    }
+
                                 }
                             }
-                            return new ResponseVO(1,"成功",mainMap);
                         }
+                        return new ResponseVO(1,"成功",mainMap);
+
                     }
+
                 }
             }
         }

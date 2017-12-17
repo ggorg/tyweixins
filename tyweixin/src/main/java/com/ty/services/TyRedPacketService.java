@@ -9,6 +9,7 @@ import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
+import com.ty.dao.TyRedPacketMapper;
 import com.ty.entity.TyRedPacket;
 import com.ty.entity.TyUser;
 import com.ty.entity.UserInfo;
@@ -35,7 +36,8 @@ public class TyRedPacketService extends CommonService {
     @Autowired
     private WeixinUserService weixinUserService;
 
-
+    @Autowired
+    private TyRedPacketMapper tyRedPacketMapper;
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO<Map> pullRedPacket()throws Exception{
         Map condition=new HashMap();
@@ -110,7 +112,7 @@ public class TyRedPacketService extends CommonService {
         condition.put("trIsOpen",false);
         List<Map> tyRedPackList=this.commonList("ty_red_packet",null,null,null,condition);
         if(tyRedPackList==null || tyRedPackList.isEmpty()){
-            return new ResponseVO(-2,"抱歉，没有红包可领取",null);
+            return new ResponseVO(-3,"抱歉，没有红包可领取",null);
         }
 
         JSONObject param=null;
@@ -162,4 +164,41 @@ public class TyRedPacketService extends CommonService {
         }
         return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount("0"));
     }
+    public ResponseVO findRedPacketRecord(String openid,boolean isOpen){
+        Map chilCondition=new HashMap();
+        chilCondition.put("tuOpenId",openid);
+        Map condition=new HashMap();
+        condition.put("trIsOpen",isOpen);
+
+
+
+        //this.commonList("ty_red_packet","updateTime by desc",null,null)
+        CommonChildBean ccb=new CommonChildBean("ty_user","id","tUid",chilCondition);
+        CommonSearchBean csb=new CommonSearchBean("ty_red_packet","updateTime desc","t1.*",null,null,condition,ccb);
+
+        return new ResponseVO(1,"查询成功",this.getCommonMapper().selectObjects(csb));
+    }
+
+    public List countRedPacket(){
+        List<Map> all=tyRedPacketMapper.getCount(null);
+        List<Map> opened=tyRedPacketMapper.getCount(true);
+        if(all!=null && !all.isEmpty() && all.size()>0){
+            String trid=null;
+            String otrid=null;
+            for(Map amap:all){
+                trid=(String) amap.get("trid");
+                for(Map omap:opened){
+                    otrid=(String) omap.get("trid");
+                    if(trid.equals(otrid)){
+                        amap.put("otrcount",omap.get("trcount"));
+                        amap.put("otrsum",omap.get("trsum"));
+                        break;
+                    }
+                }
+            }
+        }
+        return all;
+
+    }
+
 }

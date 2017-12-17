@@ -161,7 +161,7 @@ public class SysManagerController {
     @GetMapping("/to-logout")
     public String toLogout(){
         Tools.clearLoginSession();
-        return "redirect:/";
+        return "redirect:/sys";
     }
     @PostMapping("/do-login")
     @ResponseBody

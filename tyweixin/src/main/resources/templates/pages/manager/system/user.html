@@ -69,14 +69,6 @@
                     <thead>
 
                     <tr>
-
-                        <th class="head1" style="width: 30px"><input class="layui-input" name="uName"/></th>
-                        <th class="head0" style="width: 30px"><input class="layui-input" name="uName"/></th>
-                        <th class="head1" style="width: 30px"><input class="layui-input" name="uName"/></th>
-
-                        <th class="head0" style="width: 10px">操作</th>
-                    </tr>
-                    <tr>
                        
                         <th class="head1">用户名</th>
                         <th class="head0">状态</th>
@@ -98,6 +90,7 @@
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'400px\',\'280px\',\'修改用户\',\'to-edit?uId='+${obj['id']}+'\')'"  >修 改</button>
                             <button  th:class="'layui-btn layui-btn-sm '+${obj['disabled']>0?'':'layui-btn-danger'}" th:onclick="'confirmDisabled('+${obj['id']}+','+${!(obj['disabled']>0)}+')'" th:text="${obj['disabled']>0?'启 用':'禁 用'}"></button>
                             </div>
+                        </td>
                     </tr>
 
                     </tbody>

@@ -11,8 +11,8 @@
 <div class="scroll scroll-active">
     <div class="content">
         <div class="suc-con">
-            <span class="icon-suc"></span>
-            <span class="sp1" onclick="tyCloseWin()">访问失败</span>
+            <span class="icon-suc icon-warn"></span>
+            <span class="sp1" onclick="tyCloseWin()" th:text="${msg==null?'访问失败':msg}"></span>
 
         </div>
     </div>

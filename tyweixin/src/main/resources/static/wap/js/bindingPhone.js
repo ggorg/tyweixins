@@ -47,7 +47,7 @@
             url:"do-send-vaild-code",
             type:"post",
             dataType:"JSON",
-            data:{telphone:tel,openid:"test"},
+            data:{telphone:tel,token:$("#token").val()},
             cbOk:function(data){
                 if(data.reCode==-2){
                     Util.toast(data.reMsg);
@@ -93,14 +93,16 @@
             url:"do-bind",
             type:"post",
             dataType:"JSON",
-            data:{telphone:tel,openid:"test",code:code},
+            data:{telphone:tel,token:$("#token").val(),code:code},
             cbOk:function(data){
                 if(data.reCode!=1){
                     Util.toast(data.reMsg);
 
                 }else {
                     Util.iconToast('<i class="icon-success"></i>绑定成功');
-                    window.setTimeout(tyCloseWin(),1500)
+                    window.setTimeout(function(){
+                        tyCloseWin()
+                    },1500)
                 }
             }
         })

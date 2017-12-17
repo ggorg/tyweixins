@@ -1,5 +1,6 @@
 package com.ty.timer;
 
+import com.gen.framework.common.task.TimeTaskBase;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
 import com.ty.services.MessageService;
@@ -7,13 +8,17 @@ import com.ty.services.TyRedPacketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
+import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class TyTimer {
+public class TyTimer implements TimeTaskBase {
 
     private final Logger logger = LoggerFactory.getLogger(TyTimer.class);
 
@@ -26,9 +31,20 @@ public class TyTimer {
     @Autowired
     private Globals globals;
 
+    // @Scheduled(cron="0/40 * *  * * ? ")
     @Scheduled(cron="0 15 12 ? * MON")
+    public void execute() {
+        pullRedPacketTimer();
+    }
+
+    /**
+     *
+     */
+
+
     public void pullRedPacketTimer(){
         try {
+
             logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->开始");
             ResponseVO<Map> responseVO=tyRedPacketService.pullRedPacket();
             if(responseVO.getReCode()==1){
@@ -38,6 +54,7 @@ public class TyTimer {
             }else{
                 logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->{}",responseVO);
             }
+
         }catch (Exception e){
             logger.error("TyTimer->pullRedPacketTimer->系统异常",e);
         }

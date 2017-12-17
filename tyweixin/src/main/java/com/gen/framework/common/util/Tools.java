@@ -249,6 +249,7 @@ public final class Tools {
 		return openidstr;
 	}
 	public static String setOpenidByThreadLocal(String token){
+		if(StringUtils.isBlank(token))return null;
 		String value=MyEncryptUtil.getRealValue(token);
 		if(StringUtils.isBlank(value)){
 		return null;
