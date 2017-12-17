@@ -58,7 +58,7 @@
                     <tbody>
                     <tr th:each="obj:${menuPage?.result}">
                        
-                        <td th:text="${obj['mName']}">Trident</td>
+                        <td  th:inline="text"><span  th:class="'icon fa fa-1x '+${obj['mIcon']}" ></span>　[[${obj['mName']}]]</td>
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['mParentId']}">Win 95+</td>
                         <td th:text="${obj['mSort']}">Win 95+</td>
