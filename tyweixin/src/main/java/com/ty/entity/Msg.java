@@ -16,9 +16,9 @@ public class Msg{
 	/** 用户OPENID*/
 	private String openid;
 	/** 收藏标志（1收藏，0未收藏）*/
-	private String collect;
+	private int collect;
 	/** 消息类型（1文本，2图片，3视频，4小视频,5音频，0其它）*/
-	private String msgtype;
+	private int msgtype;
 	/** 文本消息*/
 	private String content;
 	/** 文件id*/
@@ -30,9 +30,9 @@ public class Msg{
 	/** 备注*/
 	private String remark;
 	/** 回复标志（1已回复，0未回复）*/
-	private String reply;
+	private int reply;
 	/** 官方标志（1官方，0非官方）*/
-	private String official;
+	private int official;
 	/** 微信用户信息*/
 	private UserInfo userInfo;
 
@@ -60,16 +60,16 @@ public class Msg{
 	public void setOpenid(String openid) {
 		this.openid = openid;
 	}
-	public String getCollect() {
+	public int getCollect() {
 		return collect;
 	}
-	public void setCollect(String collect) {
+	public void setCollect(int collect) {
 		this.collect = collect;
 	}
-	public String getMsgtype() {
+	public int getMsgtype() {
 		return msgtype;
 	}
-	public void setMsgtype(String msgtype) {
+	public void setMsgtype(int msgtype) {
 		this.msgtype = msgtype;
 	}
 	public String getContent() {
@@ -98,11 +98,11 @@ public class Msg{
 	public void setCreate_date(Date create_date) {
 		this.create_date = create_date;
 	}
-	public String getReply() {
+	public int getReply() {
 		return reply;
 	}
 	
-	public void setReply(String reply) {
+	public void setReply(int reply) {
 		this.reply = reply;
 	}
 	public String getRemark() {
@@ -112,11 +112,11 @@ public class Msg{
 		this.remark = remark;
 	}
 
-	public String getOfficial() {
+	public int getOfficial() {
 		return official;
 	}
 	
-	public void setOfficial(String official) {
+	public void setOfficial(int official) {
 		this.official = official;
 	}
 

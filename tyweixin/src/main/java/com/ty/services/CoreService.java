@@ -4,7 +4,6 @@ import com.ty.dao.PubweixinMapper;
 import com.ty.dao.UserInfoMapper;
 import com.ty.entity.*;
 import com.ty.util.MessageUtil;
-import com.ty.util.WeixinUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ public class CoreService {
             
     @Autowired
     private WeixinInterfaceService weixinInterfaceService;
-    @Autowired
-    private WeixinUtil weixinUtil;
     @Autowired
     private UserInfoMapper userInfoMapper;
     @Autowired
@@ -78,9 +75,10 @@ public class CoreService {
                 // 图片消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
                 //图片标识
-                msg.setMsgtype("2");
+                msg.setMsgtype(2);
                 //图片链接
                 String imageurl = requestMap.get("PicUrl");
+                msg.setContent(imageurl);
                 msg.setFilepath(imageurl);
                 //入库消息管理
                 msgService.save(msg);
@@ -93,19 +91,19 @@ public class CoreService {
              // 音频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)) {
 //                respContent = "您发送的是音频消息！";
-            	msg.setMsgtype("5");
+            	msg.setMsgtype(5);
             	msg.setContent("[音频]");
                 //入库消息管理
                 msgService.save(msg);
              // 视频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)) {
-            	msg.setMsgtype("4");
+            	msg.setMsgtype(4);
             	msg.setContent("[视频]");
                 //入库消息管理
                 msgService.save(msg);
              // 小视频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
-            	msg.setMsgtype("5");
+            	msg.setMsgtype(5);
             	msg.setContent("[小视频]");
                 //入库消息管理
                 msgService.save(msg);

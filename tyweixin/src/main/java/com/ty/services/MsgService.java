@@ -54,12 +54,26 @@ public class MsgService {
     	msg.setAppid(appid);
     	msg.setOpenid(openid);
     	msg.setContent(content);
-    	msg.setOfficial("1");
-    	msg.setMsgtype("1");
+    	msg.setOfficial(1);
+    	msg.setMsgtype(1);
     	//回复信息成功则入库
 		msgMapper.save(msg);
     }
-    
+
+    /**
+     * 收藏与取消收藏
+     * @param id
+     */
+    public void collect(Integer id){
+        Msg msg = msgMapper.selectById(id);
+        if(msg.getCollect()==0){
+            msg.setCollect(1);
+        }else{
+            msg.setCollect(0);
+        }
+        msgMapper.update(msg);
+    }
+
     /**
      * 删除五天前状态为未收藏消息
      * @return
