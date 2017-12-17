@@ -29,14 +29,16 @@ public class WapController {
     @Autowired
     private TyRedPacketService redPacketService;
 
-    @Autowired
-    private TyTimer tyTimer;
+
 
     @Autowired
     private TyVoucherService tyVoucherService;
 
     @Autowired
     private WeixinUserService weixinUserService;
+
+    @Autowired
+    private TyTimer tyTimer;
     @GetMapping("/to-bind-telphone")
     public String toBindTelphone(){
         Tools.noCachePage();
@@ -110,17 +112,7 @@ public class WapController {
         }
         return "pages/wap/balanceInquiries";
     }
-    @GetMapping("/to-pull-red-packet")
-    @ResponseBody
-    public ResponseVO  toPullRedPacket(){
-        try {
-            return redPacketService.pullRedPacket();
-        }catch (Exception e){
-            logger.error("WapController->toPullRedPacket->系统异常",e);
-            return new ResponseVO(-1,"红包获取失败",null);
-        }
 
-    }
     @GetMapping("/to-open-red-packet")
     public String toOpenRedPacket(Model model){
         try {

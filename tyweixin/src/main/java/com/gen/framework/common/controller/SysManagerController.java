@@ -4,6 +4,7 @@ import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.beans.SysRoleBean;
 import com.gen.framework.common.beans.SysUserBean;
 import com.gen.framework.common.services.SysManagerService;
+import com.gen.framework.common.services.TimerTaskManagerService;
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import org.slf4j.Logger;
@@ -23,6 +24,9 @@ public class SysManagerController {
     private final Logger logger = LoggerFactory.getLogger(SysManagerController.class);
     @Autowired
     private SysManagerService sysManagerService;
+
+    @Autowired
+    private TimerTaskManagerService timerTaskManagerService;
     @GetMapping
     public String toIndex(){
         return "pages/manager/system/blankFrame";
@@ -184,4 +188,15 @@ public class SysManagerController {
             return new ResponseVO(-1,"登录失败",null);
         }
     }
+
+    @GetMapping("/timertask/to-list")
+    public String toTimerTaskList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
+        try {
+            model.addAttribute("timerTaskPage",this.timerTaskManagerService.getTimerTaskPage(pageNo));
+        }catch (Exception e){
+            logger.error("SysUserController->toTimerTaskList",e);
+        }
+        return "pages/manager/timertask/timerTaskList";
+    }
+
 }

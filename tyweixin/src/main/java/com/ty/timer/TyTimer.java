@@ -32,7 +32,7 @@ public class TyTimer implements TimeTaskBase {
     private Globals globals;
 
     // @Scheduled(cron="0/40 * *  * * ? ")
-    @Scheduled(cron="0 15 12 ? * MON")
+    @Scheduled(cron="0 15 12 * * 1")
     public void execute() {
         pullRedPacketTimer();
     }
@@ -42,7 +42,7 @@ public class TyTimer implements TimeTaskBase {
      */
 
 
-    public void pullRedPacketTimer(){
+    public ResponseVO pullRedPacketTimer(){
         try {
 
             logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->开始");
@@ -50,13 +50,19 @@ public class TyTimer implements TimeTaskBase {
             if(responseVO.getReCode()==1){
                 logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->推送图文到微信公众号->请求->{}",responseVO);
                ResponseVO resMSg= messageService.sendMessage(responseVO.getData(),"充值红包","翼支付回馈用户充值红包",globals.getDefaultPicUrl(),"open-red-packet","");
-                logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->推送图文到微信公众号->响应->{}",resMSg);
+               logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->推送图文到微信公众号->响应->{}",resMSg);
+               if(resMSg.getReCode()==-1){
+                   return resMSg;
+               }
+               return new ResponseVO(1,"执行成功",null);
             }else{
                 logger.info("TyTimer->pullRedPacketTimer->拉取充值红包->{}",responseVO);
+                return responseVO;
             }
 
         }catch (Exception e){
             logger.error("TyTimer->pullRedPacketTimer->系统异常",e);
+            return new ResponseVO(-1,"执行失败",null);
         }
     }
 }
