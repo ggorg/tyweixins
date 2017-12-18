@@ -27,22 +27,18 @@
                 <form class="layui-form" th:action="list">
                     <div class="tableoptions">
                         <div class="layui-form-item">
-                            <div class="float-left-div" >
+                            <div class="layui-inline">
                                 <label class="layui-form-label" >公众号</label>
-                                <div class="layui-input-inline" >
+                                <div class="layui-input-inline">
                                     <select name="appid" id="appid" lay-filter="appid">
                                         <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}" th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-inline">
-                                <label class="layui-form-label">收 藏</label>
+                                <label class="layui-form-label">关键字</label>
                                 <div class="layui-input-inline">
-                                    <select name="collect" lay-filter="appid">
-                                        <option th:selected="${msg?.collect == null}"></option>
-                                        <option value="0" th:selected="${msg?.collect == '0'}">未收藏</option>
-                                        <option value="1" th:selected="${msg?.collect == '1'}">已收藏</option>
-                                    </select>
+                                    <input type="text" name="content" placeholder="请输入关键字" th:value="${msg?.content}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-inline">
@@ -68,11 +64,16 @@
                                 </div>
                             </div>
                             <div class="layui-inline">
-                                <label class="layui-form-label">关键字</label>
+                                <label class="layui-form-label">收 藏</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="content" placeholder="请输入关键字" th:value="${msg?.content}" autocomplete="off" class="layui-input">
+                                    <select name="collect" lay-filter="appid">
+                                        <option th:selected="${msg?.collect == null}"></option>
+                                        <option value="0" th:selected="${msg?.collect == '0'}">未收藏</option>
+                                        <option value="1" th:selected="${msg?.collect == '1'}">已收藏</option>
+                                    </select>
                                 </div>
                             </div>
+
                             <button class="btn btn_search radius50" lay-submit="lay-submit" lay-filter="formDemo">Search</button> &nbsp;
                         </div>
                     </div><!--tableoptions-->
