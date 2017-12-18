@@ -30,9 +30,11 @@ public class PubWeixinController{
     private PubWeixinService weixinPublicService;
 
     @GetMapping("edit")
-    public String edit(String appid,Model model){
+    public String edit(@RequestParam(defaultValue = "")String appid,Model model){
         try {
-            model.addAttribute("pubweixin",this.weixinPublicService.selectByAppid(appid));
+            if(appid != null && !appid.equals("")){
+                model.addAttribute("pubweixin",this.weixinPublicService.selectByAppid(appid));
+            }
         }catch (Exception e){
             logger.error("PubWeixinController->edit->系统异常",e);
 
