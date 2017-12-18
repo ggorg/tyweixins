@@ -39,9 +39,9 @@
                                 <label class="layui-form-label">收 藏</label>
                                 <div class="layui-input-inline">
                                     <select name="collect" lay-filter="appid">
-                                        <option value="" th:selected="${msg?.collect == null}"></option>
-                                        <option value="0" th:selected="${msg?.collect == 0}">未收藏</option>
-                                        <option value="1" th:selected="${msg?.collect == 1}">已收藏</option>
+                                        <option th:selected="${msg?.collect == null}"></option>
+                                        <option value="0" th:selected="${msg?.collect == '0'}">未收藏</option>
+                                        <option value="1" th:selected="${msg?.collect == '1'}">已收藏</option>
                                     </select>
                                 </div>
                             </div>
@@ -49,9 +49,9 @@
                                 <label class="layui-form-label">回 复</label>
                                 <div class="layui-input-inline">
                                     <select name="reply" lay-filter="appid">
-                                        <option value="" th:selected="${msg?.reply == null}"></option>
-                                        <option value="0" th:selected="${msg?.reply == 0}">未回复</option>
-                                        <option value="1" th:selected="${msg?.reply == 1}">已回复</option>
+                                        <option th:selected="${msg?.reply == null}"></option>
+                                        <option value="0" th:selected="${msg?.reply == '0'}">未回复</option>
+                                        <option value="1" th:selected="${msg?.reply == '1'}">已回复</option>
                                     </select>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                         </td>
                         <td th:text="${#dates.format(obj['create_date'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>
                         <td th:switch="${obj['reply']}">
-                            <span th:case="1" th:style="color:red">已回复</span>
+                            <span th:case="1" style="color: #FF5722;">已回复</span>
                         </td>
                         <td th:switch="${obj['collect']}">
                             <i th:case="1" class="layui-icon" style="font-size: 30px; color: #FF5722;">&#xe650;</i>

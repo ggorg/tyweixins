@@ -68,6 +68,7 @@ public class CoreService {
             // 文本消息
             if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
                 msg.setContent(Content);
+                msg.setMsgtype("1");
                 //入库消息管理
                 msgService.save(msg);
                 // 关键词回复处理
@@ -75,7 +76,7 @@ public class CoreService {
                 // 图片消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
                 //图片标识
-                msg.setMsgtype(2);
+                msg.setMsgtype("2");
                 //图片链接
                 String imageurl = requestMap.get("PicUrl");
                 msg.setContent(imageurl);
@@ -91,19 +92,19 @@ public class CoreService {
              // 音频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)) {
 //                respContent = "您发送的是音频消息！";
-            	msg.setMsgtype(5);
+            	msg.setMsgtype("5");
             	msg.setContent("[音频]");
                 //入库消息管理
                 msgService.save(msg);
              // 视频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)) {
-            	msg.setMsgtype(4);
+            	msg.setMsgtype("4");
             	msg.setContent("[视频]");
                 //入库消息管理
                 msgService.save(msg);
              // 小视频消息
             }else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_SHORTVIDEO)) {
-            	msg.setMsgtype(5);
+            	msg.setMsgtype("5");
             	msg.setContent("[小视频]");
                 //入库消息管理
                 msgService.save(msg);

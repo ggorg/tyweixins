@@ -46,7 +46,7 @@
     </insert>
 
     <update id="update" parameterType="com.ty.entity.EventRule">
-        update weixin_event_rule
+        update weixin_event_rule a
          <set >
 		      <if test="title != null" >
                   title=#{title, jdbcType=VARCHAR},
@@ -65,7 +65,7 @@
     </update>
 
     <delete id="delete" parameterType="int">
-        delete from weixin_event_rule
+        delete from weixin_event_rule a
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
@@ -87,7 +87,7 @@
     <select id="findListCount" resultType="int">
         select
         count(*)
-        from weixin_event_rule
+        from weixin_event_rule a
         where appid = #{appid,jdbcType=VARCHAR}
     </select>
 
@@ -120,7 +120,7 @@
     <select id="getAutoreply" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from weixin_event_rule
+        from weixin_event_rule a
         <include refid="baseJoins"/>
         where a.appid = #{appid,jdbcType=VARCHAR}
         and event_type = 2

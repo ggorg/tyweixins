@@ -119,7 +119,7 @@
                         <td th:text="${obj['country']}">Win 95+</td>
                         <td th:text="${obj['province']}">Win 95+</td>
                         <td th:text="${obj['city']}">Win 95+</td>
-                        <td th:text="${#dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss')}">Win 95+</td>
+                        <td th:text="${obj['subscribe_time']!=null ? #dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss'):''}">Win 95+</td>
                     </tr>
 
                     </tbody>

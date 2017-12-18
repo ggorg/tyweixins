@@ -25,7 +25,7 @@ public interface MsgMapper {
     public int deleteUnCollect();
 
     /** 根据id查询消息对象 */
-    public Msg selectById(@Param("id")Integer id);
+    public Msg selectById(@Param("id")String id);
 
     List<Msg> findList(@Param("page")Page page, @Param("msg")Msg msg);
     /** 查询总数*/
@@ -34,6 +34,4 @@ public interface MsgMapper {
     /** 回复消息列表 */
     public List<Msg> replyList(Msg msg);
     
-    /** 更新历史消息回复状态 */
-    public int markMsg(Msg msg);
 }

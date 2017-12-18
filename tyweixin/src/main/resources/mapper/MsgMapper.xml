@@ -155,6 +155,9 @@
         <if test="msg.collect != null and msg.collect != ''">
 	        and collect = #{msg.collect,jdbcType=INTEGER}
         </if>
+        <if test="msg.reply != null and msg.reply != ''">
+	        and reply = #{msg.reply,jdbcType=INTEGER}
+        </if>
         <if test="msg.userInfo != null and msg.userInfo.nickname != null and msg.userInfo.nickname != ''">
 	        and u.nickname like
 	        CONCAT('%', upper(#{msg.userInfo.nickname}), '%')
@@ -188,6 +191,9 @@
         </if>
         <if test="msg.collect != null and msg.collect != ''">
 	        and collect = #{msg.collect,jdbcType=INTEGER}
+        </if>
+        <if test="msg.reply != null and msg.reply != ''">
+	        and reply = #{msg.reply,jdbcType=INTEGER}
         </if>
         <if test="msg.userInfo != null and msg.userInfo.nickname != null and msg.userInfo.nickname != ''">
 	        and u.nickname like
@@ -234,7 +240,7 @@
     </select>
     
     <!-- 根据id查询当前消息 -->
-    <select id="selectById" resultMap="BaseResultMap" parameterType="int">
+    <select id="selectById" resultMap="BaseResultMap">
     	select 
     	<include refid="Base_Column_List"/>
     	from weixin_msg a
@@ -248,15 +254,5 @@
     	where date(create_date) &lt;= DATE_SUB(CURDATE(),INTERVAL 5 DAY)
     	and collect !=1
     </delete>
-    
-    <!-- 更新历史消息回复状态 -->
-    <update id="markMsg" parameterType="com.ty.entity.Msg">
-        UPDATE weixin_msg
-           SET reply = 1
-         WHERE official = 0
-           AND create_date &lt;= NOW()
-           AND appid = #{appid, jdbcType=VARCHAR}
-           AND openid = #{openid, jdbcType=VARCHAR}
-    </update>
     
 </mapper>
