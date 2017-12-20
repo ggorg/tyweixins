@@ -6,11 +6,29 @@ public class TyActivity {
     private Integer id;
     private String taName;
     private Integer taAmount;
+    private Integer taUsed;
     private Date taBeginDate;
     private Date taEndDate;
     private String taRemark;
     private Integer taMaxCost;
     private Integer taMinCost;
+    private String taRule;
+
+    public Integer getTaUsed() {
+        return taUsed;
+    }
+
+    public void setTaUsed(Integer taUsed) {
+        this.taUsed = taUsed;
+    }
+
+    public String getTaRule() {
+        return taRule;
+    }
+
+    public void setTaRule(String taRule) {
+        this.taRule = taRule;
+    }
 
     public Integer getId() {
         return id;

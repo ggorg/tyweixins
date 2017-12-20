@@ -27,10 +27,28 @@ function initPage(count){
 }
 function initForm(url,formObject){
     layui.use('form', function(){
-        var form = layui.form;
-
+            var form = layui.form;
         $(formObject==undefined?".layui-form":formObject).submit(function(){
-            $.post(url,$(formObject==undefined?".layui-form":formObject).serializeArray(),function(data){
+           return  commonSubmit(url,formObject);
+        })
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+}
+function commonSubmit(url,formObject){
+    var index =null;
+        $.ajax({
+            timeout: 20 * 1000,
+            url: url,
+            type: "post",
+            data: $(formObject==undefined?".layui-form":formObject).serializeArray(),
+            dataType: "JSON",
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            beforeSend: function(xhr, settings) {
+                // xhr.setRequestHeader("If-Modified-Since", "0");
+                index= layer.load();
+
+            },
+            success: function(data, textStatus, jqXHR) {
                 layer.msg(data.reMsg);
                 if(data.reCode==1){
 
@@ -44,12 +62,17 @@ function initForm(url,formObject){
                         }
                     },500)
                 }
+            },
+            error: function(e, xhr, type) {
 
-            });
-            return false;
-        });
-        //各种基于事件的操作，下面会有进一步介绍
-    });
+            },
+            complete: function(xhr, status) {
+                layer.close(index);
+
+            }})
+
+        return false;
+
 }
 function openDialog(width,height,title,url){
     layer.open({
