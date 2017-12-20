@@ -62,13 +62,23 @@ public abstract class CommonService {
         return this.commonMapper.selectCount( new CommonCountBean(tableName,searchCondition));
     }
     public <T> T commonObjectBySingleParam(String tableName,String paramName,Object paramValue,Class<T> clazz)throws Exception{
+        Map map=commonObjectBySingleParam(tableName, paramName, paramValue);
+
+        if(map!=null){
+            T t=clazz.newInstance();
+            PropertyUtils.copyProperties(t,map);
+            return t;
+
+        }
+        return null;
+    }
+    public Map commonObjectBySingleParam(String tableName,String paramName,Object paramValue)throws Exception{
         Map<String,Object> condition=new HashMap<>();
         condition.put(paramName+",=",paramValue);
         List<Map> list=this.commonMapper.selectObjects(new CommonSearchBean(tableName,condition));
         if(list!=null && !list.isEmpty()){
-            T t=clazz.newInstance();
-            PropertyUtils.copyProperties(t,list.get(0));
-            return t;
+
+            return list.get(0);
 
         }
         return null;

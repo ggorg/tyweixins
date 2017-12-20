@@ -1,26 +1,28 @@
 package com.ty.entity;
 
 public class TyBalanceTradeDetail {
-    private String ourTransNo;
-    private String payTransNo;
+    private String tradeNo;
+    private String payTradeNo;
     private String orderDate;
-    private String trnanAmt;
+    private String tradeAmt;
     private String mchntName;
+    private String tradeType;
+    private String mchntCode;
 
-    public String getOurTransNo() {
-        return ourTransNo;
+    public String getTradeNo() {
+        return tradeNo;
     }
 
-    public void setOurTransNo(String ourTransNo) {
-        this.ourTransNo = ourTransNo;
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
     }
 
-    public String getPayTransNo() {
-        return payTransNo;
+    public String getPayTradeNo() {
+        return payTradeNo;
     }
 
-    public void setPayTransNo(String payTransNo) {
-        this.payTransNo = payTransNo;
+    public void setPayTradeNo(String payTradeNo) {
+        this.payTradeNo = payTradeNo;
     }
 
     public String getOrderDate() {
@@ -31,12 +33,12 @@ public class TyBalanceTradeDetail {
         this.orderDate = orderDate;
     }
 
-    public String getTrnanAmt() {
-        return trnanAmt;
+    public String getTradeAmt() {
+        return tradeAmt;
     }
 
-    public void setTrnanAmt(String trnanAmt) {
-        this.trnanAmt = trnanAmt;
+    public void setTradeAmt(String tradeAmt) {
+        this.tradeAmt = tradeAmt;
     }
 
     public String getMchntName() {
@@ -45,5 +47,21 @@ public class TyBalanceTradeDetail {
 
     public void setMchntName(String mchntName) {
         this.mchntName = mchntName;
+    }
+
+    public String getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public String getMchntCode() {
+        return mchntCode;
+    }
+
+    public void setMchntCode(String mchntCode) {
+        this.mchntCode = mchntCode;
     }
 }

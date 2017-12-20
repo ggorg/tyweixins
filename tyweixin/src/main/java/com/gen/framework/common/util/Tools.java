@@ -336,5 +336,7 @@ public final class Tools {
 		return null;
 
 	}
-
+	public static String encrypt(String input){
+		return MyEncryptUtil.encry(input);
+	}
 }

@@ -9,7 +9,7 @@
       trActivityId trid,
       count(id) trcount ,
       sum(trAmount) trsum
-      from ty_red_packet
+      from ty_activity_red_packet
       <if test="trIsOpen!=null">
          where trIsOpen=#{trIsOpen}
       </if>

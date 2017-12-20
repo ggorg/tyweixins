@@ -1,8 +1,7 @@
 package com.ty.controller.manager;
 
 import com.gen.framework.common.vo.ResponseVO;
-import com.ty.controller.WapController;
-import com.ty.services.TyRedPacketService;
+import com.ty.services.TyActivityRedPacketService;
 import com.ty.timer.TyTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ManagerController {
     private final Logger logger = LoggerFactory.getLogger(ManagerController.class);
     @Autowired
-    private TyRedPacketService tyRedPacketService;
+    private TyActivityRedPacketService tyRedPacketService;
     @Autowired
     private TyTimer tyTimer;
 

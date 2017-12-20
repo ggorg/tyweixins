@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.*;
 
 @Service
-public class TyRedPacketService extends CommonService {
+public class TyActivityRedPacketService extends CommonService {
 
     @Autowired
     private Globals globals;
@@ -70,7 +70,7 @@ public class TyRedPacketService extends CommonService {
                                 for(int i=0;i<jsonArray.size();i++){
                                     insertMap=new HashMap();
                                     dataJson=jsonArray.getJSONObject(i);
-                                    TyRedPacket rp=this.commonObjectBySingleParam("ty_red_packet","trFromId",dataJson.getString("packetId"),TyRedPacket.class);
+                                    TyRedPacket rp=this.commonObjectBySingleParam("ty_activity_red_packet","trFromId",dataJson.getString("packetId"),TyRedPacket.class);
 
                                     insertMap.put("tUid",paramMap.get("id"));
                                     insertMap.put("trAmount",Integer.parseInt(dataJson.getString("packetValue")));
@@ -83,7 +83,7 @@ public class TyRedPacketService extends CommonService {
                                     if(rp==null){
                                         this.commonInsertMap("ty_red_packet",insertMap);
                                     }else{
-                                        this.commonUpdateBySingleSearchParam("ty_red_packet",insertMap,"id",rp.getId());
+                                        this.commonUpdateBySingleSearchParam("ty_activity_red_packet",insertMap,"id",rp.getId());
                                     }
 
                                 }
@@ -110,7 +110,7 @@ public class TyRedPacketService extends CommonService {
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
         condition.put("trIsOpen",false);
-        List<Map> tyRedPackList=this.commonList("ty_red_packet",null,null,null,condition);
+        List<Map> tyRedPackList=this.commonList("ty_activity_red_packet",null,null,null,condition);
         if(tyRedPackList==null || tyRedPackList.isEmpty()){
             return new ResponseVO(-3,"抱歉，没有红包可领取",null);
         }
@@ -122,7 +122,7 @@ public class TyRedPacketService extends CommonService {
             updateMap=new HashMap();
             updateMap.put("trIsOpen",true);
             updateMap.put("updateTime",new Date());
-            this.commonUpdateBySingleSearchParam("ty_red_packet",updateMap,"tUid",tyUser.getId());
+            this.commonUpdateBySingleSearchParam("ty_activity_red_packet",updateMap,"tUid",tyUser.getId());
             param=new JSONObject();
             param.put("pay_user",tyUser.getTuTelphone());
             param.put("act_code", ActEnum.act7.getCode());
@@ -157,7 +157,7 @@ public class TyRedPacketService extends CommonService {
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
         condition.put("trIsOpen",true);
-        CommonSearchBean csb=new CommonSearchBean("ty_red_packet",null,"sum(t1.trAmount) as rpSum",null,null,condition);
+        CommonSearchBean csb=new CommonSearchBean("ty_activity_red_packet",null,"sum(t1.trAmount) as rpSum",null,null,condition);
         List<Map> dataList=this.getCommonMapper().selectObjects(csb);
         if(dataList!=null && !dataList.isEmpty() && dataList.size()>0){
             return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount(dataList.get(0)==null?"0":dataList.get(0).get("rpSum").toString()));
@@ -174,7 +174,7 @@ public class TyRedPacketService extends CommonService {
 
         //this.commonList("ty_red_packet","updateTime by desc",null,null)
         CommonChildBean ccb=new CommonChildBean("ty_user","id","tUid",chilCondition);
-        CommonSearchBean csb=new CommonSearchBean("ty_red_packet","updateTime desc","t1.*",null,null,condition,ccb);
+        CommonSearchBean csb=new CommonSearchBean("ty_activity_red_packet","updateTime desc","t1.*",null,null,condition,ccb);
 
         return new ResponseVO(1,"查询成功",this.getCommonMapper().selectObjects(csb));
     }

@@ -37,6 +37,17 @@ public class Globals {
     @Value("${ty.test.openid}")
     private String testOpenid;
 
+    @Value("${ty.api.url.pullActivityUrl}")
+    private String pullActivityUrl;
+
+    public String getPullActivityUrl() {
+        return pullActivityUrl;
+    }
+
+    public void setPullActivityUrl(String pullActivityUrl) {
+        this.pullActivityUrl = pullActivityUrl;
+    }
+
     public String getTestOpenid() {
         return testOpenid;
     }

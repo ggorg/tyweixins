@@ -128,7 +128,7 @@ public class TyBalanceService extends CommonService {
                                         jo=array.getJSONObject(i);
                                         td=jo.toJavaObject(TyBalanceTradeDetail.class);
                                         orderDate=StringUtils.isNotBlank(td.getOrderDate())?td.getOrderDate():"";
-                                        transAmt=StringUtils.isBlank(td.getTrnanAmt())?0:Integer.parseInt(td.getTrnanAmt());
+                                        transAmt=StringUtils.isBlank(td.getTradeAmt())?0:Integer.parseInt(td.getTradeAmt());
                                         if(orderDate.startsWith(currentMonthDate)){
                                             currentMonthList.add(td);
 

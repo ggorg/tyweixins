@@ -27,7 +27,7 @@ public class WapController {
     private TyBalanceService tyBalanceService;
 
     @Autowired
-    private TyRedPacketService redPacketService;
+    private TyActivityRedPacketService redPacketService;
 
 
 

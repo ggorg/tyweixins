@@ -4,14 +4,10 @@ import com.gen.framework.common.task.TimeTaskBase;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
 import com.ty.services.MessageService;
-import com.ty.services.TyRedPacketService;
+import com.ty.services.TyActivityRedPacketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
-import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +19,7 @@ public class TyTimer implements TimeTaskBase {
     private final Logger logger = LoggerFactory.getLogger(TyTimer.class);
 
     @Autowired
-    private TyRedPacketService tyRedPacketService;
+    private TyActivityRedPacketService tyRedPacketService;
 
     @Autowired
     private MessageService messageService;
