@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ty.dao.TyRedPacketMapper">
+
+   <select id="getActivity"  resultType="java.util.HashMap" parameterType="java.lang.Integer">
+      select ta.* from ty_activity ta
+      left join ty_activity_red_packet tyr
+      on ta.id=tyr.trActivityId and tyr.tUid=#{tuid}
+      where (ta.taAmount>ta.taUsed or ta.taUsed is null) and tyr.tUid is null and ta.taDisabled=1
+
+   </select>
+
+</mapper>

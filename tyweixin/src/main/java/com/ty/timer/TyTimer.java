@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
+//@Component
 public class TyTimer implements TimeTaskBase {
 
     private final Logger logger = LoggerFactory.getLogger(TyTimer.class);

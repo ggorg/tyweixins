@@ -6,9 +6,11 @@ import com.gen.framework.common.beans.CommonChildBean;
 import com.gen.framework.common.beans.CommonSearchBean;
 import com.gen.framework.common.exception.GenException;
 import com.gen.framework.common.services.CommonService;
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
+import com.ty.dao.TyActivityMapper;
 import com.ty.dao.TyRedPacketMapper;
 import com.ty.entity.TyRedPacket;
 import com.ty.entity.TyUser;
@@ -38,6 +40,9 @@ public class TyActivityRedPacketService extends CommonService {
 
     @Autowired
     private TyRedPacketMapper tyRedPacketMapper;
+
+    @Autowired
+    private TyActivityMapper tyActivityMapper;
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO<Map> pullRedPacket()throws Exception{
         Map condition=new HashMap();
@@ -109,35 +114,70 @@ public class TyActivityRedPacketService extends CommonService {
         }
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
-        condition.put("trIsOpen",false);
-        List<Map> tyRedPackList=this.commonList("ty_activity_red_packet",null,null,null,condition);
-        if(tyRedPackList==null || tyRedPackList.isEmpty()){
+       // condition.put("trIsOpen",false);
+        List<Map>  tyAct= this.tyActivityMapper.getActivity(tyUser.getId());
+        //List<Map> tyRedPackList=this.commonList("ty_activity_red_packet",null,null,null,condition);
+        if(tyAct==null || tyAct.isEmpty()){
             return new ResponseVO(-3,"抱歉，没有红包可领取",null);
         }
 
         JSONObject param=null;
         Map updateMap=null;
         List amount=new ArrayList();
-        for(Map map:tyRedPackList){
-            updateMap=new HashMap();
-            updateMap.put("trIsOpen",true);
-            updateMap.put("updateTime",new Date());
-            this.commonUpdateBySingleSearchParam("ty_activity_red_packet",updateMap,"tUid",tyUser.getId());
-            param=new JSONObject();
-            param.put("pay_user",tyUser.getTuTelphone());
-            param.put("act_code", ActEnum.act7.getCode());
-            param.put("efCampaignId", map.get("trActivityId"));
-            param.put("packetId", map.get("trFromId"));
-            param.put("packetValue", map.get("trAmount").toString());
-            amount.add(Tools.getRealAmount(map.get("trAmount").toString()));
-            String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
-            if(StringUtils.isBlank(callBackStr)){
-                throw new GenException("openRedPacket->充值红包返回参数异常");
-            }
+        String version=null;
+        String randomVersion=null;
+        Map insertMap=null;
+        for(Map map:tyAct){
+            while(true){
+                version=map.containsKey("version")?map.get("version").toString():"0";
+                randomVersion=System.currentTimeMillis()+"";
+                if(version.equals("0")){
+                    Map versionMap=new HashMap();
+                    versionMap.put("version",randomVersion);
+                    ResponseVO res=this.commonUpdateBySingleSearchParam("ty_activity",versionMap,"version",version);
+                    if(res.getReCode()!=1){
+                        Thread.sleep(200);
+                        continue;
+                    }else{
+                        Integer taMinCost=(Integer) map.get("taMinCost");
+                        Integer taMaxCost=(Integer)  map.get("taMaxCost");
+                        Integer taUsed=(Integer) map.get("taUsed");
+                        Integer taAmount=(Integer) map.get("taAmount");
+                        insertMap=new HashMap();
+                        insertMap.put("tUid",tyUser.getId());
 
-            JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
-            if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
-                throw new GenException("openRedPacket->充值红包失败");
+                        int randRedPackCost=new Random().nextInt(taMaxCost - taMinCost + 1) + taMaxCost;
+                        if((taUsed+randRedPackCost)>taAmount){
+                            randRedPackCost=taAmount-taUsed;
+                        }
+                        insertMap.put("trAmount",randRedPackCost);
+                        insertMap.put("trActivityId",map.get("id"));
+                        //insertMap.put("trFromId",dataJson.getString("packetId"));
+                        insertMap.put("updateTime",new Date());
+                        this.commonInsertMap("ty_red_packet",insertMap);
+                        versionMap.put("version","0");
+
+                        versionMap.put("taUsed",taUsed+randRedPackCost);
+                        ResponseVO res1=this.commonUpdateBySingleSearchParam("ty_activity",versionMap,"version",randomVersion);
+                        if(res1.getReCode()!=1){
+                            throw new GenException("openRedPacket->充值红包异常");
+                        }
+                        amount.add(Tools.getRealAmount(map.get("trAmount").toString()));
+                        String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
+                        if(StringUtils.isBlank(callBackStr)){
+                            throw new GenException("openRedPacket->充值红包返回参数异常");
+                        }
+
+                        JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+                        if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
+                            throw new GenException("openRedPacket->充值红包失败");
+                        }
+                        break;
+                    }
+                }else{
+                    Thread.sleep(200);
+
+                }
             }
 
         }
@@ -164,17 +204,28 @@ public class TyActivityRedPacketService extends CommonService {
         }
         return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount("0"));
     }
-    public ResponseVO findRedPacketRecord(String openid,boolean isOpen){
+    public ResponseVO isHasRedPacket(String openid)throws  Exception{
+
+        Map map=this.commonObjectBySingleParam("ty_user","tuOpenid",openid);
+        if(map!=null){
+            Integer id=(Integer) map.get("id");
+            List actList=this.tyActivityMapper.getActivity(id);
+            return new ResponseVO(1,"查询成功",actList);
+        }
+        return new ResponseVO(-2,"查询失败",null);
+    }
+    public ResponseVO findRedPacketRecord(String openid){
         Map chilCondition=new HashMap();
         chilCondition.put("tuOpenId",openid);
-        Map condition=new HashMap();
-        condition.put("trIsOpen",isOpen);
+       // Map condition=new HashMap();
+        //condition.put("trIsOpen",isOpen);
+        //condition.put("trActivityId", MyEncryptUtil.getRealValue(actId));
 
 
 
         //this.commonList("ty_red_packet","updateTime by desc",null,null)
         CommonChildBean ccb=new CommonChildBean("ty_user","id","tUid",chilCondition);
-        CommonSearchBean csb=new CommonSearchBean("ty_activity_red_packet","updateTime desc","t1.*",null,null,condition,ccb);
+        CommonSearchBean csb=new CommonSearchBean("ty_activity_red_packet","updateTime desc","t1.*",null,null,null,ccb);
 
         return new ResponseVO(1,"查询成功",this.getCommonMapper().selectObjects(csb));
     }

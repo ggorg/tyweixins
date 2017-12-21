@@ -37,8 +37,7 @@ public class WapController {
     @Autowired
     private WeixinUserService weixinUserService;
 
-    @Autowired
-    private TyTimer tyTimer;
+
     @GetMapping("/to-bind-telphone")
     public String toBindTelphone(){
         Tools.noCachePage();
@@ -116,7 +115,7 @@ public class WapController {
     @GetMapping("/to-open-red-packet")
     public String toOpenRedPacket(Model model){
         try {
-            ResponseVO<List> res=this.redPacketService.findRedPacketRecord(Tools.getOpenidByThreadLocal(),false);
+            ResponseVO<List> res=this.redPacketService.isHasRedPacket(Tools.getOpenidByThreadLocal());
             List data=res.getData();
             if(data!=null && !data.isEmpty() && data.size()>0){
                 model.addAttribute("rpNum",data.size());
@@ -156,7 +155,7 @@ public class WapController {
     public String toRedPacketRecord(Model model){
         //this.redPacketService.
         try {
-            ResponseVO res=this.redPacketService.findRedPacketRecord(Tools.getOpenidByThreadLocal(),true);
+            ResponseVO res=this.redPacketService.findRedPacketRecord(Tools.getOpenidByThreadLocal());
             model.addAttribute("rpRecord",res.getData());
         }catch (Exception e){
             logger.error("WapController->toRedPacketRecord->系统异常",e);
