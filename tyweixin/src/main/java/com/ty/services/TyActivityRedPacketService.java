@@ -233,22 +233,7 @@ public class TyActivityRedPacketService extends CommonService {
 
     public List countRedPacket(){
         List<Map> all=tyRedPacketMapper.getCount(null);
-        List<Map> opened=tyRedPacketMapper.getCount(true);
-        if(all!=null && !all.isEmpty() && all.size()>0){
-            String trid=null;
-            String otrid=null;
-            for(Map amap:all){
-                trid=(String) amap.get("trid");
-                for(Map omap:opened){
-                    otrid=(String) omap.get("trid");
-                    if(trid.equals(otrid)){
-                        amap.put("otrcount",omap.get("trcount"));
-                        amap.put("otrsum",omap.get("trsum"));
-                        break;
-                    }
-                }
-            }
-        }
+
         return all;
 
     }

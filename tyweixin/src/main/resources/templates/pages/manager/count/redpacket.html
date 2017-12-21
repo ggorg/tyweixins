@@ -39,11 +39,11 @@
 
                     <tr>
                        
-                        <th class="head1">活动编号</th>
-                        <th class="head0">红包总量</th>
-                        <th class="head1">红包总额</th>
-                        <th class="head0">领取数量</th>
-                        <th class="head1">领取金额</th>
+                        <th class="head1">活动名称</th>
+                        <th class="head0">红包总额</th>
+                        <th class="head1">剩余金额</th>
+                        <th class="head0">已领取数量</th>
+                        <th class="head1">已领取金额</th>
 
                     </tr>
                     </thead>
@@ -51,11 +51,11 @@
                     <tbody>
                     <tr th:if="${redPacketList!=null && !#lists.isEmpty(redPacketList)}" th:each="obj:${redPacketList}">
                        
-                        <td th:text="${obj['trid']}">Trident</td>
-                        <td th:text="${obj['trcount']==null?0:obj['trcount']}">Internet Explorer 4.0</td>
+                        <td th:text="${obj['taName']}">Trident</td>
+                        <td th:text="${#TdTool.getRealAmount(obj['taAmount']==null?0:obj['taAmount'])}">Win 95+</td>
+                        <td th:text="${#TdTool.getRealAmount(obj['taUsed']==null?0:obj['taUsed'])}">Win 95+</td>
+                        <td th:text="${obj['trcount']==null?0:obj['trcount']}">Win 95+</td>
                         <td th:text="${#TdTool.getRealAmount(obj['trsum']==null?0:obj['trsum'])}">Win 95+</td>
-                        <td th:text="${obj['otrcount']==null?0:obj['otrcount']}">Win 95+</td>
-                        <td th:text="${#TdTool.getRealAmount(obj['otrsum']==null?0:obj['otrsum'])}">Win 95+</td>
 
 
                     </tr>

@@ -5,15 +5,12 @@
 <mapper namespace="com.ty.dao.TyRedPacketMapper">
 
    <select id="getCount"  resultType="java.util.HashMap" parameterType="java.lang.Boolean">
-      select
+     select ta.taName,ta.taAmount,ta.taUsed,tar.* from ty_activity ta left JOIN (select
       trActivityId trid,
       count(id) trcount ,
       sum(trAmount) trsum
       from ty_activity_red_packet
-      <if test="trIsOpen!=null">
-         where trIsOpen=#{trIsOpen}
-      </if>
-       GROUP BY trActivityId
+       GROUP BY trActivityId) tar  on ta.id=tar.trid
 
    </select>
 
