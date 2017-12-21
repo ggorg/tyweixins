@@ -2,7 +2,9 @@ package com.ty.interceptor;
 
 import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.services.SysManagerService;
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.util.Tools;
+import com.ty.config.Globals;
 import com.ty.services.TyBindService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class BindIterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private TyBindService tyBindService;
 
+    @Autowired
+    private Globals globals;
+
 
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -39,9 +44,9 @@ public class BindIterceptor extends HandlerInterceptorAdapter {
             filterUrls=filterUrls.replaceAll("[*]",".*");
         }
 
+        String openid=Tools.setOpenidByThreadLocal(StringUtils.isBlank(globals.getTestOpenid())?request.getParameter("token"): MyEncryptUtil.encry(globals.getTestOpenid()));
 
         if(prefixPath.matches("^("+wapPrefixUrls+")$") && !path.equals("/wap/to-error")){
-            String openid=Tools.setOpenidByThreadLocal(request.getParameter("token"));
             if(StringUtils.isBlank(openid)){
                 response.sendRedirect("/wap/to-error");
                 return false;

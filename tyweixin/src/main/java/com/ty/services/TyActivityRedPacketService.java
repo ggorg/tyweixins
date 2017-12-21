@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.beans.CommonChildBean;
 import com.gen.framework.common.beans.CommonSearchBean;
+import com.gen.framework.common.beans.CommonUpdateBean;
 import com.gen.framework.common.exception.GenException;
 import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.util.MyEncryptUtil;
@@ -20,9 +21,11 @@ import com.ty.util.HttpUtil;
 import com.ty.util.TydicDES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,6 +106,7 @@ public class TyActivityRedPacketService extends CommonService {
         }
         return new ResponseVO(-2,"红包获取失败",null);
     }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
     public ResponseVO openRedPacket(String openid)throws Exception{
         UserInfo user=this.weixinUserService.selectByopenid(openid);
         if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()=="未关注"){
@@ -124,61 +128,58 @@ public class TyActivityRedPacketService extends CommonService {
         JSONObject param=null;
         Map updateMap=null;
         List amount=new ArrayList();
-        String version=null;
-        String randomVersion=null;
+
         Map insertMap=null;
+        Map paramMap=null;
+        Map conditionMap=null;
         for(Map map:tyAct){
-            while(true){
-                version=map.containsKey("version")?map.get("version").toString():"0";
-                randomVersion=System.currentTimeMillis()+"";
-                if(version.equals("0")){
-                    Map versionMap=new HashMap();
-                    versionMap.put("version",randomVersion);
-                    ResponseVO res=this.commonUpdateBySingleSearchParam("ty_activity",versionMap,"version",version);
-                    if(res.getReCode()!=1){
-                        Thread.sleep(200);
-                        continue;
-                    }else{
-                        Integer taMinCost=(Integer) map.get("taMinCost");
-                        Integer taMaxCost=(Integer)  map.get("taMaxCost");
-                        Integer taUsed=(Integer) map.get("taUsed");
-                        Integer taAmount=(Integer) map.get("taAmount");
-                        insertMap=new HashMap();
-                        insertMap.put("tUid",tyUser.getId());
 
-                        int randRedPackCost=new Random().nextInt(taMaxCost - taMinCost + 1) + taMaxCost;
-                        if((taUsed+randRedPackCost)>taAmount){
-                            randRedPackCost=taAmount-taUsed;
-                        }
-                        insertMap.put("trAmount",randRedPackCost);
-                        insertMap.put("trActivityId",map.get("id"));
-                        //insertMap.put("trFromId",dataJson.getString("packetId"));
-                        insertMap.put("updateTime",new Date());
-                        this.commonInsertMap("ty_red_packet",insertMap);
-                        versionMap.put("version","0");
+            Integer taMinCost=(Integer) map.get("taMinCost");
+            Integer taMaxCost=(Integer)  map.get("taMaxCost");
+            Integer taUsed=(Integer) map.get("taUsed");
+            Integer taAmount=(Integer) map.get("taAmount");
+            insertMap=new HashMap();
+            insertMap.put("tUid",tyUser.getId());
 
-                        versionMap.put("taUsed",taUsed+randRedPackCost);
-                        ResponseVO res1=this.commonUpdateBySingleSearchParam("ty_activity",versionMap,"version",randomVersion);
-                        if(res1.getReCode()!=1){
-                            throw new GenException("openRedPacket->充值红包异常");
-                        }
-                        amount.add(Tools.getRealAmount(map.get("trAmount").toString()));
-                        String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
-                        if(StringUtils.isBlank(callBackStr)){
-                            throw new GenException("openRedPacket->充值红包返回参数异常");
-                        }
-
-                        JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
-                        if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
-                            throw new GenException("openRedPacket->充值红包失败");
-                        }
-                        break;
-                    }
-                }else{
-                    Thread.sleep(200);
-
-                }
+            int randRedPackCost=new Random().nextInt(taMaxCost - taMinCost + 1) + taMaxCost;
+            if((taUsed+randRedPackCost)>taAmount){
+                randRedPackCost=taAmount-taUsed;
             }
+            insertMap.put("trAmount",randRedPackCost);
+            insertMap.put("trActivityId",map.get("id"));
+            //insertMap.put("trFromId",dataJson.getString("packetId"));
+            insertMap.put("updateTime",new Date());
+            insertMap.put("trSeqCode", DateFormatUtils.format(new Date(),"yyyyMMddHHmmssSSS")+01);
+            ResponseVO reIsert=this.commonInsertMap("ty_activity_red_packet",insertMap);
+
+             paramMap=new HashMap();
+            paramMap.put("taUsed",taUsed+randRedPackCost);
+            ResponseVO res1=this.commonUpdateBySingleSearchParam("ty_activity",paramMap,"id",map.get("id"));
+            if(res1.getReCode()!=1){
+                throw new GenException("openRedPacket->充值红包异常");
+            }
+            amount.add(Tools.getRealAmount(map.get("taAmount").toString()));
+            param=new JSONObject();
+            param.put("pay_user",tyUser.getTuTelphone());
+            param.put("act_code", ActEnum.act4.getCode());
+            param.put("efCampaignId", map.get("id"));
+            param.put("packetId", reIsert.getData().toString());
+            param.put("packetValue", insertMap.get("trAmount").toString());
+            param.put("seqCode",insertMap.get("trSeqCode").toString());
+
+            String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
+            if(StringUtils.isBlank(callBackStr)){
+                throw new GenException("openRedPacket->充值红包返回参数异常");
+            }
+
+            JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
+                throw new GenException("openRedPacket->充值红包失败");
+            }
+
+
+
+
 
         }
         return new ResponseVO(1,"充值红包领取成功",amount);

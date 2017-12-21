@@ -19,10 +19,10 @@
     		Util.toast('请输入手机号码');
     		return
     	}
-    	if(tel.match(/^(133|153|177|180|181|189).*$/)==null){
+    	/*if(tel.match(/^(133|153|177|180|181|189).*$/)==null){
             Util.toast('抱歉，非电信手机号码不能绑定');
             return
-        }
+        }*/
 
 
     	var displayEl = $(e.currentTarget);

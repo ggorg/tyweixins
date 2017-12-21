@@ -39,10 +39,14 @@ public class WapController {
 
 
     @GetMapping("/to-bind-telphone")
-    public String toBindTelphone(){
+    public String toBindTelphone(Model model){
         Tools.noCachePage();
-
-        return "pages/wap/bindingPhone";
+        Map map=tyBindService.checkIsBind(Tools.getOpenidByThreadLocal());
+        if(map==null){
+            return "pages/wap/bindingPhone";
+        }
+        model.addAttribute("msg","当前账号已经绑定过");
+        return "pages/wap/common/error";
     }
     @PostMapping("/do-send-vaild-code")
     @ResponseBody
