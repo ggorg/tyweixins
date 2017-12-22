@@ -12,6 +12,8 @@ import com.ty.util.TydicDES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 @EnableAsync
 @Service
 public class TyVoucherService extends CommonService {
-
+    private final Logger logger = LoggerFactory.getLogger(TyVoucherService.class);
     @Autowired
     private Globals globals;
 
@@ -42,12 +44,14 @@ public class TyVoucherService extends CommonService {
 
         String callBackStr=null;
         if(globals.getSearchVoucherUrl().startsWith("http")){
+            logger.info("TyVoucherService->saveVoucheies->请求代金卷接口->requestData:{}",param.toJSONString());
             callBackStr= HttpUtil.doPost(globals.getSearchVoucherUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchVoucherUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson= JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyVoucherService->saveVoucheies->响应代金卷接口->requestData:{}",callBackJson.toJSONString());
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data") && !callBackJson.getJSONArray("data").isEmpty()){
                     JSONArray jsonArray=callBackJson.getJSONArray("data");

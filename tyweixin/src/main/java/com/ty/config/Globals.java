@@ -40,6 +40,17 @@ public class Globals {
     @Value("${ty.api.url.pullActivityUrl}")
     private String pullActivityUrl;
 
+    @Value("${ty.test.msm.valid}")
+    private String testMsgValid;
+
+    public String getTestMsgValid() {
+        return testMsgValid;
+    }
+
+    public void setTestMsgValid(String testMsgValid) {
+        this.testMsgValid = testMsgValid;
+    }
+
     public String getPullActivityUrl() {
         return pullActivityUrl;
     }

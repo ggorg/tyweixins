@@ -23,6 +23,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -34,7 +36,7 @@ import java.util.*;
 
 @Service
 public class TyActivityRedPacketService extends CommonService {
-
+    private final Logger logger = LoggerFactory.getLogger(TyActivityRedPacketService.class);
     @Autowired
     private Globals globals;
 
@@ -166,6 +168,7 @@ public class TyActivityRedPacketService extends CommonService {
             param.put("packetId", reIsert.getData().toString());
             param.put("packetValue", insertMap.get("trAmount").toString());
             param.put("seqCode",insertMap.get("trSeqCode").toString());
+            logger.info("TyActivityRedPacketService->openRedPacket->请求红包充值接口->requestData:{}",param.toJSONString());
 
             String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
             if(StringUtils.isBlank(callBackStr)){
@@ -173,6 +176,7 @@ public class TyActivityRedPacketService extends CommonService {
             }
 
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyActivityRedPacketService->openRedPacket->响应红包充值接口->requestData:{}",callBackJson.toJSONString());
             if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
                 throw new GenException("openRedPacket->充值红包失败");
             }

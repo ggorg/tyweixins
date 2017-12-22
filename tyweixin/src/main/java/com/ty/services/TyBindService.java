@@ -7,6 +7,7 @@ import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.services.CommonService;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
+import com.ty.controller.WapController;
 import com.ty.entity.TyUser;
 import com.ty.entity.UserInfo;
 import com.ty.enums.ActEnum;
@@ -16,6 +17,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -30,7 +33,7 @@ import java.util.Map;
 
 @Service
 public class TyBindService extends CommonService {
-
+    private final Logger logger = LoggerFactory.getLogger(TyBindService.class);
 
 
     @Autowired
@@ -67,18 +70,20 @@ public class TyBindService extends CommonService {
         JSONObject obj=new JSONObject();
 
         obj.put("phone_no",telphone);
-        String ranInt=RandomStringUtils.randomNumeric(5);
+        String ranInt=StringUtils.isNotBlank(globals.getTestMsgValid())?globals.getTestMsgValid():RandomStringUtils.randomNumeric(5);
         obj.put("act_code", ActEnum.act6.getCode());
         obj.put("message",ranInt);
-        System.out.println(ranInt);
         String callBackStr=null;
         if(globals.getVaildCodeUrl().startsWith("http")){
+            logger.info("TyBindService->sendVaildCode->请求短信接口->requestData:{}",obj.toJSONString());
             callBackStr= HttpUtil.doPost(globals.getVaildCodeUrl(), TydicDES.encodeValue(obj.toJSONString()));
         }else{
+
             callBackStr=FileUtils.readFileToString(new File(globals.getVaildCodeUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject json=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyBindService->sendVaildCode->响应短信接口->解密->{}",json.toJSONString());
             if(json.containsKey("status") && json.getString("status").equals("0")){
                 cacheService.setValidCode(telphone,ranInt);
                 return new ResponseVO(1,"获取验证码成功",null);

@@ -1,10 +1,8 @@
 package com.ty.controller;
 
-import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.util.MyEncryptUtil;
-import com.gen.framework.common.util.Tools;
 import com.ty.config.Globals;
 import com.ty.core.pojo.AccessToken;
 import com.ty.entity.Pubweixin;
@@ -17,9 +15,9 @@ import com.ty.util.WeiXinTools;
 import com.ty.util.WeixinUtil;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.util.DecodeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +35,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping(value = "weixin")
 public class WeixinOauthController {
-    private static final Logger logger = Logger.getLogger("WeixinOauthController");
+    private static final Logger logger = LoggerFactory.getLogger(WeixinOauthController.class);
 
     @Autowired
     private WeixinUtil weixinUtil;
@@ -83,7 +81,10 @@ public class WeixinOauthController {
                 String requestUrl = ACCESS_TOKEN.replace("APPID", pubweixin.getAppid()).replace("SECRET", pubweixin.getAppsecret()).replace("CODE", code);
 
                 // 通过code换取网页授权access_token
+                logger.info("WeixinOauthController->oauth->请求地址->{}",requestUrl);
+
                 JSONObject jsonObject = WeixinUtil.httpRequest(requestUrl, "GET", null);
+                logger.info("WeixinOauthController->oauth->响应->{}",jsonObject);
                 // 如果授权则继续，没有授权则直接返回
                 if (jsonObject != null && jsonObject.containsKey("openid")) {
                     /** 关注状态，0未关注，1已关注，-1数据库没数据 */
@@ -119,7 +120,7 @@ public class WeixinOauthController {
 
                     AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
                     WeiXinTools.initTicket(at.getTicket(),at.getAppid());
-
+                    logger.info("WeixinOauthController->oauth->跳转->page:{},openid:{}",page,openid);
 
                    return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue+"?token="+MyEncryptUtil.encry(StringUtils.isBlank(this.globals.getTestOpenid())?openid:this.globals.getTestOpenid());
 
@@ -145,11 +146,13 @@ public class WeixinOauthController {
 
     public static void main(String[] args) {
         Base32 base32 = new Base32();
-        String abc = "{\"appid\":\"wxd5ba1ab308c1908b\",\"page\":\"voucher\"}";
+        String abc = "{\"appid\":\"wxac4072fc723524ff\",\"page\":\"myself-center\"}";
         logger.info(abc);
 
         System.out.println(CommonUtil.base32Encode(abc));
-        System.out.println(CommonUtil.base32Decode(CommonUtil.base32Encode(abc)));
+        System.out.println(CommonUtil.base32Decode("PMRGC4DQNFSCEORCO54GINLCMEYWCYRTGA4GGMJZGA4GEIRMEJYGCZ3FEI5CE33QMVXC24TFMQWXAYLDNNSXIIT5"));
+        System.out.println(CommonUtil.base32Decode("PMRGC4DQNFSCEORCO54GINLCMEYWCYRTGA4GGMJZGA4GEIRMEJYGCZ3FEI5CE5TPOVRWQZLSEJ6Q"));
+        System.out.println(CommonUtil.base32Decode("PMRGC4DQNFSCEORCO54GINLCMEYWCYRTGA4GGMJZGA4GEIRMEJYGCZ3FEI5CE3LZONSWYZRNMNSW45DFOIRH2"));
         System.out.println(base32.encodeAsString(abc.getBytes()));
         abc = base32.encodeAsString(abc.getBytes()).replace("=", "");
         logger.info(abc);

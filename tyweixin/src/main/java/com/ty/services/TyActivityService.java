@@ -17,6 +17,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,7 +32,7 @@ import java.util.Random;
 
 @Service
 public class TyActivityService extends CommonService {
-
+    private final Logger logger = LoggerFactory.getLogger(TyActivityService.class);
     @Autowired
     private Globals globals;
 
@@ -43,6 +45,7 @@ public class TyActivityService extends CommonService {
         jsonObject.put("act_code", ActEnum.act3.getCode());
         String callBackStr=null;
         if(globals.getPullActivityUrl().startsWith("http")){
+            logger.info("TyActivityService->pullActivity->请求获取活动接口->requestData:{}",jsonObject.toJSONString());
             callBackStr=HttpUtil.doPost(globals.getPullActivityUrl(),TydicDES.encodeValue(jsonObject.toJSONString()));
         }else{
             callBackStr= FileUtils.readFileToString(new File(globals.getPullActivityUrl()));
@@ -51,8 +54,9 @@ public class TyActivityService extends CommonService {
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson=null;
             if(globals.getPullActivityUrl().startsWith("http")){
-                callBackJson= JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
 
+                callBackJson= JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+                logger.info("TyActivityService->pullActivity->响应获取活动接口->requestData:{}",callBackJson.toJSONString());
             }else{
                 callBackJson= JSONObject.parseObject(callBackStr);
             }
