@@ -36,9 +36,9 @@
     <div class="layui-inline">
         <label class="layui-form-label">内容</label>
         <div class="layui-input-block">
-            <input type="text" name="push_content" th:value="${pushObject?.push_content}" placeholder="请输入文字内容"
+            <input type="text" class="layui-show" name="push_content" th:value="${pushObject?.push_content}" placeholder="请输入文字内容"
                    autocomplete="off" class="layui-input"/>
-            <select name="push_messageid" id="push_messageid" lay-filter="type" style="display:none;">
+            <select name="push_messageid" id="push_messageid" lay-filter="type" class="layui-hide">
                 <option th:each="message:${messageList}" th:value="${message?.id}" th:text="${message?.title}"
                         th:selected="${pushObject?.push_messageid eq message?.id}"> 图文ID
                 </option>
@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="layui-inline">
-        <label class="layui-form-label">推送时间（空则即时推送）</label>
+        <label class="layui-form-label">推送时间（空则立即推送）</label>
         <div class="layui-inline">
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" name="ptime" id="push_time"
@@ -125,7 +125,7 @@
             </div>
         </div><!--tableoptions-->
     </form>
-    <table cellpadding="0" cellspacing="0" border="0" id="table2" lay-filter="demo" class="stdtable stdtablecb">
+    <table cellpadding="0" cellspacing="0" border="0" id="table" lay-filter="demo" class="stdtable stdtablecb">
         <colgroup>
             <!--<col class="con0" style="width: 4%" />-->
             <col class="con1"/>
@@ -141,7 +141,7 @@
         </colgroup>
         <thead>
         <tr>
-            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th><input type="checkbox" lay-filter="allChoose"></th>
             <th class="head1">头像</th>
             <th class="head0">昵称</th>
             <th class="head1">openid</th>
@@ -157,7 +157,7 @@
 
         <tbody>
         <tr th:each="obj:${userPage?.result}">
-            <td lay-data="{type:'checkbox', fixed: 'left'}"></td>
+            <td><input type="checkbox"></td>
             <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
             <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
             <td th:text="${obj['openid']}">Win 95+</td>
@@ -188,51 +188,15 @@
     });
     layui.use('form', function () {
         var form = layui.form;
+        form.on('checkbox(allChoose)', function(data){
+            var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+            child.each(function(index, item){
+                item.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
         jQuery(".layui-form").submit(function (data) {
             console.log(data);
-        });
-    });
-    layui.use('table', function(){
-        var table = layui.table;
-        //监听表格复选框选择
-        table.on('checkbox(demo)', function(obj){
-            console.log(obj)
-        });
-        //监听工具条
-        table.on('tool(demo)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
-            }
-        });
-
-        var $ = layui.$, active = {
-            getCheckData: function(){ //获取选中数据
-                var checkStatus = table.checkStatus('table2')
-                        ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
-            ,getCheckLength: function(){ //获取选中数目
-                var checkStatus = table.checkStatus('table2')
-                        ,data = checkStatus.data;
-                layer.msg('选中了：'+ data.length + ' 个');
-            }
-            ,isAll: function(){ //验证是否全选
-                var checkStatus = table.checkStatus('table2');
-                layer.msg(checkStatus.isAll ? '全选': '未全选')
-            }
-        };
-
-        $('.demoTable .layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
         });
     });
     initForm("save", ".layui-form")
