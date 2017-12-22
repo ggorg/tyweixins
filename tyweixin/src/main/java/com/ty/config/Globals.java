@@ -18,6 +18,9 @@ public class Globals {
     @Value("${ty.api.url.searchBalanceDetailUrl}")
     private String searchBalanceDetailUrl;
 
+    @Value("${ty.api.url.checkTyTelphoneUrl}")
+    private String checkTyTelphoneUrl;
+
     @Value("${ty.api.url.vaildCodeUrl}")
     private String vaildCodeUrl;
     @Value("${ty.telphone.prefix}")
@@ -42,6 +45,14 @@ public class Globals {
 
     @Value("${ty.test.msm.valid}")
     private String testMsgValid;
+
+    public String getCheckTyTelphoneUrl() {
+        return checkTyTelphoneUrl;
+    }
+
+    public void setCheckTyTelphoneUrl(String checkTyTelphoneUrl) {
+        this.checkTyTelphoneUrl = checkTyTelphoneUrl;
+    }
 
     public String getTestMsgValid() {
         return testMsgValid;
