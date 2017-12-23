@@ -22,7 +22,7 @@
             </div>
             <div class="red-packet"  th:if="${rpNum>0 and isOpen==null}">
                 <span class="tips">点击领取红包</span>
-                <a th:href="'do-open-red-packet?token='+${#httpServletRequest.getParameter('token')}" class="btn-open bg-size" id="btnOpen">
+                <a th:href="'do-open-red-packet?token='+${#httpServletRequest.getParameter('token')}+${actid!=null?'&actid='+actid:''}" class="btn-open bg-size" id="btnOpen">
                     <span class="btn-open-bg bg-size bouncein"></span>
                     <span class="kai bg-size"></span>
                 </a>

@@ -124,6 +124,7 @@ public class WapController {
             Integer actid=null;
             if(StringUtils.isNotBlank(param) && param.split("_").length>0){
                 actid=Integer.parseInt(param.split("_")[0]);
+                model.addAttribute("actid",actid);
             }
             ResponseVO<List> res=this.redPacketService.isHasRedPacket(Tools.getOpenidByThreadLocal(),actid);
             List data=res.getData();

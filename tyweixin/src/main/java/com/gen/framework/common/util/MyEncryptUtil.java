@@ -47,7 +47,7 @@ public class MyEncryptUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("-"+getDateBase64Encrypt());
+		System.out.println(encry("oJJk5xPBNr6XsKE9_nYowgtGc1Lw"));
 		StringBuilder builder=new StringBuilder();
 		System.out.println(builder.append(new String(Base64.encodeBase64("058571885".getBytes()))).reverse().toString());
 	}
