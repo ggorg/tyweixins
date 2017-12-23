@@ -55,8 +55,12 @@ public class TyBindService extends CommonService {
         if(!NumberUtils.isNumber(telphone)){
             return new ResponseVO(-2,"请填写正确的手机号",null);
         }
-        if(!telphone.matches("^("+globals.getTyTelPrefix()+").*$")){
+        /*if(!telphone.matches("^("+globals.getTyTelPrefix()+").*$")){
             return new ResponseVO(-2,"抱歉，非电信手机号码不能绑定",null);
+        }*/
+        ResponseVO resCheck=checkTyTelphone(telphone);
+        if(resCheck.getReCode()!=1){
+            return resCheck;
         }
         TyUser tyUser=this.commonObjectBySingleParam("ty_user","tuTelphone",telphone, TyUser.class);
         //long count=this.commonCountBySingleParam("ty_user","tuTelphone",telphone);
@@ -90,6 +94,30 @@ public class TyBindService extends CommonService {
             }
         }
         return new ResponseVO(-2,"获取验证码失败",null);
+    }
+    public ResponseVO checkTyTelphone(String telphone)throws Exception{
+
+        JSONObject obj=new JSONObject();
+        obj.put("pay_user ",telphone);
+        obj.put("act_code", ActEnum.act7.getCode());
+        String callBackStr=null;
+        if(globals.getCheckTyTelphoneUrl().startsWith("http")){
+            logger.info("TyBindService->checkTyTelphone->请求天翼手机验证->requestData:{}",obj.toJSONString());
+            callBackStr= HttpUtil.doPost(globals.getCheckTyTelphoneUrl(), TydicDES.encodeValue(obj.toJSONString()));
+        }else{
+
+            callBackStr=FileUtils.readFileToString(new File(globals.getVaildCodeUrl()));
+        }
+        if(StringUtils.isNotBlank(callBackStr)){
+            JSONObject json=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyBindService->checkTyTelphone->响应天翼手机验证->解密->{}",json.toJSONString());
+            if(json.containsKey("status") && json.getString("status").equals("0")){
+
+                return new ResponseVO(1,"手机验证成功",null);
+            }
+        }
+        return new ResponseVO(-2,"手机验证失败",null);
+
     }
     public ResponseVO vaildeCode(String telphone,String code,String openid)throws Exception{
         if(StringUtils.isBlank(telphone)){

@@ -99,12 +99,13 @@ public class WapController {
 
                 }
             }
-
+            return "pages/wap/personal";
 
         }catch (Exception e){
             logger.error("WapController->toMyselfCenter->系统异常",e);
+           return  toError(model,"访问出错");
         }
-        return "pages/wap/personal";
+
     }
     @GetMapping("/to-balance-detail")
     public String toBalanceDetail( Model model){
@@ -151,7 +152,8 @@ public class WapController {
             }
         }catch (Exception e){
             logger.error("WapController->doOpenRedPacket->系统异常",e);
-
+            String[] str=e.getMessage().split("->");
+            return toError(model,str.length>1?str[str.length-1]:"领取红包失败");
         }
         return "pages/wap/cashRedpacket";
     }

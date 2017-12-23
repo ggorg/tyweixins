@@ -85,6 +85,22 @@ public class TyBalanceService extends CommonService {
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceDetailUrl()));
         }
+        Map currentMonthMap=new HashMap();
+        Map lastMonthMap=new HashMap();
+        Map beforeLastMonthMap=new HashMap();
+
+        List currentMonthList=new ArrayList();
+        List lastMonthList=new ArrayList();
+        List beforeLastMonthList=new ArrayList();
+
+        currentMonthMap.put("list",currentMonthList);
+        lastMonthMap.put("list",lastMonthList);
+        beforeLastMonthMap.put("list",beforeLastMonthList);
+
+        Map mainMap=new HashMap();
+        mainMap.put("currentMonth",currentMonthMap);
+        mainMap.put("lastMonth",lastMonthMap);
+        mainMap.put("beforeLastMonth",beforeLastMonthMap);
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             if(callBackJson.getString("status").equals("0")){
@@ -95,25 +111,11 @@ public class TyBalanceService extends CommonService {
                     String currentMonthDate= DateFormatUtils.format(currentDate,"yyyy-MM");
                     String lastMonthDate=DateFormatUtils.format( DateUtils.addMonths(currentDate,-1),"yyyy-MM");
                     String beforeLastMonthDate=DateFormatUtils.format( DateUtils.addMonths(currentDate,-2),"yyyy-MM");
+
                     if(datas!=null && !datas.isEmpty() && datas.size()>0){
                         JSONObject jo=null;
                         String orderDate=null;
-                        Map currentMonthMap=new HashMap();
-                        Map lastMonthMap=new HashMap();
-                        Map beforeLastMonthMap=new HashMap();
 
-                        List currentMonthList=new ArrayList();
-                        List lastMonthList=new ArrayList();
-                        List beforeLastMonthList=new ArrayList();
-
-                        currentMonthMap.put("list",currentMonthList);
-                        lastMonthMap.put("list",lastMonthList);
-                        beforeLastMonthMap.put("list",beforeLastMonthList);
-
-                        Map mainMap=new HashMap();
-                        mainMap.put("currentMonth",currentMonthMap);
-                        mainMap.put("lastMonth",lastMonthMap);
-                        mainMap.put("beforeLastMonth",beforeLastMonthMap);
                         TyBalanceTradeDetail td=null;
                         Integer transSumAmt=0;
                         Integer transAmt=0;
@@ -158,7 +160,7 @@ public class TyBalanceService extends CommonService {
                 }
             }
         }
-        return new ResponseVO(-1,"",null);
+        return new ResponseVO(-1,"",mainMap);
     }
 
 }

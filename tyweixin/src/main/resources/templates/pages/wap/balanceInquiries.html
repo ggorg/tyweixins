@@ -25,10 +25,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${currentMonth['transCount']!=null?currentMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${currentMonth!=null and currentMonth['transCount']!=null?currentMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(currentMonth['transSumAmt']!=null?currentMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(currentMonth!=null and currentMonth['transSumAmt']!=null?currentMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
 
                         </div>
@@ -38,7 +38,7 @@
                       <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <li th:each="data:${currentMonth['list']}">
+                        <li th:if="${currentMonth!=null and currentMonth['list']!=null }" th:each="data:${currentMonth['list']}">
                             <div class="detail-con">
                                 <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
                                 <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>
@@ -56,10 +56,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${lastMonth['transCount']!=null?lastMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${lastMonth!=null and lastMonth['transCount']!=null?lastMonth['transCount']:'0'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(lastMonth['transSumAmt']!=null?lastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(lastMonth!=null and lastMonth['transSumAmt']!=null?lastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
 
                         </div>
@@ -69,7 +69,7 @@
                         <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <li th:each="data:${lastMonth['list']}">
+                        <li th:if="${lastMonth!=null and lastMonth['list']!=null}" th:each="data:${lastMonth['list']}">
                             <div class="detail-con">
                                 <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
                                 <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>
@@ -86,10 +86,10 @@
                     <div class="bg-white pandect-box">
                         <div class="pandect">
                             <div class="fl">
-                                <p th:inline="text">[[${beforeLastMonth['transCount']!=null?beforeLastMonth['transCount']:'0.00'}]]<span class="unit">笔</span><span >当月共交易</span></p>
+                                <p th:inline="text">[[${beforeLastMonth!=null and beforeLastMonth['transCount']!=null?beforeLastMonth['transCount']:'0.00'}]]<span class="unit">笔</span><span >当月共交易</span></p>
                             </div>
                             <div class="fl">
-                                <p th:inline="text" >[[${#TdTool.getRealAmount(beforeLastMonth['transSumAmt']!=null?beforeLastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
+                                <p th:inline="text" >[[${#TdTool.getRealAmount(beforeLastMonth!=null and beforeLastMonth['transSumAmt']!=null?beforeLastMonth['transSumAmt']+'':'0.00')}]]<span class="unit">元</span><span>当月充值金额</span></p>
                             </div>
 
                         </div>
@@ -99,7 +99,7 @@
                         <i class="icon-detail"></i>项目明细
                     </div>
                     <ul class="detail-list">
-                        <li th:each="data:${beforeLastMonth['list']}">
+                        <li th:if="${beforeLastMonth!=null and beforeLastMonth['list']!=null}" th:each="data:${beforeLastMonth['list']}">
                             <div class="detail-con">
                                 <span class="name" th:text="${data?.mchntName}">天翼电子商务有限公司-00000871205020天翼电子商务有限公司</span>
                                 <span th:text="${data?.orderDate}">时间：2017-11-21  11:30:20</span>

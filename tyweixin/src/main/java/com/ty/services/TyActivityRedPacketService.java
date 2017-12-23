@@ -178,7 +178,7 @@ public class TyActivityRedPacketService extends CommonService {
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
             logger.info("TyActivityRedPacketService->openRedPacket->响应红包充值接口->requestData:{}",callBackJson.toJSONString());
             if(callBackJson.containsKey("status") && !callBackJson.getString("status").equals("0")){
-                throw new GenException("openRedPacket->充值红包失败");
+                throw new GenException("openRedPacket->充值红包失败->"+callBackJson.getString("message"));
             }
 
 
@@ -201,7 +201,7 @@ public class TyActivityRedPacketService extends CommonService {
         }
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
-        condition.put("trIsOpen",true);
+        //condition.put("trIsOpen",true);
         CommonSearchBean csb=new CommonSearchBean("ty_activity_red_packet",null,"sum(t1.trAmount) as rpSum",null,null,condition);
         List<Map> dataList=this.getCommonMapper().selectObjects(csb);
         if(dataList!=null && !dataList.isEmpty() && dataList.size()>0){
