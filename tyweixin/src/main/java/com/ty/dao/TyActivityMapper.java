@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface TyActivityMapper {
-    List getActivity(@Param("tUid") Integer tUid);
+    List getActivity(@Param("tUid") Integer tUid,@Param("actId") Integer actId);
 }

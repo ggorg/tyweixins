@@ -46,6 +46,17 @@ public class Globals {
     @Value("${ty.test.msm.valid}")
     private String testMsgValid;
 
+    @Value("${ty.oauth.redirectUri}")
+    private String redirectUri;
+
+    public String getRedirectUri() {
+        return redirectUri;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
     public String getCheckTyTelphoneUrl() {
         return checkTyTelphoneUrl;
     }

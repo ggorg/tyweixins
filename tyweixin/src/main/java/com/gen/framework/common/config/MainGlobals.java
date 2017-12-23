@@ -9,8 +9,7 @@ public class MainGlobals {
     @Value("${gen.rs.dir}")
     private String rsDir;
 
-    @Value("${ty.oauth.redirectUri}")
-    private String redirectUri;
+
 
     public String getRsDir() {
         return rsDir;
@@ -20,7 +19,5 @@ public class MainGlobals {
         this.rsDir = rsDir;
     }
 
-    public String getRedirectUri() { return redirectUri; }
 
-    public void setRedirectUri(String redirectUri) { this.redirectUri = redirectUri; }
 }

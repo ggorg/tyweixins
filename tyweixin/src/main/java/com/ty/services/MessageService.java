@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.config.MainGlobals;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
+import com.ty.config.Globals;
 import com.ty.core.beans.message.resp.Article;
 import com.ty.core.beans.message.resp.NewsMessage;
 import com.ty.dao.MessageMapper;
@@ -31,7 +32,7 @@ public class MessageService{
 	@Autowired
 	private WeixinInterfaceService weixinInterfaceService;
     @Autowired
-    private MainGlobals mainGlobals;
+    private Globals globals;
     
     /**
      * 添加图文消息
@@ -180,7 +181,7 @@ public class MessageService{
                 state.put("param",param);
                 StringBuffer oauthUrl = new StringBuffer();
                 oauthUrl = oauthUrl.append("https://open.weixin.qq.com/connect/oauth2/authorize?appid=").append(appid);
-                oauthUrl = oauthUrl.append("&redirect_uri=").append(URLEncoder.encode(mainGlobals.getRedirectUri(),"utf-8"));
+                oauthUrl = oauthUrl.append("&redirect_uri=").append(URLEncoder.encode(globals.getRedirectUri(),"utf-8"));
                 oauthUrl = oauthUrl.append("&response_type=code&scope=snsapi_userinfo&state=");
                 oauthUrl = oauthUrl.append(CommonUtil.base32Encode(state.toString())).append("#wechat_redirect");
 

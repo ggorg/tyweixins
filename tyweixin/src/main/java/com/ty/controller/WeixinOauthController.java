@@ -112,6 +112,7 @@ public class WeixinOauthController {
             //TODO 这里根据state传递过来的参数page,跳转到对应页面
             if(json.containsKey("page")){
                 String page = json.getString("page");
+
                 if("redpack".equals(page)){
                     return InternalResourceViewResolver.REDIRECT_URL_PREFIX + "pages/manager/weixin/menu";
                 }
@@ -121,8 +122,15 @@ public class WeixinOauthController {
                     AccessToken at=weixinInterfaceService.getTokenByAppid(appid);
                     WeiXinTools.initTicket(at.getTicket(),at.getAppid());
                     logger.info("WeixinOauthController->oauth->跳转->page:{},openid:{}",page,openid);
-
-                   return InternalResourceViewResolver.REDIRECT_URL_PREFIX + jumpUrlValue+"?token="+MyEncryptUtil.encry(StringUtils.isBlank(this.globals.getTestOpenid())?openid:this.globals.getTestOpenid());
+                    StringBuilder url=new StringBuilder();
+                    url.append(InternalResourceViewResolver.REDIRECT_URL_PREFIX );
+                    url.append(jumpUrlValue);
+                    url.append("?token=");
+                    url.append(MyEncryptUtil.encry(StringUtils.isBlank(this.globals.getTestOpenid())?openid:this.globals.getTestOpenid()));
+                   if(json.containsKey("param") && json.getString("param")!=null){
+                       url.append("&").append("param=").append(json.getString("param"));
+                   }
+                   return url.toString();
 
                 }
             }

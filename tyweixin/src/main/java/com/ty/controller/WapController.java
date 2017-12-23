@@ -5,6 +5,7 @@ import com.gen.framework.common.vo.ResponseVO;
 import com.ty.entity.UserInfo;
 import com.ty.services.*;
 import com.ty.timer.TyTimer;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,9 +119,13 @@ public class WapController {
     }
 
     @GetMapping("/to-open-red-packet")
-    public String toOpenRedPacket(Model model){
+    public String toOpenRedPacket(Model model,String param){
         try {
-            ResponseVO<List> res=this.redPacketService.isHasRedPacket(Tools.getOpenidByThreadLocal());
+            Integer actid=null;
+            if(StringUtils.isNotBlank(param) && param.split("_").length>0){
+                actid=Integer.parseInt(param.split("_")[0]);
+            }
+            ResponseVO<List> res=this.redPacketService.isHasRedPacket(Tools.getOpenidByThreadLocal(),actid);
             List data=res.getData();
             if(data!=null && !data.isEmpty() && data.size()>0){
                 model.addAttribute("rpNum",data.size());
@@ -138,9 +143,9 @@ public class WapController {
 
 
     @GetMapping("/do-open-red-packet")
-    public String doOpenRedPacket(Model model){
+    public String doOpenRedPacket(Model model,Integer actid){
         try {
-            ResponseVO<List> res=this.redPacketService.openRedPacket(Tools.getOpenidByThreadLocal());
+            ResponseVO<List> res=this.redPacketService.openRedPacket(Tools.getOpenidByThreadLocal(),actid);
             if(res.getReCode()==1){
                 model.addAttribute("rpNum",res.getData().size());
                 model.addAttribute("isOpen",true);
@@ -179,6 +184,7 @@ public class WapController {
         return "pages/wap/voucherQuery";
 
     }
+
     @GetMapping("/to-error")
     public String toError(Model model,String msg){
         model.addAttribute("msg",msg);

@@ -1,6 +1,8 @@
 package com.gen.framework.common.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.core.util.Base64Encoder;
+import com.ty.util.CommonUtil;
 import com.ty.util.WeiXinTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -339,4 +342,5 @@ public final class Tools {
 	public static String encrypt(String input){
 		return MyEncryptUtil.encry(input);
 	}
+
 }

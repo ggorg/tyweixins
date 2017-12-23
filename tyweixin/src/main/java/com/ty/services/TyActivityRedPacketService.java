@@ -109,7 +109,7 @@ public class TyActivityRedPacketService extends CommonService {
         return new ResponseVO(-2,"红包获取失败",null);
     }
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
-    public ResponseVO openRedPacket(String openid)throws Exception{
+    public ResponseVO openRedPacket(String openid,Integer actId)throws Exception{
         UserInfo user=this.weixinUserService.selectByopenid(openid);
         if(user==null || StringUtils.isBlank(user.getSubscribe()) || user.getSubscribe()=="未关注"){
             return new ResponseVO(-2,"请先关注翼支付关众号",null);
@@ -121,7 +121,7 @@ public class TyActivityRedPacketService extends CommonService {
         Map condition=new HashMap();
         condition.put("tUid",tyUser.getId());
        // condition.put("trIsOpen",false);
-        List<Map>  tyAct= this.tyActivityMapper.getActivity(tyUser.getId());
+        List<Map>  tyAct= this.tyActivityMapper.getActivity(tyUser.getId(),actId);
         //List<Map> tyRedPackList=this.commonList("ty_activity_red_packet",null,null,null,condition);
         if(tyAct==null || tyAct.isEmpty()){
             return new ResponseVO(-3,"抱歉，没有红包可领取",null);
@@ -209,12 +209,12 @@ public class TyActivityRedPacketService extends CommonService {
         }
         return new ResponseVO(1,"获取红包余额成功",Tools.getRealAmount("0"));
     }
-    public ResponseVO isHasRedPacket(String openid)throws  Exception{
+    public ResponseVO isHasRedPacket(String openid,Integer actId)throws  Exception{
 
         Map map=this.commonObjectBySingleParam("ty_user","tuOpenid",openid);
         if(map!=null){
             Integer id=(Integer) map.get("id");
-            List actList=this.tyActivityMapper.getActivity(id);
+            List actList=this.tyActivityMapper.getActivity(id,actId);
             return new ResponseVO(1,"查询成功",actList);
         }
         return new ResponseVO(-2,"查询失败",null);
