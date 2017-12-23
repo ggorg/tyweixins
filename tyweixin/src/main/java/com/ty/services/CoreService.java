@@ -1,10 +1,12 @@
 package com.ty.services;
 
+import com.ty.controller.WapController;
 import com.ty.dao.PubweixinMapper;
 import com.ty.dao.UserInfoMapper;
 import com.ty.entity.*;
 import com.ty.util.MessageUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,8 @@ import java.util.Map;
  */
 @Service
 public class CoreService {
-    
-    private static final Logger logger = Logger.getLogger(CoreService.class);
+
+    private final Logger logger = LoggerFactory.getLogger(CoreService.class);
             
     @Autowired
     private WeixinInterfaceService weixinInterfaceService;
@@ -51,6 +53,7 @@ public class CoreService {
         try {
             // xml请求解析
             Map<String, String> requestMap = MessageUtil.parseXml(request);
+            logger.info("CoreService->processRequest->微信回调数据->{}",requestMap);
             // 发送方帐号（open_id）
             String fromUserName = requestMap.get("FromUserName");
             // 公众帐号原始ID
@@ -147,8 +150,11 @@ public class CoreService {
                  // 自定义菜单点击事件
                 }else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
                     // 事件KEY值，与创建自定义菜单时指定的KEY值对应
+                    logger.info("CoreService->processRequest->微信回调数据->菜单点击事件->eventKey:{},fromUserName:{},pubweixin:{}",eventKey,fromUserName,pubweixin);
                     respMessage = autoReplys(eventKey,fromUserName, pubweixin);
-                 // 二维码扫描事件
+                    logger.info("CoreService->processRequest->微信回调数据->菜单点击事件->返回->respMessage:{}",respMessage);
+
+                    // 二维码扫描事件
                 }else if (eventType.equals(MessageUtil.EVENT_TYPE_SCAN)) {
                     // 取出场景ID
                     String scene_id = requestMap.get("EventKey");
@@ -161,7 +167,7 @@ public class CoreService {
                 respMessage = eventRuleReplys(eventRule,fromUserName,pubweixin);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("CoreService->processRequest->处理微信请求->系统异常",e);
         }
         return respMessage;
     }
