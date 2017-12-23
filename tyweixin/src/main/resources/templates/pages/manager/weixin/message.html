@@ -94,7 +94,17 @@
             var form = layui.form;
             form.on('select(appid)', function(data){
                 jQuery.post("list",{appid:data.value},function(){
-                    top.location.href=window.parent.location.href;
+                    var currentUrl=window.parent.location.href;
+                    if(currentUrl.indexOf("?")==-1){
+                        top.location.href=currentUrl+"?appid="+data.value;
+                        return ;
+                    }else{
+                        if(currentUrl.indexOf("appid")==-1){
+                            top.location.href=currentUrl+"&appid="+data.value;
+                        }else{
+                            top.location.href=currentUrl.replace(/appid=[^&]+/,"appid="+data.value);
+                        }
+                    }
                 });
             });
         })

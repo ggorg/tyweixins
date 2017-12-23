@@ -31,7 +31,7 @@
                                 <label class="layui-form-label" >公众号</label>
                                 <div class="layui-input-inline" >
                                     <select name="appid" id="appid" lay-filter="appid">
-                                        <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}" th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称</option>
+                                        <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}" th:text="${pubweixin?.name}" th:selected="${appid == pubweixin?.appid}"> 公众号名称</option>
                                     </select>
                                 </div>
                             </div>
@@ -87,7 +87,17 @@
             var form = layui.form;
             form.on('select(appid)', function(data){
                 jQuery.post("list",{appid:data.value},function(){
-                    top.location.href=window.parent.location.href;
+                    var currentUrl=window.parent.location.href;
+                    if(currentUrl.indexOf("?")==-1){
+                        top.location.href=currentUrl+"?appid="+data.value;
+                        return ;
+                    }else{
+                        if(currentUrl.indexOf("appid")==-1){
+                            top.location.href=currentUrl+"&appid="+data.value;
+                        }else{
+                            top.location.href=currentUrl.replace(/appid=[^&]+/,"appid="+data.value);
+                        }
+                    }
                 });
             });
         })

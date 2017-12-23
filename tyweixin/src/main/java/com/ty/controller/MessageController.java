@@ -1,6 +1,7 @@
 package com.ty.controller;
 
 import com.gen.framework.common.config.MainGlobals;
+import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.util.UploadFileMoveUtil;
 import com.gen.framework.common.vo.ResponseVO;
@@ -39,14 +40,21 @@ public class MessageController {
     private PubWeixinService pubWeixinService;
     @Autowired
     private MainGlobals mainGlobals;
+    @Autowired
+    private CacheService cacheService;
 
     @RequestMapping(value = {"list", ""})
     public String list(@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model) {
         List<Pubweixin> pubweixinList = pubWeixinService.findPubweixinAll();
-        if(appid == null || appid.equals("")){
-            if(pubweixinList.size()>0){
-                appid = pubweixinList.get(0).getAppid();
+        if(appid == null){
+            appid = (String) cacheService.get("appid");
+            if(appid == null || appid.equals("")){
+                if(pubweixinList.size()>0){
+                    appid = pubweixinList.get(0).getAppid();
+                }
             }
+        }else{
+            cacheService.set("appid",appid);
         }
         Page<Message> messagePage =  messageService.findList(pageNo,appid);
         model.addAttribute("messagePage",messagePage);

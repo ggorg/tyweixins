@@ -121,11 +121,11 @@ public class WeixinUtil {
 		if (jsonObject.containsKey("access_token")) {
 			accessToken.setToken(jsonObject.getString("access_token"));
 			accessToken.setExpiresIn(new Date().getTime());
-		}
-		//取jsapi_ticket
-		JSONObject jsapi_ticketjson = httpRequest(jsapi_ticket_url.replace("ACCESS_TOKEN", accessToken.getToken()), "GET", null);
-		if (jsapi_ticketjson.containsKey("ticket")) {
-			accessToken.setTicket(jsapi_ticketjson.getString("ticket"));
+			//取jsapi_ticket
+			JSONObject jsapi_ticketjson = httpRequest(jsapi_ticket_url.replace("ACCESS_TOKEN", accessToken.getToken()), "GET", null);
+			if (jsapi_ticketjson.containsKey("ticket")) {
+				accessToken.setTicket(jsapi_ticketjson.getString("ticket"));
+			}
 		}
 	}
 	
