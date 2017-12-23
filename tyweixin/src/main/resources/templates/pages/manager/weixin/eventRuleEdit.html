@@ -22,9 +22,9 @@
     <label class="layui-form-label">事件类型</label>
     <div class="layui-input-inline">
       <select name="event_type" id="event_type" lay-filter="type">
-        <option value="1" th:selected="${eventRuleObject?.event_type == 1}">关注时自动回复（唯一）</option>
-        <option value="2" th:selected="${eventRuleObject?.event_type == 2}">消息自动回复(唯一）</option>
-        <option value="3" th:selected="${eventRuleObject?.event_type == 3}">关键词回复</option>
+        <option value="1" th:selected="${eventRuleObject?.event_type == '1'}">关注时自动回复（唯一）</option>
+        <option value="2" th:selected="${eventRuleObject?.event_type == '2'}">消息自动回复(唯一）</option>
+        <option value="3" th:selected="${eventRuleObject?.event_type == '3'}">关键词回复</option>
       </select>
     </div>
   </div>

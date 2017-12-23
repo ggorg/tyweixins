@@ -262,4 +262,18 @@ public class WeixinUtil {
 			fileEndWitsh = ".mp4";
 		return fileEndWitsh;
 	}
+
+	/**
+	 * 重置AccessToken
+	 * @param appid 应用id
+	 */
+	public void resetToken(String appid){
+		//添加token和失效时间
+		for (AccessToken accessToken : AccessTokenSet) {
+			//重置TOKEN
+			if (accessToken.getAppid().equals(appid)) {
+				get_token(accessToken);
+			}
+		}
+	}
 }

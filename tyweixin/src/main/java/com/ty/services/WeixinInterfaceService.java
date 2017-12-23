@@ -92,7 +92,9 @@ public class WeixinInterfaceService {
 	private final static String GETKFLIST_URL = "https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=ACCESS_TOKEN";
 	/** 修改用户备注*/
 	private final static String UPDATEREMARK_URL = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
-    /**
+	/** 获得模板ID*/
+	private final static String API_ADD_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN";
+	/**
      * 微信用户资料
      * @param appid 应用id
      * @param openid 用户原始id
@@ -898,5 +900,32 @@ public class WeixinInterfaceService {
 			}
 			return jsonObject;
 	  }
+
+    /**
+     * 获得模板ID
+     * @param appid 应用id
+     * @param templateIdShort 模板库中模板的编号，有“TM**”和“OPENTMTM**”等形式
+     * @return
+     */
+    public JSONObject apiAddTemplateUrl(String appid, String templateIdShort) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = API_ADD_TEMPLATE_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("template_id_short", templateIdShort);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", jsonObject.toString());
+        }
+        //token过期重置token
+        if(jsonObject.containsKey("errcode") && jsonObject.getString("errcode").equals("40001")){
+            // 重置token
+            weixinUtil.resetToken(appid);
+            apiAddTemplateUrl(appid, templateIdShort);
+        }
+        return jsonObject;
+    }
 
 }
