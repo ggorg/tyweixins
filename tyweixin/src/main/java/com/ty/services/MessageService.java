@@ -1,7 +1,6 @@
 package com.ty.services;
 
 import com.alibaba.fastjson.JSONObject;
-import com.gen.framework.common.config.MainGlobals;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
@@ -12,6 +11,8 @@ import com.ty.entity.Message;
 import com.ty.util.CommonUtil;
 import com.ty.util.CustomMessage;
 import com.ty.util.MessageUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 @Service
 public class MessageService{
+    private final Logger logger = LoggerFactory.getLogger(MessageService.class);
     @Autowired
     private MessageMapper messageMapper;
 	@Autowired
@@ -197,7 +199,7 @@ public class MessageService{
             }
             return new ResponseVO(1,"成功",null);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("MessageService->sendMessage->系统异常",e);
             return new ResponseVO(-1,"失败",null);
         }
     }

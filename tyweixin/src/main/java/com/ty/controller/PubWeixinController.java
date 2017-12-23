@@ -48,7 +48,7 @@ public class PubWeixinController{
             Page<Pubweixin> page = weixinPublicService.findPubweixin(pageNo);
             model.addAttribute("pubPage", page);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("PubWeixinController->list->系统异常",e);
         }
         return "pages/manager/weixin/public";
     }
