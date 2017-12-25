@@ -51,7 +51,7 @@ public class TyVoucherService extends CommonService {
         }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson= JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
-            logger.info("TyVoucherService->saveVoucheies->响应代金卷接口->requestData:{}",callBackJson.toJSONString());
+            logger.info("TyVoucherService->saveVoucheies->响应代金卷接口->responseData:{}",callBackJson.toJSONString());
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data") && !callBackJson.getJSONArray("data").isEmpty()){
                     JSONArray jsonArray=callBackJson.getJSONArray("data");
@@ -64,7 +64,7 @@ public class TyVoucherService extends CommonService {
                         obj.put("tvSendDate",DateUtils.parseDate(json.getString("sendDate"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
                         obj.put("tvBusinessType",json.getString("businessType").replace("null",""));
                         obj.put("tvRemark",json.getString("remark").replace("null",""));
-                        obj.put("tvValue",Integer.parseInt(json.containsKey("json")?json.getString("value"):"0"));
+                        obj.put("tvValue",Integer.parseInt(json.containsKey("value")?json.getString("value"):"0"));
                         obj.put("tvBeginTime",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
                         obj.put("tvEndTime",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
                         obj.put("createTime",new Date());

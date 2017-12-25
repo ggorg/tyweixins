@@ -15,6 +15,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ import java.util.*;
  */
 @Service
 public class TyBalanceService extends CommonService {
-
+    private final Logger logger = LoggerFactory.getLogger(TyBalanceService.class);
     @Autowired
     private Globals globals;
 
@@ -43,12 +45,14 @@ public class TyBalanceService extends CommonService {
         param.put("act_code", ActEnum.act2.getCode());
         String callBackStr=null;
         if(globals.getSearchBalanceUrl().startsWith("http")){
+            logger.info("TyBalanceService->getBalance->请求获取余额信息->requestData:{}",param.toJSONString());
             callBackStr=HttpUtil.doPost(globals.getSearchBalanceUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceUrl()));
         }
         if(StringUtils.isNotBlank(callBackStr)){
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyBalanceService->getBalance->响应获取余额信息->解密->{}",callBackJson.toJSONString());
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data")){
                     JSONObject data=callBackJson.getJSONObject("data");
@@ -81,6 +85,7 @@ public class TyBalanceService extends CommonService {
         param.put("act_code", ActEnum.act1.getCode());
         String callBackStr=null;
         if(globals.getSearchBalanceDetailUrl().startsWith("http")){
+            logger.info("TyBalanceService->getBalance->请求获取余额明细信息->requestData:{}",param.toJSONString());
             callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceDetailUrl()));
@@ -102,7 +107,9 @@ public class TyBalanceService extends CommonService {
         mainMap.put("lastMonth",lastMonthMap);
         mainMap.put("beforeLastMonth",beforeLastMonthMap);
         if(StringUtils.isNotBlank(callBackStr)){
+            System.out.println(TydicDES.decodedecodeValue(callBackStr));
             JSONObject callBackJson=JSONObject.parseObject(TydicDES.decodedecodeValue(callBackStr));
+            logger.info("TyBalanceService->getBalance->请求获取余额明细信息->解密->{}",callBackJson.toJSONString());
             if(callBackJson.getString("status").equals("0")){
                 if(callBackJson.containsKey("data")){
                     //JSONObject data=callBackJson.getJSONObject("data");
