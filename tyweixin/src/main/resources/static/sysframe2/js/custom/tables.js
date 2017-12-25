@@ -23,5 +23,5 @@ jQuery(document).ready(function(){
 
 
     ///// TRANSFORM CHECKBOX AND RADIO BOX USING UNIFORM PLUGIN /////
-    jQuery('input:checkbox,input:radio').uniform();
+   
 });
