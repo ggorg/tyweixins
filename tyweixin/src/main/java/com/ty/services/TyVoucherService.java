@@ -61,11 +61,12 @@ public class TyVoucherService extends CommonService {
                         obj=new HashMap();
                         json=jsonArray.getJSONObject(i);
                         obj.put("tvCode",json.getString("code"));
-                        obj.put("tvSendDate",DateUtils.parseDate(json.getString("sendDate"),"yyyy-MM-dd HH:mm:ss"));
-                        obj.put("tvBusinessType",json.getString("businessType"));
-                        obj.put("tvRemark",json.getString("remark"));
-                        obj.put("tvBeginTime",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd"));
-                        obj.put("tvEndTime",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd"));
+                        obj.put("tvSendDate",DateUtils.parseDate(json.getString("sendDate"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                        obj.put("tvBusinessType",json.getString("businessType").replace("null",""));
+                        obj.put("tvRemark",json.getString("remark").replace("null",""));
+                        obj.put("tvValue",Integer.parseInt(json.containsKey("json")?json.getString("value"):"0"));
+                        obj.put("tvBeginTime",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                        obj.put("tvEndTime",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
                         obj.put("createTime",new Date());
                         obj.put("tuid",id);
                         this.commonInsertMap("ty_voucher",obj);
@@ -94,4 +95,6 @@ public class TyVoucherService extends CommonService {
         }
         return null;
     }
+
+
 }

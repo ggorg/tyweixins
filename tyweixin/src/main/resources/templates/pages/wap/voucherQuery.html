@@ -21,10 +21,10 @@
                         <li th:if="${noExpire!=null}" th:each="obj:${noExpire}">
                             <div class="voucher-con">
                                 <span class="vouche"></span>
-                                <span class="name">代金券编号</span>
-                                <span class="money" th:inline="text">[[${obj['tvCode']}]]</span>
+                                <span class="name">代金券</span>
+                                <span class="money" th:inline="text">[[${#TdTool.getRealAmount(obj['tvValue'])}]]</span>
                                 <span class="time" th:inline="text">有效期：[[${obj['tvBeginTime']}]]-[[${obj['tvEndTime']}]]</span>
-                                <span class="time" th:text="${obj['tvRemark']}">说明</span>
+                                <span class="time" th:text="${obj['tvRemark']==null?'':obj['tvRemark']}">说明</span>
                             </div>
                         </li>
 
@@ -39,10 +39,10 @@
                         <li th:if="${expire!=null}" th:each="obj:${expire}">
                             <div class="voucher-con">
                                 <span class="vouche-gray"></span>
-                                <span class="name">代金券编号</span>
-                                <span class="money" th:inline="text">[[${obj['tvCode']}]]</span>
+                                <span class="name">代金券</span>
+                                <span class="money" th:inline="text">[[${#TdTool.getRealAmount(obj['tvValue'])}]]</span>
                                 <span class="time" th:inline="text">有效期：[[${obj['tvBeginTime']}]]-[[${obj['tvEndTime']}]]</span>
-                                <span class="time" th:text="${obj['tvRemark']}">说明</span>
+                                <span class="time" th:text="${obj['tvRemark']==null?'':obj['tvRemark']}">说明</span>
                             </div>
                         </li>
 

@@ -98,7 +98,7 @@ public class TyBindService extends CommonService {
     public ResponseVO checkTyTelphone(String telphone)throws Exception{
 
         JSONObject obj=new JSONObject();
-        obj.put("pay_user ",telphone);
+        obj.put("pay_user",telphone);
         obj.put("act_code", ActEnum.act7.getCode());
         String callBackStr=null;
         if(globals.getCheckTyTelphoneUrl().startsWith("http")){
