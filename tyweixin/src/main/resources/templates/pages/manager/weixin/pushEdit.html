@@ -23,44 +23,62 @@
                    placeholder="请输入标题" autocomplete="off" class="layui-input"/>
         </div>
     </div>
+    <div class="layui-form-item">
     <div class="layui-inline">
         <label class="layui-form-label">推送类型</label>
         <div class="layui-input-inline">
-            <select name="push_type" id="push_type" lay-filter="type">
+            <select name="push_type" id="push_type" lay-filter="selectType">
                 <option value="1" th:selected="${pushObject?.push_type == 1}"> 文字</option>
                 <option value="2" th:selected="${pushObject?.push_type == 2}"> 图文</option>
                 <option value="3" th:selected="${pushObject?.push_type == 3}"> 模板</option>
             </select>
         </div>
     </div>
-    <div class="layui-inline">
+
+    <div class="layui-inline" id="centextObj">
         <label class="layui-form-label">内容</label>
-        <div class="layui-input-block">
+        <div class="layui-input-inline">
             <input type="text" class="layui-show" name="push_content" th:value="${pushObject?.push_content}" placeholder="请输入文字内容"
                    autocomplete="off" class="layui-input"/>
-            <select name="push_messageid" id="push_messageid" lay-filter="type" class="layui-hide">
-                <option th:each="message:${messageList}" th:value="${message?.id}" th:text="${message?.title}"
-                        th:selected="${pushObject?.push_messageid eq message?.id}"> 图文ID
-                </option>
-            </select>
+
         </div>
+
     </div>
-    <div class="layui-inline">
-        <label class="layui-form-label">推送时间（空则立即推送）</label>
-        <div class="layui-inline">
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" name="ptime" id="push_time"
-                       placeholder="yyyy-MM-dd HH:mm:ss" th:value="${pushObject !=null && pushObject.push_time != null ? #dates.format(pushObject.push_time, 'yyyy-MM-dd HH:mm:ss'):''}">
+        <div class="layui-inline layui-hide" id="msgObj">
+
+            <div class="layui-input-block">
+                <select name="push_messageid" id="push_messageid" lay-filter="msg" >
+                    <option th:each="message:${messageList}" th:value="${message?.id}" th:text="${message?.title}"
+                            th:selected="${pushObject?.push_messageid eq message?.id}"> 图文ID
+                    </option>
+                </select>
+
             </div>
         </div>
     </div>
-
     <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    <div class="layui-inline">
+        <label class="layui-form-label">推送时间</label>
+
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" name="ptime" id="push_time"
+                   placeholder="yyyy-MM-dd HH:mm:ss" th:value="${pushObject !=null && pushObject.push_time != null ? #dates.format(pushObject.push_time, 'yyyy-MM-dd HH:mm:ss'):''}">
+            <span>（空则立即推送）</span>
+        </div>
+
+    </div>
+        <div class="layui-inline">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline" style="margin-bottom:19px;">
+                <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+            </div>
+
         </div>
     </div>
+
+
 </form>
 <div id="contentwrapper" class="contentwrapper">
     <div class="contenttitle2">
@@ -195,6 +213,20 @@
             });
             form.render('checkbox');
         });
+        form.on('select(selectType)',function(data){
+            if(data.value=="1"){
+                if(!$("#msgObj").hasClass("layui-hide")){
+                    $("#msgObj").addClass("layui-hide");
+                }
+                $("#centextObj").removeClass("layui-hide");
+            }else if(data.value=="2"){
+                $("#msgObj").removeClass("layui-hide");
+                if(!$("#centextObj").hasClass("layui-hide")){
+                    $("#centextObj").addClass("layui-hide");
+                }
+            }
+
+        })
         jQuery(".layui-form").submit(function (data) {
             console.log(data);
         });
