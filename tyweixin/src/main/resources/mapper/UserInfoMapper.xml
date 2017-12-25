@@ -127,6 +127,9 @@
         <include refid="Base_Column_List"/>
         FROM weixin_user a
         WHERE 1=1
+        <if test="userInfo.appid != null and userInfo.appid != ''">
+            AND a.appid  = #{userInfo.appid}
+        </if>
         <if test="userInfo.nickname != null and userInfo.nickname != ''">
             AND upper(a.nickname)  LIKE
             CONCAT('%', upper(#{userInfo.nickname}), '%')

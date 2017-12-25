@@ -17,37 +17,52 @@
     <input type="hidden" th:if="${pushObject!=null}" name="id" th:value="${pushObject?.id}"/>
     <input type="hidden" th:if="${appid!=null}" name="appid" th:value="${appid}"/>
     <div class="layui-form-item">
-        <label class="layui-form-label">标题</label>
-        <div class="layui-input-block">
-            <input type="text" name="title" required="required" th:value="${pushObject?.title}" lay-verify="required"
-                   placeholder="请输入标题" autocomplete="off" class="layui-input"/>
+        <div class="layui-inline">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" placeholder="请输入昵称" th:value="${pushObject?.title}" lay-verify="required"
+                       placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">推送时间</label>
+
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" name="ptime" id="push_time"
+                       placeholder="yyyy-MM-dd HH:mm:ss"
+                       th:value="${pushObject !=null && pushObject.push_time != null ? #dates.format(pushObject.push_time, 'yyyy-MM-dd HH:mm:ss'):''}">
+                <span>（空则立即推送）</span>
+            </div>
+
         </div>
     </div>
     <div class="layui-form-item">
-    <div class="layui-inline">
-        <label class="layui-form-label">推送类型</label>
-        <div class="layui-input-inline">
-            <select name="push_type" id="push_type" lay-filter="selectType">
-                <option value="1" th:selected="${pushObject?.push_type == 1}"> 文字</option>
-                <option value="2" th:selected="${pushObject?.push_type == 2}"> 图文</option>
-                <option value="3" th:selected="${pushObject?.push_type == 3}"> 模板</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="layui-inline" id="centextObj">
-        <label class="layui-form-label">内容</label>
-        <div class="layui-input-inline">
-            <input type="text" class="layui-show" name="push_content" th:value="${pushObject?.push_content}" placeholder="请输入文字内容"
-                   autocomplete="off" class="layui-input"/>
-
+        <div class="layui-inline">
+            <label class="layui-form-label">推送类型</label>
+            <div class="layui-input-inline">
+                <select name="push_type" id="push_type" lay-filter="selectType">
+                    <option value="1" th:selected="${pushObject?.push_type == 1}"> 文字</option>
+                    <option value="2" th:selected="${pushObject?.push_type == 2}"> 图文</option>
+                    <option value="3" th:selected="${pushObject?.push_type == 3}"> 模板</option>
+                </select>
+            </div>
         </div>
 
-    </div>
+        <div class="layui-inline" id="centextObj">
+            <label class="layui-form-label">内容</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-show" name="push_content" th:value="${pushObject?.push_content}"
+                       placeholder="请输入文字内容"
+                       autocomplete="off" class="layui-input"/>
+
+            </div>
+
+        </div>
         <div class="layui-inline layui-hide" id="msgObj">
 
             <div class="layui-input-block">
-                <select name="push_messageid" id="push_messageid" lay-filter="msg" >
+                <select name="push_messageid" id="push_messageid" lay-filter="msg">
                     <option th:each="message:${messageList}" th:value="${message?.id}" th:text="${message?.title}"
                             th:selected="${pushObject?.push_messageid eq message?.id}"> 图文ID
                     </option>
@@ -55,18 +70,6 @@
 
             </div>
         </div>
-    </div>
-    <div class="layui-form-item">
-    <div class="layui-inline">
-        <label class="layui-form-label">推送时间</label>
-
-        <div class="layui-input-inline">
-            <input type="text" class="layui-input" name="ptime" id="push_time"
-                   placeholder="yyyy-MM-dd HH:mm:ss" th:value="${pushObject !=null && pushObject.push_time != null ? #dates.format(pushObject.push_time, 'yyyy-MM-dd HH:mm:ss'):''}">
-            <span>（空则立即推送）</span>
-        </div>
-
-    </div>
         <div class="layui-inline">
             <label class="layui-form-label"></label>
             <div class="layui-input-inline" style="margin-bottom:19px;">
@@ -88,19 +91,24 @@
         <div class="tableoptions">
             <div class="layui-form-item">
                 <div class="layui-inline">
+                    <label class="layui-form-label">公众号</label>
+                    <div class="layui-input-inline">
+                        <select name="appid" id="appid" lay-filter="appid">
+                            <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}"
+                                    th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label">昵称</label>
                     <div class="layui-input-inline">
                         <input type="text" name="nickname" placeholder="请输入昵称" th:value="${userInfo?.nickname}"
                                autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">openid</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}"
-                               autocomplete="off" class="layui-input">
-                    </div>
-                </div>
+            </div>
+            <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">关注</label>
                     <div class="layui-input-inline">
@@ -111,31 +119,11 @@
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">省份</label>
+                    <label class="layui-form-label">openid</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="province" placeholder="请输入省份" th:value="${userInfo?.province}"
+                        <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}"
                                autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">城市</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="city" placeholder="请输入城市" th:value="${userInfo?.city}"
-                               autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">性别</label>
-                    <div class="layui-input-inline">
-                        <select name="sex">
-                            <option value="">请选择</option>
-                            <option value="1" th:selected="${userInfo?.sex == '1'}">男性</option>
-                            <option value="2" th:selected="${userInfo?.sex == '2'}">女性</option>
-                            <option value="0" th:selected="${userInfo?.sex == '0'}">未知</option>
-                        </select>
                     </div>
                 </div>
                 <button class="btn btn_search radius50" lay-submit="lay-submit" lay-filter="formDemo">Search</button>
@@ -206,22 +194,22 @@
     });
     layui.use('form', function () {
         var form = layui.form;
-        form.on('checkbox(allChoose)', function(data){
+        form.on('checkbox(allChoose)', function (data) {
             var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
-            child.each(function(index, item){
+            child.each(function (index, item) {
                 item.checked = data.elem.checked;
             });
             form.render('checkbox');
         });
-        form.on('select(selectType)',function(data){
-            if(data.value=="1"){
-                if(!$("#msgObj").hasClass("layui-hide")){
+        form.on('select(selectType)', function (data) {
+            if (data.value == "1") {
+                if (!$("#msgObj").hasClass("layui-hide")) {
                     $("#msgObj").addClass("layui-hide");
                 }
                 $("#centextObj").removeClass("layui-hide");
-            }else if(data.value=="2"){
+            } else if (data.value == "2") {
                 $("#msgObj").removeClass("layui-hide");
-                if(!$("#centextObj").hasClass("layui-hide")){
+                if (!$("#centextObj").hasClass("layui-hide")) {
                     $("#centextObj").addClass("layui-hide");
                 }
             }

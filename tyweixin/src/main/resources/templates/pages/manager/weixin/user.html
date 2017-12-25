@@ -28,6 +28,14 @@
                     <div class="tableoptions">
                         <div class="layui-form-item">
                             <div class="layui-inline">
+                                <label class="layui-form-label" >公众号</label>
+                                <div class="layui-input-inline">
+                                    <select name="appid" id="appid" lay-filter="appid">
+                                        <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}" th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
                                 <label class="layui-form-label">昵称</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="nickname" placeholder="请输入昵称" th:value="${userInfo?.nickname}" autocomplete="off" class="layui-input">
@@ -39,6 +47,8 @@
                                     <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
+                        </div>
+                        <div class="layui-form-item">
                             <div class="layui-inline">
                                 <label class="layui-form-label">关注</label>
                                 <div class="layui-input-inline">
@@ -49,8 +59,6 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
                             <div class="layui-inline">
                                 <label class="layui-form-label">省份</label>
                                 <div class="layui-input-inline">
@@ -63,7 +71,7 @@
                                     <input type="text" name="city" placeholder="请输入城市" th:value="${userInfo?.city}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
-                            <div class="layui-inline">
+                            <div class="layui-inline" class="layui-hide">
                                 <label class="layui-form-label">性别</label>
                                 <div class="layui-input-inline">
                                     <select name="sex" >

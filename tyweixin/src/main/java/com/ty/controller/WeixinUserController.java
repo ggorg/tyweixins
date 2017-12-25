@@ -1,8 +1,11 @@
 package com.ty.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.util.Page;
+import com.ty.entity.Pubweixin;
 import com.ty.entity.UserInfo;
+import com.ty.services.PubWeixinService;
 import com.ty.services.WeixinUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 微信用户资料查询接口
@@ -24,12 +28,30 @@ public class WeixinUserController{
 
     @Autowired
     private WeixinUserService weixinUserService;
+    @Autowired
+    private PubWeixinService pubWeixinService;
+    @Autowired
+    private CacheService cacheService;
 
     @RequestMapping(value = {"list", ""})
-    public String list(UserInfo userInfo,@RequestParam(defaultValue = "1") Integer pageNo, Model model) {
+    public String list(UserInfo userInfo,@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model) {
+        List<Pubweixin> pubweixinList = pubWeixinService.findPubweixinAll();
+        if(appid == null){
+            appid = (String) cacheService.get("appid");
+            if(appid == null || appid.equals("")){
+                if(pubweixinList.size()>0){
+                    appid = pubweixinList.get(0).getAppid();
+                }
+            }
+        }else{
+            cacheService.set("appid",appid);
+        }
+        userInfo.setAppid(appid);
         Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
         model.addAttribute("userInfo", userInfo);
+        model.addAttribute("appid",appid);
         model.addAttribute("userPage", page);
+        model.addAttribute("pubweixinList",pubweixinList);
         return "pages/manager/weixin/user";
     }
 

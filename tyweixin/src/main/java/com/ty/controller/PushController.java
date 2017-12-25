@@ -73,11 +73,23 @@ public class PushController {
             }else{
                 model.addAttribute("pushObject",null);
             }
+            List<Pubweixin>pubweixinList = pubWeixinService.findPubweixinAll();
+            if(appid == null){
+                appid = (String) cacheService.get("appid");
+                if(appid == null || appid.equals("")){
+                    if(pubweixinList.size()>0){
+                        appid = pubweixinList.get(0).getAppid();
+                    }
+                }
+            }else{
+                cacheService.set("appid",appid);
+            }
             model.addAttribute("messageList",messageService.findListAll(appid));
             model.addAttribute("appid",appid);
             Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("userPage", page);
+            model.addAttribute("pubweixinList",pubweixinList);
         }catch (Exception e){
             logger.error("PushController->edit->系统异常",e);
         }
