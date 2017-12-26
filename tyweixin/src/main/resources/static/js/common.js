@@ -17,8 +17,21 @@ function initPage(count){
             }(),
             jump: function(e, first){ //触发分页后的回调
                 if(!first){ //一定要加此判断，否则初始时会无限刷新
-                    if(location.search)
-                    location.href = '?pageNo='+e.curr;
+
+                    if(location.search){
+                        var currentUrl=window.parent.location.href;
+                        if(currentUrl.indexOf("?")==-1){
+                            top.location.href=currentUrl+"?pageNo="+e.curr;
+                            return ;
+                        }else{
+                            if(currentUrl.indexOf("pageNo")==-1){
+                                top.location.href=currentUrl+"&pageNo="+e.curr;
+                            }else{
+                                top.location.href=currentUrl.replace(/pageNo=[^&]+/,"pageNo="+e.curr);
+                            }
+                        }
+                    }
+                    //location.href = '?pageNo='+e.curr;
                 }
             }
         });
@@ -28,6 +41,17 @@ function initPage(count){
 function initForm(url,formObject){
     layui.use('form', function(){
             var form = layui.form;
+        form.verify({
+            required:function(value,item){
+                var msg=item.getAttribute("placeholder");
+                if(value!=null && value.replace(/[ ]/g,"")==""){
+                    return msg==null?"请输入必填项":msg;
+                }else{
+                    return false;
+                }
+                return msg==null?"请输入必填项":msg;
+            }
+        })
         $(formObject==undefined?".layui-form":formObject).submit(function(){
            return  commonSubmit(url,formObject);
         })

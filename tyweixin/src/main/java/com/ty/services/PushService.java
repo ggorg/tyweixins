@@ -6,6 +6,7 @@ import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.PushMapper;
 import com.ty.entity.Push;
 import com.ty.util.CustomMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -105,15 +106,21 @@ public class PushService {
             int push_type = push.getPush_type();
             //推送文字
             if(push_type == 1){
-                for (String openid:push.getOpenids().split(",")){
-                    String content = CustomMessage.TextMsg(openid,push.getPush_content());
-                    JSONObject json = weixinInterfaceService.sendMessage(push.getAppid(),content);
+                if(StringUtils.isNotBlank(push.getOpenids())){
+                    for (String openid:push.getOpenids().split(",")){
+                        String content = CustomMessage.TextMsg(openid,push.getPush_content());
+                        JSONObject json = weixinInterfaceService.sendMessage(push.getAppid(),content);
+                    }
                 }
+
                 //推送图文
             }else if(push_type == 2){
-                for (String openid:push.getOpenids().split(",")){
-                    messageService.sendMessage(openid,push.getPush_messageid());
+                if(StringUtils.isNotBlank(push.getOpenids())){
+                    for (String openid:push.getOpenids().split(",")){
+                        messageService.sendMessage(openid,push.getPush_messageid());
+                    }
                 }
+
                 //推送模板消息
             }else if(push_type ==3){
 

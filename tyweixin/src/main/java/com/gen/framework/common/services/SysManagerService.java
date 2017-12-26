@@ -39,7 +39,18 @@ public class SysManagerService extends CommonService{
         return this.commonList("baseUser","createTime desc",null,null,new HashMap<>());
     }
     public SysUserBean getUserById(Integer uid)throws Exception{
-        return this.commonObjectBySingleParam("baseUser","id",uid,SysUserBean.class);
+        Map map=this.commonObjectBySingleParam("baseUser","id",uid);
+        SysUserBean userBean=new SysUserBean();
+        if(map!=null){
+
+            userBean.setId((Integer) map.get("id"));
+            userBean.setuName((String)map.get("uName"));
+            Integer disabled=(Integer)map.get("disabled");
+            userBean.setDisabled(disabled==null || disabled==1?false:true);
+        }
+
+        return userBean;
+        //return this.commonObjectBySingleParam("baseUser","id",uid,SysUserBean.class);
 
     }
     public ResponseVO disabledUser(SysUserBean sysUserBean)throws  Exception{
@@ -49,7 +60,7 @@ public class SysManagerService extends CommonService{
        return this.commonUpdateBySingleSearchParam("baseUser",setParams,"id",sysUserBean.getId());
 
     }
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO saveUser(SysUserBean sysUserBean)throws  Exception{
         ResponseVO vo=new ResponseVO();
         if(StringUtils.isBlank(sysUserBean.getuName())){
