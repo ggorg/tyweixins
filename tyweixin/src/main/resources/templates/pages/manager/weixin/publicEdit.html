@@ -46,9 +46,11 @@ layui.use('form', function(){
   var form = layui.form;
     $(".layui-form").submit(function(){
         $.post("save",$(".layui-form").serializeArray(),function(data){
-            alert(data.reMsg);
+            layer.msg(data.reMsg);
             if(data.reCode==1){
-                top.location.href=window.parent.location.href;
+                window.setTimeout(function(){
+                    top.location.href=window.parent.location.href;
+                },500)
             }
 
         });

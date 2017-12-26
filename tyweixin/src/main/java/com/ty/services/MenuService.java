@@ -112,13 +112,19 @@ public class MenuService {
      */
     public ResponseVO delete(Integer id){
         ResponseVO vo=new ResponseVO();
-        int res = menuMapper.delete(id);
-        if(res>0){
-            vo.setReCode(1);
-            vo.setReMsg("删除成功");
+        List<com.ty.entity.Menu> menuList = menuMapper.findListById(id);
+        if (menuList.size() > 0) {
+            vo.setReCode(-1);
+            vo.setReMsg("包含子菜单,删除失败");
         }else{
-            vo.setReCode(-2);
-            vo.setReMsg("删除失败");
+            int res = menuMapper.delete(id);
+            if(res>0){
+                vo.setReCode(1);
+                vo.setReMsg("删除成功");
+            }else{
+                vo.setReCode(-2);
+                vo.setReMsg("删除失败");
+            }
         }
         return vo;
     }

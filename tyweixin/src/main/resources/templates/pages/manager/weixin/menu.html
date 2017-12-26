@@ -115,11 +115,15 @@
         }
         function del(obj) {
             //删除菜单
-            jQuery.post("delete",{id:obj},function(data){
-                layer.msg(data.reMsg);
-                window.setTimeout(function(){
-                    top.location.href=window.parent.location.href;
-                },500)
+            layer.confirm('确定删除?',{icon:2,title:'删除'}, function(index){
+                layer.close(index);
+                //向服务端发送删除指令
+                jQuery.post("delete",{id:obj},function(data){
+                    layer.msg(data.reMsg);
+                    window.setTimeout(function(){
+                        top.location.href=window.parent.location.href;
+                    },500)
+                });
             });
         }
     </script>
