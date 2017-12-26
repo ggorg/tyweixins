@@ -91,12 +91,9 @@
         <div class="tableoptions">
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">公众号</label>
+                    <label class="layui-form-label">标签</label>
                     <div class="layui-input-inline">
-                        <select name="appid" id="appid" lay-filter="appid">
-                            <option th:each="pubweixin:${pubweixinList}" th:value="${pubweixin?.appid}"
-                                    th:text="${pubweixin?.name}" th:selected="${appid eq pubweixin?.appid}"> 公众号名称
-                            </option>
+                        <select name="tagid" id="tagid" lay-filter="appid">
                         </select>
                     </div>
                 </div>
@@ -182,6 +179,7 @@
 
     </table>
     <div id="pages"></div>
+    <table class="layui-table" lay-data="{id: 'idTest'}"> …… </table>
 </div>
 <script type="text/javascript">
     layui.use('laydate', function () {

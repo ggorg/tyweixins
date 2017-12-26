@@ -65,7 +65,7 @@
     </update>
 
     <delete id="delete" parameterType="int">
-        delete from weixin_event_rule a
+        delete from weixin_event_rule
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
