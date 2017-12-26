@@ -86,9 +86,9 @@ public class ManagerController {
     }
     @PostMapping("/do-save-activity")
     @ResponseBody
-    public ResponseVO saveActivity(Integer taMinCost,Integer taMaxCost,String idStr){
+    public ResponseVO saveActivity(Integer taMinCost,Integer taMaxCost,String idStr,Integer taNumber){
         try {
-            return this.tyActivityService.updateActivity(idStr,taMaxCost,taMinCost,false);
+            return this.tyActivityService.updateActivity(idStr,taMaxCost,taMinCost,taNumber,false);
         }catch (Exception e){
             logger.error("WapController->saveActivity->系统异常",e);
             return new ResponseVO(-1,"保存失败",null);
@@ -97,9 +97,9 @@ public class ManagerController {
     }
     @PostMapping("/do-save-push-activity")
     @ResponseBody
-    public ResponseVO savePushActivity(Integer taMinCost,Integer taMaxCost,String idStr){
+    public ResponseVO savePushActivity(Integer taMinCost,Integer taMaxCost,String idStr,Integer taNumber){
         try {
-            return this.tyActivityService.updateActivity(idStr,taMaxCost,taMinCost,true);
+            return this.tyActivityService.updateActivity(idStr,taMaxCost,taMinCost,taNumber,true);
         }catch (Exception e){
             logger.error("WapController->saveActivity->系统异常",e);
             return new ResponseVO(-1,"保存失败",null);

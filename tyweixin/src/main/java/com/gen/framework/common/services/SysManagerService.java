@@ -71,6 +71,12 @@ public class SysManagerService extends CommonService{
             params.put("createTime",new Date());
 
             params.put("disabled",false);
+           Map map= this.commonObjectBySingleParam("baseUser","uName",sysUserBean.getuName());
+           if(map!=null){
+               vo.setReCode(-2);
+               vo.setReMsg("用户已经存在，请换一个");
+               return vo;
+           }
             return this.commonInsertMap("baseUser",params);
         }
         }

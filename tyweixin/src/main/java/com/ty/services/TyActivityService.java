@@ -105,13 +105,26 @@ public class TyActivityService extends CommonService {
         return new ResponseVO(1,"获取成功",ta);
     }
     @Transactional(propagation = Propagation.REQUIRED)
-    public ResponseVO updateActivity(String idStr,Integer taMaxCost,Integer taMinCost,Boolean taDisabled){
+    public ResponseVO updateActivity(String idStr,Integer taMaxCost,Integer taMinCost,Integer taNumber,Boolean taDisabled)throws Exception{
         String id=MyEncryptUtil.getRealValue(idStr);
         if(StringUtils.isBlank(id)){
             return new ResponseVO(-2,"修改失败",null);
         }
+        TyActivity ta= this.commonObjectBySingleParam("ty_activity","id",id,TyActivity.class);
+        if(ta==null){
+            return new ResponseVO(-2,"修改失败，记录不存在",null);
+        }
+
+        if(taNumber==null || taNumber==0){
+            return new ResponseVO(-2,"修改失败,请填写数量",null);
+        }
+
         if(taMaxCost==null || taMinCost==null){
             return new ResponseVO(-2,"修改失败,请填写区间值",null);
+        }
+        Integer realMaxMaxCost=ta.getTaAmount()%taNumber;
+        if(realMaxMaxCost==0){
+            realMaxMaxCost= ta.getTaAmount()/taNumber;
         }
         if(taMaxCost<taMinCost){
             return new ResponseVO(-2,"修改失败,区间最大值必须大于最小值",null);

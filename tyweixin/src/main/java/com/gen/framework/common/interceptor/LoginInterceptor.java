@@ -6,7 +6,10 @@ import com.gen.framework.common.util.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,5 +78,18 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         return true;
     }
+    /*public void postHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+            throws Exception {
+        if(modelAndView!=null){
+            System.out.println(modelAndView.getViewName());
 
+            ServletContextTemplateResolver templateResolver =
+                    new ServletContextTemplateResolver();
+
+           // modelAndView.setViewName("pages/manager/common/404");
+        }
+        //System.out.println(modelAndView.getView().getContentType());
+       // modelAndView.set
+    }*/
 }

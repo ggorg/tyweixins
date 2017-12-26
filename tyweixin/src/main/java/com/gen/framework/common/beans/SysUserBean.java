@@ -4,7 +4,7 @@ public class SysUserBean {
     private Integer id;
     private String uName;
     private String uPassword;
-    private Boolean disabled;
+    private Integer disabled;
 
     public String getuName() {
         return uName;
@@ -31,10 +31,10 @@ public class SysUserBean {
     }
 
     public Boolean getDisabled() {
-        return disabled;
+        return disabled==1?true:false;
     }
 
-    public void setDisabled(Boolean disabled) {
+    public void setDisabled(Integer disabled) {
         this.disabled = disabled;
     }
 

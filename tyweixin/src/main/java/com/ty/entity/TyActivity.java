@@ -13,6 +13,24 @@ public class TyActivity {
     private Integer taMaxCost;
     private Integer taMinCost;
     private String taRule;
+    private Integer taNumber;
+    private Integer taDisabled;
+
+    public Boolean getTaDisabled() {
+        return taDisabled==1?true:false;
+    }
+
+    public void setTaDisabled(Integer taDisabled) {
+        this.taDisabled = taDisabled;
+    }
+
+    public Integer getTaNumber() {
+        return taNumber;
+    }
+
+    public void setTaNumber(Integer taNumber) {
+        this.taNumber = taNumber;
+    }
 
     public Integer getTaUsed() {
         return taUsed;
