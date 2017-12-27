@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">活动总额</label>
+    <label class="layui-form-label">活动总额(<span style="color: red">分</span>)</label>
     <div class="layui-input-block">
       <input type="text" readonly="readonly" th:value="${act?.taAmount}" autocomplete="off" class="layui-input" />
     </div>
@@ -32,15 +32,21 @@
   <div class="layui-form-item">
     <label class="layui-form-label">规则说明</label>
     <div class="layui-input-block">
-      <input type="text" th:value="${act?.taRule}" readonly="readonly"   placeholder="排序" autocomplete="off" class="layui-input" />
+      <input type="text" th:value="${act?.taRule}" readonly="readonly"   placeholder="规则说明" autocomplete="off" class="layui-input" />
     </div>
   </div>
-
+  <div class="layui-form-item">
+    <label class="layui-form-label">红包数量</label>
+    <div class="layui-input-block">
+      <input type="text" name="taNumber" th:value="${act?.taNumber}" lay-verify="number"    placeholder="红包数量" autocomplete="off" class="layui-input" />
+    </div>
+  </div>
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">区间值</label>
+      <label class="layui-form-label">区间值(<span style="color: red">分</span>)</label>
       <div class="layui-input-inline" style="width: 100px;">
         <input type="text" name="taMinCost" lay-verify="number"  th:value="${act?.taMinCost}" placeholder="￥" autocomplete="off" class="layui-input">
+
       </div>
       <div class="layui-form-mid">-</div>
       <div class="layui-input-inline" style="width: 100px;">

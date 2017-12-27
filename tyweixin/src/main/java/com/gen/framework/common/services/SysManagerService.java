@@ -5,6 +5,7 @@ import com.gen.framework.common.dao.CommonMapper;
 import com.gen.framework.common.dao.MenuPowerMapper;
 import com.gen.framework.common.util.BeanToMapUtil;
 import com.gen.framework.common.util.MenuMapComparator;
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -32,8 +33,14 @@ public class SysManagerService extends CommonService{
 
     @Autowired
     private CacheManager cacheManager;
-    public Page getUserPage(Integer pageNum)throws Exception{
-        return this.commonPage("baseUser","createTime desc",pageNum,10,new HashMap<>());
+    public Page getUserPage(Integer pageNum,String uName)throws Exception{
+        Map condition=new HashMap();
+        if(StringUtils.isNotBlank(uName)){
+            uName=uName.replace("%","");
+            condition.put("uName,like",uName+"%");
+        }
+
+        return this.commonPage("baseUser","createTime desc",pageNum,10,condition);
     }
     public List getAllUser(){
         return this.commonList("baseUser","createTime desc",null,null,new HashMap<>());
@@ -53,6 +60,7 @@ public class SysManagerService extends CommonService{
         //return this.commonObjectBySingleParam("baseUser","id",uid,SysUserBean.class);
 
     }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO disabledUser(SysUserBean sysUserBean)throws  Exception{
 
         Map setParams=new HashMap();
@@ -96,7 +104,7 @@ public class SysManagerService extends CommonService{
 
 
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO saveRole(SysRoleBean sysRoleBean,Integer[] uIds){
         String roleTable="baseRole";
         ResponseVO vo=new ResponseVO();
@@ -182,7 +190,7 @@ public class SysManagerService extends CommonService{
 
         return handlePower(null);
     }
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO saveMenu(SysMenuBean sysMenuBean){
         ResponseVO vo=new ResponseVO();
         try {
@@ -287,6 +295,7 @@ public class SysManagerService extends CommonService{
         }
         return false;
     }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO savePower(Integer rId,Integer[] mIds)throws Exception{
         ResponseVO vo=new ResponseVO();
 
@@ -348,12 +357,61 @@ public class SysManagerService extends CommonService{
         vo.setReMsg("登录失败");
         return vo;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public ResponseVO deleteRole(String ridStr)throws Exception{
+        String ridValue= MyEncryptUtil.getRealValue(ridStr);
+        if(StringUtils.isBlank(ridValue)){
+            return new ResponseVO(-2,"删除失败",null);
+        }
+        Integer rid=Integer.valueOf(ridValue);
+        int n=this.commonDelete("baseRole","id",rid);
+        if(n>0){
+            this.resetPowerByRid(rid);
+            this.commonDelete("baseUserRole","rId",rid);
+            this.commonDelete("baseRoleMenus","rId",rid);
+        }else{
+            return new ResponseVO(-2,"删除失败",null);
+        }
+        return new ResponseVO(1,"删除成功",null);
+    }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public ResponseVO deleteMenu(String midStr)throws Exception{
+        String midValue= MyEncryptUtil.getRealValue(midStr);
+        if(StringUtils.isBlank(midValue)){
+            return new ResponseVO(-2,"删除失败",null);
+        }
+        Integer mid=Integer.valueOf(midValue);
+        int n=this.commonDelete("baseMenu","id",mid);
+        if(n>0){
+            this.resetPowerByMid(mid);
+            this.commonDelete("baseRoleMenus","mId",mid);
+            List<Map> parentList=this.commonObjectsBySingleParam("baseMenu","mParentId",mid);
+            if(parentList!=null && parentList.size()>0){
+                for(Map pmap:parentList){
+                    mid=(Integer)pmap.get("id");
+                    n=this.commonDelete("baseMenu","id",mid);
+                    if(n>0){
+                        this.resetPowerByMid(mid);
+                        this.commonDelete("baseRoleMenus","mId",mid);
+                    }
+                }
+            }
+            Cache cache=cacheManager.getCache("allMenu");
+            cache.put("'all'",getAllMenu());
+        }else{
+            return new ResponseVO(-2,"删除失败",null);
+        }
+        return new ResponseVO(1,"删除成功",null);
+    }
+
     @Cacheable(value = "commonCache",key = "#uid")
     public List getPowerMenu(Integer uid){
         Cache cache=cacheManager.getCache("commonCache");
 
         return this.menuPowerMapper.queryById(uid);
     }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public void resetPowerByRid(Integer rid)throws Exception{
         List<Map> lur=this.commonObjectsBySingleParam("baseUserRole","rid",rid);
         if(lur!=null && lur.size()>0){
@@ -371,6 +429,7 @@ public class SysManagerService extends CommonService{
 
         }
     }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public void resetPowerByMid(Integer mid)throws Exception{
         List<Integer> uidList=this.menuPowerMapper.queryUidByMid(mid);
         if(uidList!=null && uidList.size()>0){

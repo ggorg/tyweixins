@@ -28,19 +28,16 @@
 
                 <div class="tableoptions">
 
-                    <form class="layui-form">
+                    <form class="layui-form" >
                         <div class="layui-form-item2 layui-form-item">
                         <div class="float-left-div" >
 
                             <label class="layui-form-label" >用户名</label>
                             <div class="layui-input-inline" >
-                                <input class="layui-input" name="uName"/>
+                                <input class="layui-input" name="uName" th:value="${#httpServletRequest.getParameter('uName')}"/>
                             </div>
                         </div>
-
-
-                            <a href="" class="btn btn_search radius50"><span>Search</span></a>
-
+                            <a href="javascript:void(0)" onclick="jQuery('.layui-form').submit()" class="btn btn_search radius50"><span>Search</span></a>
 
                     </div>
                     </form>
@@ -107,16 +104,8 @@
         function confirmDisabled(id,isDisabled){
             layer.confirm(isDisabled?"是否禁用":"是否启用", {icon: 3, title:'提示'}, function(index){
                 if(index>0){
-                    jQuery.post("do-disabled-user",{id:id,disabled:isDisabled},function(data){
-                        layer.msg(data.reMsg);
-                        if(data.reCode==1){
+                    jQueryCommonSubmit("do-disabled-user",null,{id:id,disabled:isDisabled});
 
-                            window.setTimeout(function(){
-                                top.location.href=window.parent.location.href;
-                            },500)
-                        }
-
-                    });
                 }
                 //layer.close(index);
             });

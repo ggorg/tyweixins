@@ -5,10 +5,12 @@
 <mapper namespace="com.ty.dao.TyActivityMapper">
 
    <select id="getActivity"  resultType="java.util.HashMap" >
+
       select ta.* from ty_activity ta
       left join ty_activity_red_packet tyr
       on ta.id=tyr.trActivityId and tyr.tUid=#{tUid}
       where (ta.taAmount>ta.taUsed or ta.taUsed is null) and tyr.tUid is null and ta.taDisabled=1
+      and (now() &gt;=ta.taBeginDate and now()&lt;=ta.taEndDate) and ta.taNumber > ta.taUsedNumber
       <if test="actId!=null">
          and ta.id=#{actId}
 

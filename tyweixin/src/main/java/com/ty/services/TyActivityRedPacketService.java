@@ -140,6 +140,8 @@ public class TyActivityRedPacketService extends CommonService {
             Integer taMaxCost=(Integer)  map.get("taMaxCost");
             Integer taUsed=(Integer) map.get("taUsed");
             Integer taAmount=(Integer) map.get("taAmount");
+            Integer taNumber=(Integer) map.get("taNumber");
+            Integer taUsedNumber=(Integer) map.get("taUsedNumber");
             insertMap=new HashMap();
             insertMap.put("tUid",tyUser.getId());
 
@@ -156,6 +158,7 @@ public class TyActivityRedPacketService extends CommonService {
 
              paramMap=new HashMap();
             paramMap.put("taUsed",taUsed+randRedPackCost);
+            paramMap.put("taUsedNumber",taNumber+taUsedNumber);
             ResponseVO res1=this.commonUpdateBySingleSearchParam("ty_activity",paramMap,"id",map.get("id"));
             if(res1.getReCode()!=1){
                 throw new GenException("openRedPacket->充值红包异常");

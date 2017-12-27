@@ -5,8 +5,10 @@ import com.gen.framework.common.beans.SysRoleBean;
 import com.gen.framework.common.beans.SysUserBean;
 import com.gen.framework.common.services.SysManagerService;
 import com.gen.framework.common.services.TimerTaskManagerService;
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,9 @@ public class SysManagerController {
         return "pages/manager/system/blankFrame";
     }
     @GetMapping("/user/to-list")
-    public String toUserList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
+    public String toUserList(@RequestParam(defaultValue = "1") Integer pageNo,String uName, Model model){
         try {
-            model.addAttribute("userPage",this.sysManagerService.getUserPage(pageNo));
+            model.addAttribute("userPage",this.sysManagerService.getUserPage(pageNo,uName));
         }catch (Exception e){
             logger.error("SysUserController->toUserList",e);
         }
@@ -197,7 +199,27 @@ public class SysManagerController {
             return new ResponseVO(-1,"登录失败",null);
         }
     }
+    @PostMapping("/role/do-del-role")
+    @ResponseBody
+    public ResponseVO deleteRole(String ridStr){
+        try {
 
+            return this.sysManagerService.deleteRole(ridStr);
+        }catch (Exception e){
+            logger.error("SysUserController->deleteRole->系统异常",e);
+            return new ResponseVO(-1,"删除失败",null);
+        }
+    }
+    @PostMapping("/menu/do-del-menu")
+    @ResponseBody
+    public ResponseVO deleteMenu(String midStr){
+        try {
+            return this.sysManagerService.deleteMenu(midStr);
+        }catch (Exception e){
+            logger.error("SysUserController->deleteMenu->系统异常",e);
+            return new ResponseVO(-1,"删除失败",null);
+        }
+    }
     @GetMapping("/timertask/to-list")
     public String toTimerTaskList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
         try {

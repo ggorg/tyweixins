@@ -58,42 +58,53 @@ function initForm(url,formObject){
         //各种基于事件的操作，下面会有进一步介绍
     });
 }
-function commonSubmit(url,formObject){
-    var index =null;
-        $.ajax({
-            timeout: 20 * 1000,
+function jQueryCommonSubmit(url,formObject,reqData){
+    jQuery.ajax(commonAjaxFunction(url,reqData==undefined?($(formObject==undefined?".layui-form":formObject).serializeArray()):reqData));
+    return false;
+}
+var index =null;
+function commonAjaxFunction(url,data){
+
+    return {
+        timeout: 20 * 1000,
             url: url,
-            type: "post",
-            data: $(formObject==undefined?".layui-form":formObject).serializeArray(),
-            dataType: "JSON",
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            beforeSend: function(xhr, settings) {
-                // xhr.setRequestHeader("If-Modified-Since", "0");
-                index= layer.load();
+        type: "post",
+        data:data,
+        dataType: "JSON",
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        beforeSend: function(xhr, settings) {
+        // xhr.setRequestHeader("If-Modified-Since", "0");
+        index= layer.load();
 
-            },
-            success: function(data, textStatus, jqXHR) {
-                layer.msg(data.reMsg);
-                if(data.reCode==1){
+    },
+        success: function(data, textStatus, jqXHR) {
+            layer.msg(data.reMsg);
+            if(data.reCode==1){
 
-                    window.setTimeout(function(){
+                window.setTimeout(function(){
 
-                        if(data.data!=null && data.data.jumpUrl!=undefined){
-                            top.location.href= data.data.jumpUrl;
-                        }else{
-                            top.location.href=window.parent.location.href;
+                    if(data.data!=null && data.data.jumpUrl!=undefined){
+                        top.location.href= data.data.jumpUrl;
+                    }else{
+                        top.location.href=window.parent.location.href;
 
-                        }
-                    },500)
-                }
-            },
-            error: function(e, xhr, type) {
+                    }
+                },500)
+            }
+        },
+        error: function(e, xhr, type) {
 
-            },
-            complete: function(xhr, status) {
-                layer.close(index);
+        },
+        complete: function(xhr, status) {
+            layer.close(index);
 
-            }})
+        }}
+}
+function commonSubmit(url,formObject,reqData){
+    //alert(url+","+$("div").length);
+
+
+        $.ajax(commonAjaxFunction(url,reqData==undefined?($(formObject==undefined?".layui-form":formObject).serializeArray()):reqData))
 
         return false;
 

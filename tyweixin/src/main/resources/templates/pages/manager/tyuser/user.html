@@ -34,12 +34,12 @@
 
                             <label class="layui-form-label" >手机号</label>
                             <div class="layui-input-inline" >
-                                <input class="layui-input" name="uName"/>
+                                <input class="layui-input" name="tuTelphone" th:value="${#httpServletRequest.getParameter('tuTelphone')}"/>
                             </div>
                         </div>
 
+                            <a href="javascript:void(0)" onclick="jQuery('.layui-form').submit()" class="btn btn_search radius50"><span>Search</span></a>
 
-                            <a href="" class="btn btn_search radius50"><span>Search</span></a>
 
 
                     </div>

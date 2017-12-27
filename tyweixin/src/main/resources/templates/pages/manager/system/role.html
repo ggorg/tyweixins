@@ -5,6 +5,15 @@
         <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
         <script type="text/javascript"  th:inline="javascript">
             initPage(/*[[${rolePage!=null?rolePage.total:0}]]*/ );
+            function del(val) {
+                //删除菜单
+                layer.confirm('确定删除?',{icon:2,title:'删除'}, function(index){
+                    // layer.close(index);
+                    //向服务端发送删除指令
+                    jQueryCommonSubmit("do-del-role",null,{ridStr:val});
+
+                });
+            }
         </script>
 	</head>
     <body class="withvernav">
@@ -65,6 +74,8 @@
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'530px\',\'修改角色\',\'to-edit?rId='+${obj['id']}+'\')'" >修 改</button>
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'600px\',\'380px\',\'菜单授权\',\'to-menu-power?rId='+${obj['id']}+'\')'"  >授 权</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${#TdTool.encrypt(obj['id'])}+'\')'"  >删 除</button>
+
                             </div>
                         </td>
                     </tr>

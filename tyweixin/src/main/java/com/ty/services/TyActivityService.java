@@ -79,6 +79,7 @@ public class TyActivityService extends CommonService {
 
 
                         map.put("updateTime",new Date());
+
                         long o=this.commonCountBySingleParam("ty_activity","id",map.get("id"));
                         if(o>0){
                             this.commonUpdateBySingleSearchParam("ty_activity",map,"id",map.get("id"));
@@ -86,6 +87,7 @@ public class TyActivityService extends CommonService {
                             map.put("createTime",new Date());
                             map.put("taDisabled",false);
                             map.put("taUsed",0);
+                            map.put("taUsedNumber",0);
                             this.commonInsertMap("ty_activity",map);
                         }
 
@@ -133,7 +135,9 @@ public class TyActivityService extends CommonService {
         map.put("taMaxCost",taMaxCost);
         map.put("taMinCost",taMinCost);
         map.put("taDisabled",taDisabled);
+        map.put("taNumber",taNumber);
         map.put("updateTime",new Date());
+
         ResponseVO re=this.commonUpdateBySingleSearchParam("ty_activity",map,"id",Integer.parseInt(id));
         if(re.getReCode()==1){
             re.setReMsg(taDisabled?"保存并发布成功":"保存成功");
@@ -153,9 +157,12 @@ public class TyActivityService extends CommonService {
 
         System.out.println(MyEncryptUtil.getRealValue("yUDM4MTOzYDN==QM"));
         JSONObject jsonObject=new JSONObject();
-        jsonObject.put("act_code", ActEnum.act3.getCode());
-
-        String str=HttpUtil.doPost("http://222.221.16.170/coupon/webserver/get",jsonObject.toJSONString());
+       // jsonObject.put("act_code", ActEnum.act3.getCode());
+        jsonObject.put("phone_no","18038388686");
+        String ranInt=RandomStringUtils.randomNumeric(5);
+        jsonObject.put("act_code", ActEnum.act6.getCode());
+        jsonObject.put("message",ranInt);
+        String str=HttpUtil.doPost("http://222.221.16.170/coupon/webserver/get",TydicDES.encodeValue(jsonObject.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(str));
     }
 }

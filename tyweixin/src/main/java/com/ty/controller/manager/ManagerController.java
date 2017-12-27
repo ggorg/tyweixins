@@ -181,9 +181,10 @@ public class ManagerController {
         return new ResponseVO(-2,"绑定消息并推送失败",null);
     }
     @GetMapping("/tyuser/to-list")
-    public String toTyUserList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
+    public String toTyUserList(@RequestParam(defaultValue = "1") Integer pageNo,String tuTelphone, Model model){
         try {
-            model.addAttribute("userPage",this.tyUserService.getUserPage(pageNo));
+
+            model.addAttribute("userPage",this.tyUserService.getUserPage(pageNo,tuTelphone));
         }catch (Exception e){
             logger.error("SysUserController->toUserList",e);
         }
