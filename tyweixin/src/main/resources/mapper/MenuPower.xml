@@ -13,5 +13,9 @@
 	where bu.id=#{uid}
     order by bm.mSort asc
     </select>
-    
+
+  <select id="queryUidByMid"  parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select DISTINCT bur.uid from baseuserrole bur INNER JOIN baserolemenus brm on brm.rId=bur.rId and brm.mId=#{mid}
+
+  </select>
 </mapper>

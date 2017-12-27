@@ -135,7 +135,7 @@ public class TydicDES {
 //		System.out.println("明：abcd ；密：" + encode(WW_KEY, "abcd"));
 //		System.out.println("明：abcd ；密：" + decodeValue(WW_KEY,"jsgOVUs260YHWr8Si/kE6w=="));
 		String myString="YangTaoLinkU";
-		String mm= encodeValue(myString);
+		String mm= encodeValue("{\"pay_user\":\"18712345678\",\"act_code\":\"6\",\"message\":\"123456\"}");
 		System.out.println("密文："+mm);
 		System.out.println("解密："+decodedecodeValue(mm));
 	}

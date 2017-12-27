@@ -155,7 +155,7 @@ public class TyActivityService extends CommonService {
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("act_code", ActEnum.act3.getCode());
 
-        String str=HttpUtil.doPost("http://106.59.229.40:7009/webserver/get",jsonObject.toJSONString());
+        String str=HttpUtil.doPost("http://222.221.16.170/coupon/webserver/get",jsonObject.toJSONString());
         System.out.println(TydicDES.decodedecodeValue(str));
     }
 }

@@ -1,15 +1,20 @@
 package com.gen.framework.common.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gen.framework.common.beans.SysMenuBean;
+import com.gen.framework.common.services.SysManagerService;
 import com.thoughtworks.xstream.core.util.Base64Encoder;
 import com.ty.util.CommonUtil;
 import com.ty.util.WeiXinTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.util.Base64Utils;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +24,10 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工具计算类
@@ -214,12 +221,15 @@ public final class Tools {
 		}
 		return true;
 	}
+
 	public static Object getSession(String key){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpSession session=attrs.getRequest().getSession();
 		return session.getAttribute(key);
 	}
 	public static void setSession(String key,Object obj){
+
+
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpSession session=attrs.getRequest().getSession();
 
@@ -267,10 +277,22 @@ public final class Tools {
 		session.removeAttribute("userPower");
 		session.invalidate();
 	}
+	public static List getSysPowerMenu(Integer uid){
+		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		WebApplicationContext wa=WebApplicationContextUtils.getWebApplicationContext(attrs.getRequest().getServletContext());
+		SysManagerService cm=wa.getBean(SysManagerService.class);
+		List<SysMenuBean> smList=cm.getPowerMenu(uid);
+		return smList;
+	}
 	public static List getUserPowerMenu(){
 		ServletRequestAttributes attrs =  (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
 		HttpSession session=attrs.getRequest().getSession();
-		return (List)session.getAttribute("userPower");
+		Map useMap=(Map) session.getAttribute("user");
+		if(useMap!=null){
+			return getSysPowerMenu((Integer)useMap.get("id"));
+		}
+		return new ArrayList();
 	}
 	public static String getRealAmount(String input){
 		String newInput= StringUtils.isNotBlank(input)?input:"0";

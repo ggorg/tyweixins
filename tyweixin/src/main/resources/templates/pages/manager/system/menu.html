@@ -3,9 +3,7 @@
 	<head>
         <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
         <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
-        <script type="text/javascript"  th:inline="javascript">
-            initPage(/*[[${menuPage!=null?menuPage.total:0}]]*/ );
-        </script>
+
 	</head>
     <body class="withvernav">
     <div class="bodywrapper">
@@ -56,9 +54,10 @@
                     </thead>
 
                     <tbody>
-                    <tr th:each="obj:${menuPage?.result}">
-                       
-                        <td  th:inline="text"><span  th:class="'icon fa fa-1x '+${obj['mIcon']}" ></span>　[[${obj['mName']}]]</td>
+                    <tr th:each="obj:${menuPage}" >
+                        <td   th:inline="text" onclick="showChid(this)"><i th:text="${obj['mParentId']==-1?'&#xe625;':'&nbsp;&nbsp;&nbsp;&nbsp;'}" class="layui-icon"></i> [[${obj['mParentId']>-1?'&nbsp;&nbsp;&nbsp;':''}]]<span  th:class="'icon fa fa-1x '+${obj['mIcon']}" ></span> <span th:text="${obj['mName']}">Trident</span></td>
+
+
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['mParentId']}">Win 95+</td>
                         <td th:text="${obj['mSort']}">Win 95+</td>
@@ -67,7 +66,11 @@
                         <td class="center">
                             <div class="layui-btn-group">
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'修改菜单\',\'to-edit?id='+${obj['id']}+'\')'"  >修 改</button>
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'创建下级菜单\',\'to-edit?pid='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                                <th:block th:if="${obj['mParentId']==-1}">
+                                    <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'创建下级菜单\',\'to-edit?pid='+${obj['id']}+'\')'"  >创建下级菜单</button>
+
+
+                                </th:block>
                             </div>
                         </td>
                     </tr>
@@ -75,7 +78,7 @@
                     </tbody>
 
                 </table>
-                <div id="pages"></div>
+
             </div>
         </div>
 

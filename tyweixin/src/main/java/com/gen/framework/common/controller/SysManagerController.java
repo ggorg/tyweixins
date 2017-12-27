@@ -110,7 +110,7 @@ public class SysManagerController {
     @GetMapping("/menu/to-list")
     public String toMemuList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
         try {
-            model.addAttribute("menuPage",this.sysManagerService.getMenuPage(pageNo));
+            model.addAttribute("menuPage",this.sysManagerService.getMenuPage());
         }catch (Exception e){
             logger.error("SysUserController->toMemuList",e);
         }
@@ -129,7 +129,11 @@ public class SysManagerController {
     @ResponseBody
     public ResponseVO doEditMenu(SysMenuBean sysMenuBean){
         try {
-            return this.sysManagerService.saveMenu(sysMenuBean);
+            ResponseVO responseVO=this.sysManagerService.saveMenu(sysMenuBean);
+            if(responseVO.getReCode()==1){
+                this.sysManagerService.resetPowerByMid(sysMenuBean.getId());
+            }
+            return responseVO;
         }catch (Exception e){
             logger.error("SysUserController->doCreateMenu->系统异常",e);
             return new ResponseVO(-1,"创建失败",null);
@@ -151,7 +155,12 @@ public class SysManagerController {
     @ResponseBody
     public ResponseVO doPower(Integer rId,Integer[] mId){
         try{
-            return this.sysManagerService.savePower(rId,mId);
+            ResponseVO responseVO=this.sysManagerService.savePower(rId,mId);
+            if(responseVO.getReCode()==1){
+                this.sysManagerService.resetPowerByRid(rId);
+            }
+
+            return responseVO;
         }catch (Exception e){
             logger.error("SysUserController->doPower->系统异常",e);
             return new ResponseVO(-1,"授权失败",null);
@@ -178,7 +187,7 @@ public class SysManagerController {
             }
             Tools.setSession("user",vo.getData());
             List<SysMenuBean> menus=this.sysManagerService.getPowerMenu((Integer)vo.getData().get("id"));
-            Tools.setSession("userPower",menus);
+           // Tools.setSession("userPower",menus);
             Map jumpMap=new HashMap();
             jumpMap.put("jumpUrl",menus.get(0).getmUrl());
             vo.setData(jumpMap);

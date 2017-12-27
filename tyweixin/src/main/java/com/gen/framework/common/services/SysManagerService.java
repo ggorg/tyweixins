@@ -178,7 +178,10 @@ public class SysManagerService extends CommonService{
 
         return this.commonPage("baseMenu","mSort asc",pageNum,10,new HashMap<String,Object>());
     }
+    public TreeSet getMenuPage()throws Exception{
 
+        return handlePower(null);
+    }
     @Transactional(propagation = Propagation.REQUIRED)
     public ResponseVO saveMenu(SysMenuBean sysMenuBean){
         ResponseVO vo=new ResponseVO();
@@ -203,6 +206,7 @@ public class SysManagerService extends CommonService{
             params.put("updateTime",new Date());
             if(sysMenuBean.getId()!=null && sysMenuBean.getId()>0){
                 vo=this.commonUpdateBySingleSearchParam("baseMenu",params,"id",sysMenuBean.getId());;
+
             }else{
                 params.put("createTime",new Date());
                 vo=this.commonInsertMap("baseMenu",params);
@@ -235,14 +239,19 @@ public class SysManagerService extends CommonService{
         Integer mParentId=null;
         Integer mId=null;
         Integer childMid=null;
-        List srm=this.commonObjectsBySingleParam("baseRoleMenus","rId",rId);
+        List srm=null;
+        if(rId!=null){
+            srm=this.commonObjectsBySingleParam("baseRoleMenus","rId",rId);
+        }
+
+
 
         for(Map m:linkeMenuList){
             if(m.containsKey("mParentId")){
                 mParentId=(Integer)m.get("mParentId");
                 if(mParentId==-1){
                     mId =(Integer)m.get("id");
-                    m.put("isPower",this.isPower(mId,srm));
+                    if(srm!=null)m.put("isPower",this.isPower(mId,srm));
                     topMenus.add(m);
                     linkeMenuList.remove(m);
                     for(Map child:linkeMenuList){
@@ -250,7 +259,7 @@ public class SysManagerService extends CommonService{
                             mParentId =(Integer)child.get("mParentId");
                             childMid=(Integer)child.get("id");
                             if(mParentId==mId){
-                                child.put("isPower",this.isPower(childMid,srm));
+                                if(srm!=null) child.put("isPower",this.isPower(childMid,srm));
                                 m.put("isChild",true);
                                 topMenus.add(child);
                                 linkeMenuList.remove(child);
@@ -278,7 +287,7 @@ public class SysManagerService extends CommonService{
         }
         return false;
     }
-    public ResponseVO savePower(Integer rId,Integer[] mIds){
+    public ResponseVO savePower(Integer rId,Integer[] mIds)throws Exception{
         ResponseVO vo=new ResponseVO();
 
         if(rId==null || rId <= 0){
@@ -305,6 +314,7 @@ public class SysManagerService extends CommonService{
             srm.setmId(mid);
             this.commonInsert("baseRoleMenus",srm);
         }
+
         vo.setReCode(1);
         vo.setReMsg("授权成功");
         return vo;
@@ -338,9 +348,39 @@ public class SysManagerService extends CommonService{
         vo.setReMsg("登录失败");
         return vo;
     }
-
+    @Cacheable(value = "commonCache",key = "#uid")
     public List getPowerMenu(Integer uid){
+        Cache cache=cacheManager.getCache("commonCache");
+
         return this.menuPowerMapper.queryById(uid);
     }
+    public void resetPowerByRid(Integer rid)throws Exception{
+        List<Map> lur=this.commonObjectsBySingleParam("baseUserRole","rid",rid);
+        if(lur!=null && lur.size()>0){
 
+            Cache cache=cacheManager.getCache("commonCache");
+            Integer uid;
+
+            for(Map map:lur){
+                uid=(Integer)map.get("uId");
+                if(cache.get(uid)!=null){
+                    cache.put(uid,getPowerMenu(uid));
+                }
+
+            }
+
+        }
+    }
+    public void resetPowerByMid(Integer mid)throws Exception{
+        List<Integer> uidList=this.menuPowerMapper.queryUidByMid(mid);
+        if(uidList!=null && uidList.size()>0){
+            Cache cache=cacheManager.getCache("commonCache");
+            for(Integer uid:uidList){
+                if(cache.get(uid)!=null){
+                    cache.put(uid,getPowerMenu(uid));
+                }
+
+            }
+        }
+    }
 }
