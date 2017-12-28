@@ -66,7 +66,7 @@
 
                     <tbody>
                     <tr th:each="obj:${messagePage?.result}">
-                        <td th:text="${obj['title']}">Trident</td>
+                        <td th:inline="text" onclick="showChid(this)"><i th:text="${obj['parent_id']==-1?'&#xe625;':'&nbsp;&nbsp;&nbsp;&nbsp;'}" class="layui-icon"></i> [[${obj['parent_id']>-1?'&nbsp;&nbsp;&nbsp;':''}]]<span  th:class="'icon fa fa-1x fa-weixin'" ></span><span th:text="${obj['title']}">Trident</span></td>
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['parent_id']}">Win 95+</td>
                         <td th:text="${obj['sort']}">Win 95+</td>
@@ -76,8 +76,10 @@
                         <td class="center">
                             <div class="layui-btn-group">
                                 <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'600px\',\'修改图文\',\'edit?id='+${obj['id']}+'\')'"  >修 改</button>
-                                <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'600px\',\'创建下级图文\',\'edit?parent_id='+${obj['id']}+'\')'"  >创建下级图文</button>
                                 <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\')'" >删除</button>
+                                <th:block th:if="${obj['parent_id']==-1}">
+                                    <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'600px\',\'创建下级图文\',\'edit?parent_id='+${obj['id']}+'\')'"  >创建下级图文</button>
+                                </th:block>
                             </div>
                     </tr>
 

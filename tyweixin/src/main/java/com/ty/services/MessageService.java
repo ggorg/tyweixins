@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 图文消息
@@ -64,14 +65,20 @@ public class MessageService{
     @Transactional(readOnly = false)
     public ResponseVO delete(Integer id){
 		ResponseVO vo=new ResponseVO();
-    	int res = messageMapper.delete(id);
-		if(res>0){
-			vo.setReCode(1);
-			vo.setReMsg("删除成功");
-		}else{
-			vo.setReCode(-2);
-			vo.setReMsg("删除失败");
-		}
+        List<Message> messageList = messageMapper.findListById(id);
+        if (messageList.size() > 0) {
+            vo.setReCode(-1);
+            vo.setReMsg("包含子图文,删除失败");
+        }else {
+            int res = messageMapper.delete(id);
+            if (res > 0) {
+                vo.setReCode(1);
+                vo.setReMsg("删除成功");
+            } else {
+                vo.setReCode(-2);
+                vo.setReMsg("删除失败");
+            }
+        }
     	return vo;
     }
     
@@ -84,6 +91,7 @@ public class MessageService{
     public Page findList(Integer pageNum,String appid){
 		Page<Message> page = new Page<Message>(pageNum,10);
 		List<Message> list = messageMapper.findList(page,appid);
+        list = this.handleMessage(list);
 		int total = messageMapper.findListCount(appid);
 		page.setResult(list);
 		page.setTotal(total);
@@ -97,6 +105,29 @@ public class MessageService{
      */
     public List<Message> findListAll(String appid){
         return messageMapper.findListAll(appid);
+    }
+
+    /**
+     * 图文结构整理
+     * @param messageList
+     * @return
+     */
+    public ArrayList handleMessage(List<Message> messageList){
+        CopyOnWriteArrayList<Message> linkeMessageList=new CopyOnWriteArrayList(messageList);
+        ArrayList<Message> topMessage = new ArrayList<Message>();
+        for(Message message:linkeMessageList){
+            if(message.getParent_id() == -1){
+                topMessage.add(message);
+                linkeMessageList.remove(message);
+                for(Message childMessage:linkeMessageList){
+                    if(childMessage.getParent_id() == message.getId()){
+                        topMessage.add(childMessage);
+                        linkeMessageList.remove(message);
+                    }
+                }
+            }
+        }
+        return topMessage;
     }
 
     /**

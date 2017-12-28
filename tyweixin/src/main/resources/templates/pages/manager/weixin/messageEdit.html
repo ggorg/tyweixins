@@ -21,7 +21,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">上级图文ID</label>
     <div class="layui-input-block">
-      <input type="text" name="parent_id" th:readonly="${messageObject!=null}" th:value="${messageObject!=null?messageObject?.parent_id:#httpServletRequest.getParameter('parent_id')}" required="required"  lay-verify="required|number" placeholder="请输入上级图文ID" autocomplete="off" class="layui-input" />
+      <input type="text" name="parent_id" readonly="readonly" th:value="${messageObject!=null?messageObject?.parent_id:#httpServletRequest.getParameter('parent_id')}" required="required"  lay-verify="required|number" placeholder="请输入上级图文ID" autocomplete="off" class="layui-input" />
     </div>
   </div>
     <div class="layui-form-item" style="margin-top: 15px">

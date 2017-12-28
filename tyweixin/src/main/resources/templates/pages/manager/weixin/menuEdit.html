@@ -21,7 +21,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">上级菜单ID</label>
     <div class="layui-input-block">
-      <input type="text" name="parent_id" th:readonly="${menuObject!=null}" th:value="${menuObject!=null?menuObject?.parent_id:#httpServletRequest.getParameter('parent_id')}" required="required"  lay-verify="required|number" placeholder="请输入上级菜单ID" autocomplete="off" class="layui-input" />
+      <input type="text" name="parent_id" readonly="readonly" th:value="${menuObject!=null?menuObject?.parent_id:#httpServletRequest.getParameter('parent_id')}" required="required"  lay-verify="required|number" placeholder="请输入上级菜单ID" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-inline">
