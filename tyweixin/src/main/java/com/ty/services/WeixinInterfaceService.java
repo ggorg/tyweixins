@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -94,7 +95,22 @@ public class WeixinInterfaceService {
 	private final static String UPDATEREMARK_URL = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
 	/** 获得模板ID*/
 	private final static String API_ADD_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN";
-	/**
+    /** 创建标签*/
+	private final static String TAGS_CREATE_URL = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN";
+    /** 获取公众号已创建的标签*/
+	private final static String TAGS_GET_URL = "https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN";
+    /** 编辑标签*/
+	private final static String TAGS_UPDATE_URL = "https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN";
+    /** 删除标签*/
+	private final static String TAGS_DELETE_URL = "https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN";
+    /** 获取标签下粉丝列表*/
+	private final static String TAGS_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=ACCESS_TOKEN";
+    /** 批量为用户打标签*/
+	private final static String BATCHTAGGING_MEMBERS_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN";
+    /** 批量为用户取消打标签*/
+    private final static String BATCHUNTAGGING_MEMBERS_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN";
+
+    /**
      * 微信用户资料
      * @param appid 应用id
      * @param openid 用户原始id
@@ -907,7 +923,7 @@ public class WeixinInterfaceService {
      * @param templateIdShort 模板库中模板的编号，有“TM**”和“OPENTMTM**”等形式
      * @return
      */
-    public JSONObject apiAddTemplateUrl(String appid, String templateIdShort) {
+    public JSONObject apiAddTemplate(String appid, String templateIdShort) {
         // 调用接口获取access_token
         AccessToken at = this.getTokenByAppid(appid);
         JSONObject jsonObject = new JSONObject();
@@ -923,7 +939,179 @@ public class WeixinInterfaceService {
         if(jsonObject.containsKey("errcode") && jsonObject.getString("errcode").equals("40001")){
             // 重置token
             weixinUtil.resetToken(appid);
-            apiAddTemplateUrl(appid, templateIdShort);
+            apiAddTemplate(appid, templateIdShort);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 创建标签
+     * @param appid 应用id
+     * @param name 标签名（30个字符以内）
+     * @return {   "tag":{ "id":134,//标签id "name":"广东"   } }
+     */
+    public JSONObject tagsCreate(String appid, String name) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        JSONObject tagJsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = TAGS_CREATE_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("name", name);
+            tagJsonObject.put("tag",jsonObject);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", tagJsonObject.toString());
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 获取公众号已创建的标签
+     * @param appid 应用id
+     * @return {   "tags":[{       "id":1,       "name":"每天一罐可乐星人",       "count":0 //此标签下粉丝数 },{   "id":2,   "name":"星标组",   "count":0 },{   "id":127,   "name":"广东",   "count":5 }   ] }
+     */
+    public JSONObject tagsGet(String appid) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = TAGS_GET_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", null);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 编辑标签
+     * @param appid 应用id
+     * @param id 标签编号
+     * @param name 标签名（30个字符以内）
+     * @return {   "errcode":0,   "errmsg":"ok" }
+     */
+    public JSONObject tagsUpdate(String appid,int id, String name) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        JSONObject tagJsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = TAGS_UPDATE_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("id", id);
+            jsonObject.put("name", name);
+            tagJsonObject.put("tag",jsonObject);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", tagJsonObject.toString());
+        }
+        return jsonObject;
+    }
+    /**
+     * 删除标签
+     * @param appid 应用id
+     * @param id 标签编号
+     * @return {   "errcode":0,   "errmsg":"ok" }
+     */
+    public JSONObject tagsDelete(String appid,int id) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        JSONObject tagJsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = TAGS_DELETE_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("id", id);
+            tagJsonObject.put("tag",jsonObject);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", tagJsonObject.toString());
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 获取标签下粉丝列表
+     * @param appid 应用id
+     * @param tagid 标签id
+     * @param next_openid 第一个拉取的OPENID，不填默认从头开始拉取
+     * @return
+     * {   "count":2,//这次获取的粉丝数量
+    "data":{//粉丝列表
+    "openid":[
+    "ocYxcuAEy30bX0NXmGn4ypqx3tI0",
+    "ocYxcuBt0mRugKZ7tGAHPnUaOW7Y"  ]
+    },
+    "next_openid":"ocYxcuBt0mRugKZ7tGAHPnUaOW7Y"//拉取列表最后一个用户的openid
+    }
+     */
+    public JSONObject tagsUser(String appid,int tagid,String next_openid) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = TAGS_USER_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("tagid", tagid);
+            jsonObject.put("next_openid", next_openid);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", jsonObject.toString());
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 批量为用户打标签s
+     * @param appid 应用id
+     * @param tagid 标签id
+     * @param openid 用户openid List
+     * @return {
+    "errcode":0,
+    "errmsg":"ok"
+    }
+     */
+    public JSONObject batchTaggingMembers(String appid,int tagid,List<String> openid) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = BATCHTAGGING_MEMBERS_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("openid_list", openid.toArray());
+            jsonObject.put("tagid", tagid);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", jsonObject.toString());
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 批量为用户取消标签
+     * @param appid
+     * @param tagid
+     * @param openid
+     * @return {
+    "errcode":0,
+    "errmsg":"ok"
+    }
+     */
+    public JSONObject batchUnTaggingMembers(String appid,int tagid,List<String> openid) {
+        // 调用接口获取access_token
+        AccessToken at = this.getTokenByAppid(appid);
+        JSONObject jsonObject = new JSONObject();
+        if (at == null) {
+            jsonObject.put("retCode", -1);
+            jsonObject.put("retMsg", "参数有误");
+        } else {
+            String requestUrl = BATCHUNTAGGING_MEMBERS_URL.replace("ACCESS_TOKEN", at.getToken());
+            jsonObject.put("openid_list", openid.toArray());
+            jsonObject.put("tagid", tagid);
+            jsonObject = WeixinUtil.httpRequest(requestUrl, "POST", jsonObject.toString());
         }
         return jsonObject;
     }

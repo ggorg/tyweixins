@@ -10,7 +10,10 @@ import com.ty.dao.MenuMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 微信菜单Service
@@ -60,12 +63,46 @@ public class MenuService {
      * @return
      */
     public Page findList(Integer pageNum,String appid){
-        Page<com.ty.entity.Menu>page = new Page<com.ty.entity.Menu>(pageNum,15);
+        Page<com.ty.entity.Menu>page = new Page<com.ty.entity.Menu>(pageNum,100);
         List<com.ty.entity.Menu> list = menuMapper.findList(page,appid);
         int total = menuMapper.findListCount(appid);
         page.setResult(list);
         page.setTotal(total);
         return page;
+    }
+
+    /**
+     * 根据应用id查询菜单
+     * @param appid 应用id
+     * @return
+     */
+    public ArrayList findListAll(String appid){
+        Page<com.ty.entity.Menu>page = new Page<com.ty.entity.Menu>(1,100);
+        List<com.ty.entity.Menu> list = menuMapper.findList(page,appid);
+        return handleMenu(list);
+    }
+
+    /**
+     * 菜单结构整理
+     * @param menuList
+     * @return
+     */
+    public ArrayList handleMenu(List<com.ty.entity.Menu> menuList){
+        CopyOnWriteArrayList<com.ty.entity.Menu> linkeMenuList=new CopyOnWriteArrayList(menuList);
+        ArrayList<com.ty.entity.Menu> topMenus = new ArrayList<com.ty.entity.Menu>();
+        for(com.ty.entity.Menu menu:linkeMenuList){
+            if(menu.getParent_id() == -1){
+                topMenus.add(menu);
+                linkeMenuList.remove(menu);
+                for(com.ty.entity.Menu childMenu:linkeMenuList){
+                    if(childMenu.getParent_id() == menu.getId()){
+                        topMenus.add(childMenu);
+                        linkeMenuList.remove(menu);
+                    }
+                }
+            }
+        }
+        return topMenus;
     }
 
     /**
