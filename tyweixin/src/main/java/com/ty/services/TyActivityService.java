@@ -162,6 +162,7 @@ public class TyActivityService extends CommonService {
         String ranInt=RandomStringUtils.randomNumeric(5);
         jsonObject.put("act_code", ActEnum.act6.getCode());
         jsonObject.put("message",ranInt);
+
         String str=HttpUtil.doPost("http://222.221.16.170/coupon/webserver/get",TydicDES.encodeValue(jsonObject.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(str));
     }
