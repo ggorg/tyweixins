@@ -57,7 +57,7 @@ public class MenuController {
         }else{
             cacheService.set("appid",appid);
         }
-        Page<Menu> menuPage =  menuService.findList(pageNo,appid);
+        List<com.ty.entity.Menu> menuPage =  menuService.findListAll(appid);
         model.addAttribute("menuPage",menuPage);
         model.addAttribute("appid",appid);
         model.addAttribute("pubweixinList",pubweixinList);
