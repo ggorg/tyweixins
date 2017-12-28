@@ -10,7 +10,27 @@
     <th:block th:include="pages/manager/common/editResources::syseditjsresources"></th:block>
 
     <script type="text/javascript" th:inline="javascript">
-        initPage(/*[[${userPage!=null?userPage.total:0}]]*/);
+        initPage(/*[[${userPage!=null?userPage.total:0}]]*/,function(pageNo){
+            var htmls="";
+            for(var i=0;i<10;i++){
+                htmls+=" <tr>\n" +
+                    "            <td><input lay-skin=\"primary\" type=\"checkbox\"><div class=\"layui-unselect layui-form-checkbox\" lay-skin=\"primary\"><i class=\"layui-icon\"></i></div></td>\n" +
+                    "            <td><img src=\"http://wx.qlogo.cn/mmopen/sWictKZlvrMD9I6VyCmgns1apKCd7P3LYnyz0hVwusgicr7utQfBM9pSxIS7SAyH09giaRcjaiaQDsh81zYybaDX9ibFEulYO1icND/0\" height=\"40px\" width=\"40px\"></td>\n" +
+                    "            <td>"+Math.random()*1000+"</td>\n" +
+                    "            <td>oiAn7w9pEhuEldiPLo8d3xWPxsfE</td>\n" +
+                    "            <td>wxd5ba1ab308c1908b</td>\n" +
+                    "            <td>关注</td>\n" +
+                    "            <td>男性</td>\n" +
+                    "            <td>中国</td>\n" +
+                    "            <td>广东</td>\n" +
+                    "            <td>东莞</td>\n" +
+                    "            <td>2017-12-18 11:18:21</td>\n" +
+                    "        </tr>\n" ;
+            }
+
+
+            $("#datatb").html(htmls);
+        });
     </script>
 </head>
 <body style="padding:30px 10px 10px 10px">
@@ -160,7 +180,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody id="datatb">
         <tr th:each="obj:${userPage?.result}">
             <td><input lay-skin="primary"  type="checkbox"></td>
             <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
