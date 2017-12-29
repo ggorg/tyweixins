@@ -56,6 +56,24 @@ public class WeixinUserController{
     }
 
     /**
+     * 供异步调用的微信用户数据
+     * @param userInfo 筛选条件
+     * @param pageNo 页数
+     * @param appid 应用id
+     * @param model
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="userInfoPage", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+    public Page<UserInfo> userInfoPage(UserInfo userInfo,@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model){
+        if(appid == null){
+            appid = cacheService.get("appid").toString();
+        }
+        Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
+        return page;
+    }
+
+    /**
      * 修改微信用户备注
      * 
      * @param appid

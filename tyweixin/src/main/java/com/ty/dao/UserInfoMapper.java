@@ -29,6 +29,8 @@ public interface UserInfoMapper {
      */
     List<UserInfo> findList(@Param("page")Page page, @Param("userInfo")UserInfo userInfo);
 
+    List<UserInfo> findListAll(@Param("userInfo")UserInfo userInfo);
+
     /**
      * 查询总数
      * @param userInfo 筛选条件

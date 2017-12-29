@@ -109,7 +109,8 @@ public class WeixinInterfaceService {
 	private final static String BATCHTAGGING_MEMBERS_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN";
     /** 批量为用户取消打标签*/
     private final static String BATCHUNTAGGING_MEMBERS_URL = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN";
-
+    /** 上传图文消息内的图片获取URL*/
+    private final static String MEDIA_UPLOADIMG_URL = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN";
     /**
      * 微信用户资料
      * @param appid 应用id

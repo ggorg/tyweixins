@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,6 +85,7 @@ public class PushController {
             }else{
                 cacheService.set("appid",appid);
             }
+            userInfo.setAppid(appid);
             model.addAttribute("messageList",messageService.findListAll(appid));
             model.addAttribute("appid",appid);
             Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
@@ -98,10 +100,18 @@ public class PushController {
 
     @RequestMapping(value = "save")
     @ResponseBody
-    public ResponseVO save(Push push,String ptime, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public ResponseVO save(Push push,UserInfo userInfo,String ptime, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         try {
             if (ptime != null && !ptime.equals("")){
                 push.setPush_time(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(ptime));
+            }
+            if(push.getOpenids().equals("all")){
+                List<UserInfo> userInfoList = weixinUserService.findUserAll(userInfo);
+                List<String> openids = new ArrayList<String>();
+                for(UserInfo userInfo1:userInfoList){
+                    openids.add(userInfo1.getOpenid());
+                }
+                push.setOpenids(openids.toString().replace("[","").replace("]",""));
             }
             return pushService.saveOrUpdate(push);
         } catch (Exception e) {

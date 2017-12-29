@@ -44,7 +44,14 @@ public class WeixinUserService {
         return page;
     }
 
-
+    /**
+     * 不分页查询微信用户列表
+     * @param userInfo
+     * @return
+     */
+    public List<UserInfo>findUserAll(UserInfo userInfo){
+        return userInfoMapper.findListAll(userInfo);
+    }
     /**
      * 添加或更新微信用户资料
      * 
@@ -103,59 +110,6 @@ public class WeixinUserService {
         return userInfoMapper.selectByopenid(openid);
     }
 
-    /**
-     * 获取关注者列表并入库
-     * 
-     * @param appid 应用ID
-     * @return
-     */
-    // public JSONObject getAllUser(String appid){
-    // //获取关注者列表
-    // JSONObject jsonObject = weixinInterfaceService.getAllUser(appid,"");
-    // //拉取列表的后一个用户的OPENID
-    // String next_openid = "";
-    // if(jsonObject.containsKey("data")){
-    // JSONObject json = jsonObject.getJSONObject("data");
-    // JSONArray jsarray = json.getJSONArray("openid");
-    // next_openid = jsonObject.getString("next_openid");
-    // try {
-    // //从数据库中用户信息
-    // List<Map<String,String>>list = userInfoMapper.findOpenidList(appid);
-    // //移除已经存在的用户信息
-    // for(Map<String,String> m :list){
-    // jsarray.remove(m.get("openid"));
-    // }
-    // //请求单个用户资料并入库
-    // for(Object openid : jsarray.toArray()){
-    // UserInfo userinfo = weixinInterfaceService.getUserInfo(appid, openid.toString());
-    // this.save(userinfo);
-    // }
-    // //关注该公众账号的总用户数超过10000的处理
-    // while(!next_openid.equals("")){
-    // //获取关注者列表
-    // jsonObject = weixinInterfaceService.getAllUser(appid,next_openid);
-    // //拉取列表的后一个用户的OPENID
-    // if(jsonObject.containsKey("data")){
-    // json = jsonObject.getJSONObject("data");
-    // jsarray = json.getJSONArray("openid");
-    // }
-    // next_openid = jsonObject.getString("next_openid");
-    // //移除已经存在的用户信息
-    // for(Map<String,String> m :list){
-    // jsarray.remove(m.get("openid"));
-    // }
-    // //请求单个用户资料并入库
-    // for(Object openid : jsarray.toArray()){
-    // UserInfo userinfo = weixinInterfaceService.getUserInfo(appid, openid.toString());
-    // this.save(userinfo);
-    // }
-    // }
-    // } catch (Exception e) {
-    // logger.error(e.getMessage(), e);
-    // }
-    // }
-    // return jsonObject;
-    // }
 
     /**
      * 调用微信接口取回所有关注微信号，数据库存在则判断差异更新，不存在则新增

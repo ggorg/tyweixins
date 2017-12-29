@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 微信事件处理-关键字回复Service
+ * 推送策略
  * @author Jacky
  *
  */
@@ -27,7 +27,7 @@ public class PushService {
     private MessageService messageService;
 
     /**
-     * 根据appid查询关键字回复
+     * 根据appid查询推送策略
      * @param pageNum 页数
      * @param appid 应用id
      * @return
@@ -42,7 +42,7 @@ public class PushService {
     }
 
     /**
-     * 不分页查询关键字回复
+     * 不分页查询推送策略
      * @param appid
      * @return
      */
@@ -50,7 +50,7 @@ public class PushService {
 
 
     /**
-     * 根据主键查询关键字回复
+     * 根据主键查询推送策略
      * @param id 主键
      * @return
      */
@@ -59,18 +59,18 @@ public class PushService {
     }
 
     /**
-     * 插入或更新关键字回复
-     * @param eventRule
+     * 插入或更新推送策略
+     * @param push
      * @return
      */
-    public ResponseVO saveOrUpdate(Push eventRule){
+    public ResponseVO saveOrUpdate(Push push){
         ResponseVO vo=new ResponseVO();
-        Push pw = pushMapper.selectById(eventRule.getId());
+        Push pw = pushMapper.selectById(push.getId());
         if(pw!=null){
-            pushMapper.update(eventRule);
+            pushMapper.update(push);
             vo.setReMsg("修改成功");
         }else{
-            pushMapper.insert(eventRule);
+            pushMapper.insert(push);
             vo.setReMsg("创建成功");
         }
         vo.setReCode(1);
@@ -78,7 +78,7 @@ public class PushService {
     }
 
     /**
-     * 删除关键字回复
+     * 删除推送策略
      * @param id 主键
      * @return
      */

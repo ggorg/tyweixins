@@ -11,25 +11,32 @@
 
     <script type="text/javascript" th:inline="javascript">
         initPage(/*[[${userPage!=null?userPage.total:0}]]*/,function(pageNo){
-            var htmls="";
-            for(var i=0;i<10;i++){
-                htmls+=" <tr>\n" +
-                    "            <td><input lay-skin=\"primary\" type=\"checkbox\"><div class=\"layui-unselect layui-form-checkbox\" lay-skin=\"primary\"><i class=\"layui-icon\"></i></div></td>\n" +
-                    "            <td><img src=\"http://wx.qlogo.cn/mmopen/sWictKZlvrMD9I6VyCmgns1apKCd7P3LYnyz0hVwusgicr7utQfBM9pSxIS7SAyH09giaRcjaiaQDsh81zYybaDX9ibFEulYO1icND/0\" height=\"40px\" width=\"40px\"></td>\n" +
-                    "            <td>"+Math.random()*1000+"</td>\n" +
-                    "            <td>oiAn7w9pEhuEldiPLo8d3xWPxsfE</td>\n" +
-                    "            <td>wxd5ba1ab308c1908b</td>\n" +
-                    "            <td>关注</td>\n" +
-                    "            <td>男性</td>\n" +
-                    "            <td>中国</td>\n" +
-                    "            <td>广东</td>\n" +
-                    "            <td>东莞</td>\n" +
-                    "            <td>2017-12-18 11:18:21</td>\n" +
-                    "        </tr>\n" ;
-            }
-
-
-            $("#datatb").html(htmls);
+            //异步刷新加载表格
+            jQuery.ajax({
+                type: "GET",
+                url: "/weixin/user/userInfoPage",
+                dataType:JSON,
+                data: {pageNo:pageNo,appid:jQuery("[name='appid']").val(),nickname:jQuery("[name='nickname']").val(),openid:jQuery("[name='openid']").val()},
+                success: function(data) {
+                    var htmls = "";
+                    for (var i = 0; i < data.result.size; i++) {
+                        htmls += " <tr>\n" +
+                                "            <td><input lay-skin=\"primary\" type=\"checkbox\" value=\""+data.result[i].openid+"\"><div class=\"layui-unselect layui-form-checkbox\" lay-skin=\"primary\"><i class=\"layui-icon\"></i></div></td>\n" +
+                                "            <td><img src=\""+data.result[i].headimgurl+"\" height=\"40px\" width=\"40px\"></td>\n" +
+                                "            <td>" + data.result[i].nickname + "</td>\n" +
+                                "            <td>" + data.result[i].openid +"</td>\n" +
+                                "            <td>" + data.result[i].appid +"</td>\n" +
+                                "            <td>" + data.result[i].subscribe + "</td>\n" +
+                                "            <td>" + data.result[i].sex + "</td>\n" +
+                                "            <td>" + data.result[i].country + "</td>\n" +
+                                "            <td>" + data.result[i].province + "</td>\n" +
+                                "            <td>" + data.result[i].city + "</td>\n" +
+                                "            <td>" + data.result[i].subscribe_time + "</td>\n" +
+                                "        </tr>\n";
+                    }
+                    $("#datatb").html(htmls);
+                }
+             });
         });
     </script>
 </head>
@@ -37,6 +44,7 @@
 <form class="layui-form">
     <input type="hidden" th:if="${pushObject!=null}" name="id" th:value="${pushObject?.id}"/>
     <input type="hidden" th:if="${appid!=null}" name="appid" th:value="${appid}"/>
+    <input type="hidden" name="openids"/>
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">标题</label>
@@ -94,7 +102,7 @@
         <div class="layui-inline">
             <label class="layui-form-label"></label>
             <div class="layui-input-inline" style="margin-bottom:19px;">
-                <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
+                <button class="layui-btn" lay-submit="lay-submit" id="submit" lay-filter="formDemo">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
 
             </div>
@@ -128,28 +136,16 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">关注</label>
-                    <div class="layui-input-inline">
-                        <select name="subscribe">
-                            <option value="">请选择</option>
-                            <option value="1" th:selected="${userInfo?.subscribe == '1'}">关注</option>
-                            <option value="0" th:selected="${userInfo?.subscribe == '0'}">未关注</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">openid</label>
                     <div class="layui-input-inline">
                         <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}"
                                autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <button class="btn btn_search radius50" lay-submit="lay-submit" lay-filter="formDemo">Search</button>
+                <button type="button" class="btn btn_search radius50" id="search" lay-filter="formDemo">Search</button>
                 &nbsp;
             </div>
         </div><!--tableoptions-->
-    </form>
-        <form class="layui-form">
     <table cellpadding="0" cellspacing="0" border="0" id="table" lay-filter="demo"  class="stdtable stdtablecb">
         <colgroup>
             <!--<col class="con0" style="width: 4%" />-->
@@ -166,7 +162,7 @@
         </colgroup>
         <thead>
         <tr>
-            <th><input lay-skin="primary"  type="checkbox" lay-filter="allChoose"></th>
+            <th><input lay-skin="primary" value="all" type="checkbox" lay-filter="allChoose"></th>
             <th class="head1">头像</th>
             <th class="head0">昵称</th>
             <th class="head1">openid</th>
@@ -182,7 +178,7 @@
 
         <tbody id="datatb">
         <tr th:each="obj:${userPage?.result}">
-            <td><input lay-skin="primary"  type="checkbox"></td>
+            <td><input lay-skin="primary" th:value="${obj['openid']}" type="checkbox"></td>
             <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
             <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
             <td th:text="${obj['openid']}">Win 95+</td>
@@ -202,7 +198,6 @@
     </table>
         </form>
     <div id="pages"></div>
-    <table class="layui-table" lay-data="{id: 'idTest'}"> …… </table>
 </div>
 <script type="text/javascript">
     layui.use('laydate', function () {
@@ -222,6 +217,7 @@
             });
             form.render('checkbox');
         });
+        //显示隐藏文字/图文
         form.on('select(selectType)', function (data) {
             if (data.value == "1") {
                 if (!$("#msgObj").hasClass("layui-hide")) {
@@ -235,9 +231,32 @@
                 }
             }
 
-        })
-        jQuery(".layui-form").submit(function (data) {
+        });
+        jQuery(".layui-form").eq(0).submit(function (data) {
             console.log(data);
+        });
+    });
+
+    jQuery("#search").click(function () {
+        //异步刷新加载表格
+        jQuery.ajax({
+            type: "POST",
+            url: "/weixin/user/userInfoPage",
+            data: {pageNo:pageNo,appid:jQuery("[name='appid']").val(),nickname:jQuery("[name='nickname']").val(),openid:jQuery("[name='openid']").val()},
+            success: function(page){
+                console.log(page);
+            }
+        });
+    });
+
+    jQuery("#submit").click(function(){
+        jQuery("input:checkbox:checked").each(function () {
+            if(jQuery(this).val() == "all"){
+                jQuery("[name='openids']").val("all");
+                return true;
+            }else{
+                jQuery("[name='openids']").val(jQuery("[name='openids']").val()==""?jQuery(this).val():(jQuery("[name='openids']").val()+",")+jQuery(this).val())
+            }
         });
     });
     initForm("save", ".layui-form")

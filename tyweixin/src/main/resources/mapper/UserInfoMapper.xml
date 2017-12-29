@@ -121,6 +121,46 @@
         where openid = #{openid,jdbcType=VARCHAR}
     </select>
 
+    <!-- 不分页查询用户信息 -->
+    <select id="findListAll" resultType="com.ty.entity.UserInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM weixin_user a
+        WHERE 1=1
+        <if test="userInfo.appid != null and userInfo.appid != ''">
+            AND a.appid  = #{userInfo.appid}
+        </if>
+        <if test="userInfo.nickname != null and userInfo.nickname != ''">
+            AND upper(a.nickname)  LIKE
+            CONCAT('%', upper(#{userInfo.nickname}), '%')
+        </if>
+        <if test="userInfo.openid != null and userInfo.openid != ''">
+            AND a.openid  LIKE
+            CONCAT('%', #{userInfo.openid}, '%')
+        </if>
+        <if test="userInfo.remark != null and userInfo.remark != ''">
+            AND a.remark  LIKE
+            CONCAT('%', #{userInfo.remark}, '%')
+        </if>
+        <if test="userInfo.country != null and userInfo.country != ''">
+            AND a.country  LIKE
+            CONCAT('%', #{userInfo.country}, '%')
+        </if>
+        <if test="userInfo.province != null and userInfo.province != ''">
+            AND a.province  LIKE
+            CONCAT('%', #{userInfo.province}, '%')
+        </if>
+        <if test="userInfo.city != null and userInfo.city != ''">
+            AND a.city  LIKE
+            CONCAT('%', #{userInfo.city}, '%')
+        </if>
+        <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
+            AND a.subscribe  = #{userInfo.subscribe}
+        </if>
+        <if test="userInfo.sex != null and userInfo.sex != ''">
+            AND a.sex  = #{userInfo.sex}
+        </if>
+    </select>
     <!-- 分页查询用户信息 -->
     <select id="findList" resultType="com.ty.entity.UserInfo">
         SELECT
