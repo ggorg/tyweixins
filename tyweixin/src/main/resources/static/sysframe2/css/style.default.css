@@ -488,7 +488,14 @@ body.withmenucoll2 { background-position: 35px 0; } /* with menu style 2 in coll
 .menucoll2 { width: 35px; }
 .menucoll2 ul li { height: 36px; position: relative; }
 .menucoll2 ul li span.arrow { display: none; }
-.menucoll2 > ul > li > a { overflow: hidden; width: 0; height: 36px; padding: 0 0 0 35px; }
+.menucoll2 > ul > li > a {
+	/*overflow: hidden; width: 0; height: 36px; padding: 0 0 0 35px; */
+	overflow: hidden;
+	white-space: nowrap;
+	padding-left: 5px;
+
+}
+.menucoll2 > ul > li  span { padding-right: 5px; font-size: 2em;}
 /*.menucoll2 > ul > li.hover > a { background-color: #f7f7f7; background-image: url(../images/default/icons_sprite2.png); }
 .menucoll2 > ul > li.current > a { background-image: url(../images/default/icons_sprite.png); } */
 .menucoll2 ul ul { 

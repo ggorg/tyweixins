@@ -53,13 +53,13 @@
                     </colgroup>
                     <thead>
                     <tr>
-                        <th class="head1">标题</th>
+                        <th class="head1" class="head1" width="150px">标题</th>
                         <th class="head0">主键</th>
                         <th class="head1">父主键</th>
                         <th class="head0">排序</th>
                         <th class="head1">描述</th>
                         <th class="head0">跳转URL</th>
-                        <th class="head1">图片URL</th>
+                        <th class="head1" >图片URL</th>
                         <th class="head0">操作</th>
                     </tr>
                     </thead>
@@ -71,7 +71,7 @@
                         <td th:text="${obj['parent_id']}">Win 95+</td>
                         <td th:text="${obj['sort']}">Win 95+</td>
                         <td th:text="${obj['description']}">Win 95+</td>
-                        <td th:text="${obj['url']}">Win 95+</td>
+                        <td  style="word-break:break-all;" th:text="${obj['url']}">Win 95+</td>
                         <td><img th:attr="src=${obj['picurl']}" th:width="40px" th:height="40px"></td>
                         <td class="center">
                             <div class="layui-btn-group">

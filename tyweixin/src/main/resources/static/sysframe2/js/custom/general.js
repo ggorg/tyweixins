@@ -90,14 +90,15 @@ jQuery(document).ready(function(){
 		jQuery(id).show();
 		return false;
 	});
-	
-	
-	
+
+
+    handleMenu(jQuery(".togglemenu")[0],jQuery.cookie("menuAction")==null)
 	///// SHOW/HIDE VERTICAL SUB MENU /////	
 	
 	jQuery('.vernav > ul li a, .vernav2 > ul li a').each(function(){
 		var url = jQuery(this).attr('href');
 		jQuery(this).click(function(){
+
 			if(jQuery(url).length > 0) {
 				if(jQuery(url).is(':visible')) {
 					if(!jQuery(this).parents('div').hasClass('menucoll') &&
@@ -211,53 +212,69 @@ jQuery(document).ready(function(){
 	
 	///// COLLAPSED/EXPAND LEFT MENU /////
 	jQuery('.togglemenu').click(function(){
-		if(!jQuery(this).hasClass('togglemenu_collapsed')) {
-			
-			//if(jQuery('.iconmenu').hasClass('vernav')) {
-			if(jQuery('.vernav').length > 0) {
-				if(jQuery('.vernav').hasClass('iconmenu')) {
-					jQuery('body').addClass('withmenucoll');
-					jQuery('.iconmenu').addClass('menucoll');
-				} else {
-					jQuery('body').addClass('withmenucoll');
-					jQuery('.vernav').addClass('menucoll').find('ul').hide();
-				}
-			} else if(jQuery('.vernav2').length > 0) {
-			//} else {
-				jQuery('body').addClass('withmenucoll2');
-				jQuery('.iconmenu').addClass('menucoll2');
-			}
-			
-			jQuery(this).addClass('togglemenu_collapsed');
-			
-			jQuery('.iconmenu > ul > li > a').each(function(){
-				var label = jQuery(this).text();
-				jQuery('<li><span>'+label+'</span></li>')
-					.insertBefore(jQuery(this).parent().find('ul li:first-child'));
-			});
-		} else {
-			
-			//if(jQuery('.iconmenu').hasClass('vernav')) {
-			if(jQuery('.vernav').length > 0) {
-				if(jQuery('.vernav').hasClass('iconmenu')) {
-					jQuery('body').removeClass('withmenucoll');
-					jQuery('.iconmenu').removeClass('menucoll');
-				} else {
-					jQuery('body').removeClass('withmenucoll');
-					jQuery('.vernav').removeClass('menucoll').find('ul').show();
-				}
-			} else if(jQuery('.vernav2').length > 0) {	
-			//} else {
-				jQuery('body').removeClass('withmenucoll2');
-				jQuery('.iconmenu').removeClass('menucoll2');
-			}
-			jQuery(this).removeClass('togglemenu_collapsed');	
-			
-			jQuery('.iconmenu ul ul li:first-child').remove();
+       var b= handleMenu(this,jQuery(this).hasClass('togglemenu_collapsed'));
+		if(!b){
+            jQuery.cookie("menuAction","togglemenu_collapsed",{path:"/"});
+		}else{
+            jQuery.cookie("menuAction",null,{path:"/"});
+
 		}
 	});
 	
-	
+	function handleMenu(obj,b){
+
+        if(!b) {
+
+            var spans=jQuery(".iconmenu").find("span");
+            spans.removeClass("fa-1x")
+            spans.addClass("fa-2x")
+            //if(jQuery('.iconmenu').hasClass('vernav')) {
+            if(jQuery('.vernav').length > 0) {
+                if(jQuery('.vernav').hasClass('iconmenu')) {
+                    jQuery('body').addClass('withmenucoll');
+                    jQuery('.iconmenu').addClass('menucoll');
+                } else {
+                    jQuery('body').addClass('withmenucoll');
+                    jQuery('.vernav').addClass('menucoll').find('ul').hide();
+                }
+            } else if(jQuery('.vernav2').length > 0) {
+                //} else {
+                jQuery('body').addClass('withmenucoll2');
+                jQuery('.iconmenu').addClass('menucoll2');
+            }
+            /**/
+            jQuery(obj).addClass('togglemenu_collapsed');
+
+            /*jQuery('.iconmenu > ul > li > a').each(function(){
+                var label = jQuery(this).text();
+                jQuery('<li><span>'+label+'</span></li>')
+                    .insertBefore(jQuery(this).parent().find('ul li:first-child'));
+            });*/
+            return false;
+        } else {
+            var spans=jQuery(".iconmenu").find("span");
+            spans.removeClass("fa-2x")
+            spans.addClass("fa-1x")
+            //if(jQuery('.iconmenu').hasClass('vernav')) {
+            if(jQuery('.vernav').length > 0) {
+                if(jQuery('.vernav').hasClass('iconmenu')) {
+                    jQuery('body').removeClass('withmenucoll');
+                    jQuery('.iconmenu').removeClass('menucoll');
+                } else {
+                    jQuery('body').removeClass('withmenucoll');
+                    jQuery('.vernav').removeClass('menucoll').find('ul').show();
+                }
+            } else if(jQuery('.vernav2').length > 0) {
+                //} else {
+                jQuery('body').removeClass('withmenucoll2');
+                jQuery('.iconmenu').removeClass('menucoll2');
+            }
+            jQuery(obj).removeClass('togglemenu_collapsed');
+
+            /*jQuery('.iconmenu ul ul li:first-child').remove();*/
+            return true;
+        }
+	}
 	
 	///// RESPONSIVE /////
 	if(jQuery(document).width() < 640) {

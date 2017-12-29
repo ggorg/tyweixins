@@ -64,10 +64,11 @@
                     <thead>
 
                     <tr>
-                       
+                        <th class="head1" width="50px">图像</th>
                         <th class="head1">手机号</th>
-                        <th class="head0">openid</th>
-                        <th class="head1">创建时间</th>
+                        <th class="head0">微信名称</th>
+
+                        <th class="head1">绑定时间</th>
 
 
                     </tr>
@@ -75,10 +76,11 @@
 
                     <tbody>
                     <tr th:each="obj:${userPage?.result}">
-                       
+                        <td ><img height="40px" width="40px" th:src="${obj['headimgurl']}"></td>
                         <td th:text="${obj['tuTelphone']}">Trident</td>
-                        <td th:text="${obj['tuOpenId']}">Internet Explorer 4.0</td>
-                        <td th:text="${obj['updateTime']}">Win 95+</td>
+                        <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
+
+                        <td th:text="${obj['createTime']}">Win 95+</td>
 
 
                     </tr>

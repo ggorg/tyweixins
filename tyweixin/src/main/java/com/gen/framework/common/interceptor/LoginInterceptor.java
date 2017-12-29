@@ -84,9 +84,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if(modelAndView!=null){
             System.out.println(modelAndView.getViewName());
 
-            ServletContextTemplateResolver templateResolver =
-                    new ServletContextTemplateResolver();
 
+            modelAndView.setView(null);
            // modelAndView.setViewName("pages/manager/common/404");
         }
         //System.out.println(modelAndView.getView().getContentType());

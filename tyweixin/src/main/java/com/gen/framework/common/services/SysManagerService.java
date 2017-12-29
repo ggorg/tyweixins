@@ -83,14 +83,20 @@ public class SysManagerService extends CommonService{
         }
         Map params= BeanToMapUtil.beanToMap(sysUserBean);
         params.put("updateTime",new Date());
+        Map map= this.commonObjectBySingleParam("baseUser","uName",sysUserBean.getuName());
         if(sysUserBean.getId()!=null && sysUserBean.getId()>0){
+
+           if(map!=null && (Integer)map.get("id")!=sysUserBean.getId()){
+               vo.setReCode(-2);
+               vo.setReMsg("用户已经存在，请换一个");
+               return vo;
+           }
             params.remove("disabled");
             return this.commonUpdateBySingleSearchParam("baseUser",params,"id",sysUserBean.getId());
         }else{
             params.put("createTime",new Date());
 
             params.put("disabled",false);
-           Map map= this.commonObjectBySingleParam("baseUser","uName",sysUserBean.getuName());
            if(map!=null){
                vo.setReCode(-2);
                vo.setReMsg("用户已经存在，请换一个");

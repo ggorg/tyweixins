@@ -54,8 +54,8 @@
                     </thead>
 
                     <tbody>
-                    <tr th:each="obj:${menuPage}" >
-                        <td   th:inline="text" onclick="showChid(this)"><i th:text="${obj['mParentId']==-1?'&#xe625;':'&nbsp;&nbsp;&nbsp;&nbsp;'}" class="layui-icon"></i> [[${obj['mParentId']>-1?'&nbsp;&nbsp;&nbsp;':''}]]<span  th:class="'icon fa fa-1x '+${obj['mIcon']}" ></span> <span th:text="${obj['mName']}">Trident</span></td>
+                    <tr th:each="obj:${menuPage}" th:attr="parentId=${obj['mParentId']},currentId=${obj['id']}" >
+                        <td   th:inline="text" show="true"  style="cursor: pointer"  th:onclick="${obj['mParentId']==-1?'showChid(this)':''}"><i th:text="${obj['mParentId']==-1?'&#xe625;':'&nbsp;&nbsp;&nbsp;&nbsp;'}" class="layui-icon"></i> [[${obj['mParentId']>-1?'&nbsp;&nbsp;&nbsp;':''}]]<span  th:class="'icon fa fa-1x '+${obj['mIcon']}" ></span> <span th:text="${obj['mName']}">Trident</span></td>
 
 
                         <td th:text="${obj['id']}">Internet Explorer 4.0</td>
@@ -97,6 +97,18 @@
                 jQueryCommonSubmit("do-del-menu",null,{midStr:val});
 
             });
+        }
+        function showChid(obj){
+            if(obj.getAttribute("show")=="true"){
+                jQuery(obj).find("i").replaceWith("<i class='layui-icon'>&#xe623;</i>");
+                obj.setAttribute("show","false");
+            }else{
+                jQuery(obj).find("i").replaceWith("<i class='layui-icon'>&#xe625;</i>");
+                obj.setAttribute("show","true");
+            }
+
+
+           jQuery("[parentId='"+jQuery(obj).parent().attr("currentId")+"']").toggle();
         }
     </script>
 	</body>
