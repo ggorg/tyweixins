@@ -20,8 +20,12 @@
         <result property="groupid" column="groupid"/>
         <result property="fakeid" column="fakeid"/>
         <result property="appid" column="appid"/>
+        <result property="tag_id" column="tag_id"/>
         <result property="create_date" column="create_date"/>
         <result property="update_date" column="update_date"/>
+        <result property="tags.id" column="tags.id"/>
+        <result property="tags.name" column="tags.name"/>
+        <result property="tags.count" column="tags.count"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -38,9 +42,17 @@
         unionid,
         remark,
         groupid,
-        appid,
+        a.appid,
+        tag_id,
         a.create_date,
-        a.update_date
+        a.update_date,
+        t.id AS "tags.id",
+        t.name AS "tags.name",
+        t.count AS "tags.count"
+    </sql>
+
+    <sql id="baseJoins">
+        LEFT JOIN weixin_tag t ON t.id = a.tag_id
     </sql>
 
     <insert id="insert" parameterType="com.ty.entity.UserInfo">
@@ -118,6 +130,7 @@
         select
         <include refid="Base_Column_List"/>
         from weixin_user a
+        <include refid="baseJoins"/>
         where openid = #{openid,jdbcType=VARCHAR}
     </select>
 
@@ -126,6 +139,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_user a
+        <include refid="baseJoins"/>
         WHERE 1=1
         <if test="userInfo.appid != null and userInfo.appid != ''">
             AND a.appid  = #{userInfo.appid}
@@ -166,6 +180,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM weixin_user a
+        <include refid="baseJoins"/>
         WHERE 1=1
         <if test="userInfo.appid != null and userInfo.appid != ''">
             AND a.appid  = #{userInfo.appid}
@@ -248,7 +263,8 @@
     
     <select id="findOpenidList" parameterType="java.lang.String" resultType="java.util.HashMap">
     	select openid
-    	FROM weixin_user
-    	where appid = #{appid}
+    	FROM weixin_user a
+        <include refid="baseJoins"/>
+    	where a.appid = #{appid}
     </select>
 </mapper>

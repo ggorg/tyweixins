@@ -11,9 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户标签管理
@@ -32,9 +31,9 @@ public class TagsService {
      * 分页查询微信列表
      * 
      * @param pageNum 分页信息
-     * @return 微信用户列表
+     * @return 微信标签列表
      */
-    public Page<Tags> findUser(Integer pageNum,Tags tags) {
+    public Page<Tags> findList(Integer pageNum,Tags tags) {
         Page<Tags> page = new Page<Tags>(pageNum,10);
         // 设置分页参数
         List<Tags> tagsList = tagsMapper.findList(page,tags);
@@ -99,7 +98,71 @@ public class TagsService {
      * @param entity
      * @return
      */
-    public Tags selectId(Tags entity) {
+    public Tags selectById(Tags entity) {
         return tagsMapper.selectById(entity);
+    }
+
+    /**
+     * 不分页查询标签列表
+     * @param entity
+     * @return
+     */
+    public List<Tags>findListAll(Tags entity){return tagsMapper.findListAll(entity);}
+
+    /**
+     * 根据appid和id删除标签
+     * @param tags
+     * @return
+     */
+    public ResponseVO delete(Tags tags) {
+        ResponseVO vo = new ResponseVO();
+        JSONObject json = weixinInterfaceService.tagsDelete(tags.getAppid(), tags.getId());
+        if(json.containsKey("errcode")){
+            vo.setReCode(-1);
+            vo.setReMsg(json.getString("errmsg"));
+        }else{
+            tags.setId(json.getJSONObject("tag").getInteger("id"));
+            int res = tagsMapper.delete(tags);
+            if(res>0){
+                vo.setReCode(1);
+                vo.setReMsg("成功");
+                vo.setData(tags);
+            }else{
+                vo.setReCode(-2);
+                vo.setReMsg("失败");
+            }
+        }
+        return vo;
+    }
+
+    /**
+     * 更新公众号下微信用户标签
+     * @param appid
+     * @return
+     */
+    public JSONObject getAllTags(String appid){
+        //{   "tags":[{       "id":1,       "name":"每天一罐可乐星人",       "count":0 //此标签下粉丝数 },{   "id":2,   "name":"星标组",   "count":0 },{   "id":127,   "name":"广东",   "count":5 }   ] }
+        JSONObject result = new JSONObject();
+        JSONObject jsonObject = weixinInterfaceService.tagsGet(appid);
+        if (jsonObject.containsKey("tags")) {
+            tagsMapper.deleteByAppid(appid);
+            JSONArray jsonArray = jsonObject.getJSONArray("tags");
+            Iterator<Object> it = jsonArray.iterator();
+            while (it.hasNext()) {
+                JSONObject ob = (JSONObject) it.next();
+                Tags tags = new Tags();
+                tags.setAppid(appid);
+                tags.setId(ob.getInteger("id"));
+                tags.setName(ob.getString("name"));
+                tags.setCount(ob.getInteger("count"));
+                tagsMapper.insert(tags);
+            }
+            result.put("retCode", 1);
+            result.put("retMsg", "更新完毕");
+        } else {
+            result.put("retCode", -2);
+            result.put("retMsg", jsonObject.getString("errmsg"));
+        }
+        return result;
     }
 }

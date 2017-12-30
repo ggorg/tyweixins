@@ -36,6 +36,28 @@
                                 </div>
                             </div>
                             <div class="layui-inline">
+                                <label class="layui-form-label" >标签</label>
+                                <div class="layui-input-inline">
+                                    <select name="tag_id" lay-filter="tag_id">
+                                        <option value="">请选择</option>
+                                        <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id == userInfo?.tag_id}">标签</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">关注</label>
+                                <div class="layui-input-inline">
+                                    <select name="subscribe">
+                                        <option value="">请选择</option>
+                                        <option value="1" th:selected="${userInfo?.subscribe == '1'}">关注</option>
+                                        <option value="0" th:selected="${userInfo?.subscribe == '0'}">未关注</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="radius3" type="button" id="syncUser" lay-filter="formDemo">刷新用户数据</button> &nbsp;
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
                                 <label class="layui-form-label">昵称</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="nickname" placeholder="请输入昵称" th:value="${userInfo?.nickname}" autocomplete="off" class="layui-input">
@@ -47,25 +69,13 @@
                                     <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">关注</label>
-                                <div class="layui-input-inline">
-                                    <select name="subscribe">
-                                        <option value="">请选择</option>
-                                        <option value="1" th:selected="${userInfo?.subscribe == '1'}">关注</option>
-                                        <option value="0" th:selected="${userInfo?.subscribe == '0'}">未关注</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">省份</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="province" placeholder="请输入省份" th:value="${userInfo?.province}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
-                            <div class="layui-inline">
+                            <div class="layui-inline" class="layui-hide">
                                 <label class="layui-form-label">城市</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="city" placeholder="请输入城市" th:value="${userInfo?.city}" autocomplete="off" class="layui-input">
@@ -105,7 +115,7 @@
                         <th class="head1">头像</th>
                         <th class="head0">昵称</th>
                         <th class="head1">openid</th>
-                        <th class="head0">appid</th>
+                        <th class="head0">标签</th>
                         <th class="head1">关注状态</th>
                         <th class="head0">性别</th>
                         <th class="head1">国家</th>
@@ -121,7 +131,7 @@
                         <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
                         <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
-                        <td th:text="${obj['appid']}">Win 95+</td>
+                        <td th:text="${obj['tags']}==null?'':${obj['tags']['name']}">Win 95+</td>
                         <td th:text="${obj['subscribe']}">Win 95+</td>
                         <td th:text="${obj['sex']}">Win 95+</td>
                         <td th:text="${obj['country']}">Win 95+</td>
@@ -143,6 +153,17 @@
             var form = layui.form;
             jQuery(".layui-form").submit(function(data){
                 console.log(data);
+            });
+        });
+
+        //立即同步微信用户资料
+        jQuery("#syncUser").click(function(){
+            layer.msg("同步微信用户资料中,数据较多的情况同步可能会比较缓慢,可过几分钟后再看");
+            jQuery.getJSON("/weixin/user/alluser", {appid:jQuery("[name='appid']").val()}, function(data){
+                layer.msg(data.retMsg);
+                window.setTimeout(function(){
+                    top.location.href=window.parent.location.href;
+                },800)
             });
         });
 

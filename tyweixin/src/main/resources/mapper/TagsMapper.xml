@@ -52,8 +52,27 @@
         select
         <include refid="Base_Column_List"/>
         from weixin_tag
-        where id = #{id,jdbcType=VARCHAR},
-        and appid = #{appid, jdbcType=VARCHAR}
+        where id = #{entity.id,jdbcType=VARCHAR}
+        and appid = #{entity.appid, jdbcType=VARCHAR}
+    </select>
+
+    <!-- 不分页查询标签信息 -->
+    <select id="findListAll" resultType="com.ty.entity.Tags">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM weixin_tag
+        WHERE 1=1
+        <if test="entity.appid != null and entity.appid != ''">
+            AND appid  = #{entity.appid}
+        </if>
+        <if test="entity.name != null and entity.name != ''">
+            AND upper(name)  LIKE
+            CONCAT('%', upper(#{entity.name}), '%')
+        </if>
+        <if test="entity.id != null and entity.id != ''">
+            AND id  = #{entity.id}
+        </if>
+        ORDER BY create_date desc
     </select>
 
     <!-- 分页查询标签信息 -->
@@ -100,8 +119,13 @@
 
     <delete id="delete" parameterType="com.ty.entity.Tags">
         delete from weixin_tag
-        where id = #{id,jdbcType=INTEGER},
-        and appid = #{appid, jdbcType=VARCHAR}
+        where id = #{entity.id,jdbcType=INTEGER},
+        and appid = #{entity.appid, jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteByAppid" parameterType="String">
+        delete from weixin_tag
+        where appid = #{appid, jdbcType=VARCHAR}
     </delete>
     
 </mapper>

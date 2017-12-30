@@ -9,42 +9,11 @@
     <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
     <th:block th:include="pages/manager/common/editResources::syseditjsresources"></th:block>
 
-    <script type="text/javascript" th:inline="javascript">
-        initPage(/*[[${userPage!=null?userPage.total:0}]]*/,function(pageNo){
-            //异步刷新加载表格
-            jQuery.ajax({
-                type: "GET",
-                url: "/weixin/user/userInfoPage",
-                dataType:JSON,
-                data: {pageNo:pageNo,appid:jQuery("[name='appid']").val(),nickname:jQuery("[name='nickname']").val(),openid:jQuery("[name='openid']").val()},
-                success: function(data) {
-                    var htmls = "";
-                    for (var i = 0; i < data.result.size; i++) {
-                        htmls += " <tr>\n" +
-                                "            <td><input lay-skin=\"primary\" type=\"checkbox\" value=\""+data.result[i].openid+"\"><div class=\"layui-unselect layui-form-checkbox\" lay-skin=\"primary\"><i class=\"layui-icon\"></i></div></td>\n" +
-                                "            <td><img src=\""+data.result[i].headimgurl+"\" height=\"40px\" width=\"40px\"></td>\n" +
-                                "            <td>" + data.result[i].nickname + "</td>\n" +
-                                "            <td>" + data.result[i].openid +"</td>\n" +
-                                "            <td>" + data.result[i].appid +"</td>\n" +
-                                "            <td>" + data.result[i].subscribe + "</td>\n" +
-                                "            <td>" + data.result[i].sex + "</td>\n" +
-                                "            <td>" + data.result[i].country + "</td>\n" +
-                                "            <td>" + data.result[i].province + "</td>\n" +
-                                "            <td>" + data.result[i].city + "</td>\n" +
-                                "            <td>" + data.result[i].subscribe_time + "</td>\n" +
-                                "        </tr>\n";
-                    }
-                    $("#datatb").html(htmls);
-                }
-             });
-        });
-    </script>
 </head>
 <body style="padding:30px 10px 10px 10px">
 <form class="layui-form">
     <input type="hidden" th:if="${pushObject!=null}" name="id" th:value="${pushObject?.id}"/>
     <input type="hidden" th:if="${appid!=null}" name="appid" th:value="${appid}"/>
-    <input type="hidden" name="openids"/>
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">标题</label>
@@ -99,106 +68,30 @@
 
             </div>
         </div>
+    </div>
+    <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label"></label>
-            <div class="layui-input-inline" style="margin-bottom:19px;">
-                <button class="layui-btn" lay-submit="lay-submit" id="submit" lay-filter="formDemo">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-
+            <label class="layui-form-label">标签</label>
+            <div class="layui-input-inline">
+                <select name="tag_id" lay-filter="type">
+                    <option value="0" th:selected="${tags?.id == pushObject?.tag_id}">全部</option>
+                    <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id == pushObject?.tag_id}">微信用户标签</option>
+                </select>
             </div>
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline" style="margin-bottom:19px;">
+            <button class="layui-btn" lay-submit="lay-submit" id="submit" lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
 
         </div>
+
     </div>
 
 
 </form>
-<div id="contentwrapper" class="contentwrapper">
-    <div class="contenttitle2">
-        <h3>用户列表</h3>
-    </div><!--contenttitle-->
-    <form >
-        <div class="tableoptions">
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">标签</label>
-                    <div class="layui-input-inline">
-                        <select name="tagid" id="tagid" lay-filter="appid">
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">昵称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="nickname" placeholder="请输入昵称" th:value="${userInfo?.nickname}"
-                               autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">openid</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="openid" placeholder="请输入openid" th:value="${userInfo?.openid}"
-                               autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <button type="button" class="btn btn_search radius50" id="search" lay-filter="formDemo">Search</button>
-                &nbsp;
-            </div>
-        </div><!--tableoptions-->
-    <table cellpadding="0" cellspacing="0" border="0" id="table" lay-filter="demo"  class="stdtable stdtablecb">
-        <colgroup>
-            <!--<col class="con0" style="width: 4%" />-->
-            <col class="con1"/>
-            <col class="con0"/>
-            <col class="con1"/>
-            <col class="con0"/>
-            <col class="con1"/>
-            <col class="con0"/>
-            <col class="con1"/>
-            <col class="con0"/>
-            <col class="con1"/>
-            <col class="con0"/>
-        </colgroup>
-        <thead>
-        <tr>
-            <th><input lay-skin="primary" value="all" type="checkbox" lay-filter="allChoose"></th>
-            <th class="head1">头像</th>
-            <th class="head0">昵称</th>
-            <th class="head1">openid</th>
-            <th class="head0">appid</th>
-            <th class="head1">关注状态</th>
-            <th class="head0">性别</th>
-            <th class="head1">国家</th>
-            <th class="head0">省份</th>
-            <th class="head1">城市</th>
-            <th class="head0">关注日期</th>
-        </tr>
-        </thead>
-
-        <tbody id="datatb">
-        <tr th:each="obj:${userPage?.result}">
-            <td><input lay-skin="primary" th:value="${obj['openid']}" type="checkbox"></td>
-            <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
-            <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
-            <td th:text="${obj['openid']}">Win 95+</td>
-            <td th:text="${obj['appid']}">Win 95+</td>
-            <td th:text="${obj['subscribe']}">Win 95+</td>
-            <td th:text="${obj['sex']}">Win 95+</td>
-            <td th:text="${obj['country']}">Win 95+</td>
-            <td th:text="${obj['province']}">Win 95+</td>
-            <td th:text="${obj['city']}">Win 95+</td>
-            <td th:text="${obj['subscribe_time']!=null ? #dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss'):''}">
-                Win 95+
-            </td>
-        </tr>
-
-        </tbody>
-
-    </table>
-        </form>
-    <div id="pages"></div>
-</div>
 <script type="text/javascript">
     layui.use('laydate', function () {
         var laydate = layui.laydate;
@@ -237,28 +130,6 @@
         });
     });
 
-    jQuery("#search").click(function () {
-        //异步刷新加载表格
-        jQuery.ajax({
-            type: "POST",
-            url: "/weixin/user/userInfoPage",
-            data: {pageNo:pageNo,appid:jQuery("[name='appid']").val(),nickname:jQuery("[name='nickname']").val(),openid:jQuery("[name='openid']").val()},
-            success: function(page){
-                console.log(page);
-            }
-        });
-    });
-
-    jQuery("#submit").click(function(){
-        jQuery("input:checkbox:checked").each(function () {
-            if(jQuery(this).val() == "all"){
-                jQuery("[name='openids']").val("all");
-                return true;
-            }else{
-                jQuery("[name='openids']").val(jQuery("[name='openids']").val()==""?jQuery(this).val():(jQuery("[name='openids']").val()+",")+jQuery(this).val())
-            }
-        });
-    });
     initForm("save", ".layui-form")
 </script>
 </body>

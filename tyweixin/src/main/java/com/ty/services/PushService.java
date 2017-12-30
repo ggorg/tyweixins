@@ -5,11 +5,13 @@ import com.gen.framework.common.util.Page;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.PushMapper;
 import com.ty.entity.Push;
+import com.ty.entity.UserInfo;
 import com.ty.util.CustomMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +27,8 @@ public class PushService {
     private WeixinInterfaceService weixinInterfaceService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private WeixinUserService weixinUserService;
 
     /**
      * 根据appid查询推送策略
@@ -104,21 +108,30 @@ public class PushService {
         List<Push>pushList = pushMapper.findPushList();
         for(Push push:pushList){
             int push_type = push.getPush_type();
+            UserInfo userInfo = new UserInfo();
+            userInfo.setAppid(push.getAppid());
+            userInfo.setTag_id(push.getTag_id());
             //推送文字
             if(push_type == 1){
-                if(StringUtils.isNotBlank(push.getOpenids())){
-                    for (String openid:push.getOpenids().split(",")){
-                        String content = CustomMessage.TextMsg(openid,push.getPush_content());
-                        JSONObject json = weixinInterfaceService.sendMessage(push.getAppid(),content);
-                    }
+                List<UserInfo>userInfoList =  weixinUserService.findUserAll(userInfo);
+                List<String>openids = new ArrayList<String>();
+                for(UserInfo ui : userInfoList){
+                    openids.add(ui.getOpenid());
+                }
+                for (String openid:openids){
+                    String content = CustomMessage.TextMsg(openid,push.getPush_content());
+                    JSONObject json = weixinInterfaceService.sendMessage(push.getAppid(),content);
                 }
 
                 //推送图文
             }else if(push_type == 2){
-                if(StringUtils.isNotBlank(push.getOpenids())){
-                    for (String openid:push.getOpenids().split(",")){
-                        messageService.sendMessage(openid,push.getPush_messageid());
-                    }
+                List<UserInfo>userInfoList =  weixinUserService.findUserAll(userInfo);
+                List<String>openids = new ArrayList<String>();
+                for(UserInfo ui : userInfoList){
+                    openids.add(ui.getOpenid());
+                }
+                for (String openid:openids){
+                    messageService.sendMessage(openid,push.getPush_messageid());
                 }
 
                 //推送模板消息
@@ -129,5 +142,4 @@ public class PushService {
             pushMapper.update(push);
         }
     }
-
 }

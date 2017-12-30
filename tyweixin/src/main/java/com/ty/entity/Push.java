@@ -21,17 +21,18 @@ public class Push {
     private int push_messageid;
     /** 推送模板id*/
     private int push_templateid;
-    /** 多个用户openid*/
-    private String openids;
+    /** 微信用户标签id，对应表weixin_tag*/
+    private int tag_id;
     /** 推送时间*/
     private Date push_time;
     /** 创建时间*/
     private Date create_date;
-
     /** 推送状态,0 未推送,1 已推送*/
     private int push_state;
 
     private Message message;
+
+    private Tags tags;
 
     public String getAppid() {
         return appid;
@@ -63,14 +64,6 @@ public class Push {
 
     public void setMessage(Message message) {
         this.message = message;
-    }
-
-    public String getOpenids() {
-        return openids;
-    }
-
-    public void setOpenids(String openids) {
-        this.openids = openids;
     }
 
     public String getPush_content() {
@@ -127,5 +120,21 @@ public class Push {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getTag_id() {
+        return tag_id;
+    }
+
+    public void setTag_id(int tag_id) {
+        this.tag_id = tag_id;
+    }
+
+    public Tags getTags() {
+        return tags;
+    }
+
+    public void setTags(Tags tags) {
+        this.tags = tags;
     }
 }

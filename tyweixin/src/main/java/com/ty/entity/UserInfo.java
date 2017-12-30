@@ -72,6 +72,10 @@ public class UserInfo {
      * 公众号应用ID
      */
     private String appid;
+
+    /** 微信用户标签id，对应表weixin_tag*/
+    private int tag_id;
+
     /**
      * 创建时间
      */
@@ -80,6 +84,8 @@ public class UserInfo {
      * 更新时间
      */
     private Date update_date;
+
+    private  Tags tags;
 
     public String getHeadimgurl() {
         return headimgurl;
@@ -215,5 +221,21 @@ public class UserInfo {
 
     public void setUnionid(String unionid) {
         this.unionid = unionid;
+    }
+
+    public int getTag_id() {
+        return tag_id;
+    }
+
+    public void setTag_id(int tag_id) {
+        this.tag_id = tag_id;
+    }
+
+    public Tags getTags() {
+        return tags;
+    }
+
+    public void setTags(Tags tags) {
+        this.tags = tags;
     }
 }

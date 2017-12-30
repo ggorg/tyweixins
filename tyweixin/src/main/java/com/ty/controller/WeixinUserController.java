@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.util.Page;
 import com.ty.entity.Pubweixin;
+import com.ty.entity.Tags;
 import com.ty.entity.UserInfo;
 import com.ty.services.PubWeixinService;
+import com.ty.services.TagsService;
 import com.ty.services.WeixinUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,8 @@ public class WeixinUserController{
     @Autowired
     private PubWeixinService pubWeixinService;
     @Autowired
+    private TagsService tagsService;
+    @Autowired
     private CacheService cacheService;
 
     @RequestMapping(value = {"list", ""})
@@ -48,6 +52,9 @@ public class WeixinUserController{
         }
         userInfo.setAppid(appid);
         Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
+        Tags tag = new Tags();
+        tag.setAppid(appid);
+        model.addAttribute("tagsList",tagsService.findListAll(tag));
         model.addAttribute("userInfo", userInfo);
         model.addAttribute("appid",appid);
         model.addAttribute("userPage", page);
@@ -95,7 +102,7 @@ public class WeixinUserController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value="alluser", method = RequestMethod.GET, produces = "text/html;charset=utf-8")
+    @RequestMapping(value="alluser", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public String getAllUser(String appid) {
         JSONObject result;
         if (appid != null) {
