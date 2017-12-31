@@ -173,6 +173,9 @@ public class WeixinUtil {
             if(jsonObject.containsKey("unionid")){
                 user.setUnionid(jsonObject.getString("unionid"));
             }
+            if(jsonObject.containsKey("tagid_list")){
+                user.setTagid_list(jsonObject.getString("tagid_list"));
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }

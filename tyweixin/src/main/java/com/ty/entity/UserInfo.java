@@ -73,19 +73,18 @@ public class UserInfo {
      */
     private String appid;
 
-    /** 微信用户标签id，对应表weixin_tag*/
-    private int tag_id;
+    /** 用户被打上的标签ID列表，对应表weixin_tag*/
+    private String tagid_list;
 
     /**
      * 创建时间
      */
     private Date create_date;
+
     /**
      * 更新时间
      */
     private Date update_date;
-
-    private  Tags tags;
 
     public String getHeadimgurl() {
         return headimgurl;
@@ -223,19 +222,11 @@ public class UserInfo {
         this.unionid = unionid;
     }
 
-    public int getTag_id() {
-        return tag_id;
+    public String getTagid_list() {
+        return tagid_list;
     }
 
-    public void setTag_id(int tag_id) {
-        this.tag_id = tag_id;
-    }
-
-    public Tags getTags() {
-        return tags;
-    }
-
-    public void setTags(Tags tags) {
-        this.tags = tags;
+    public void setTagid_list(String tagid_list) {
+        this.tagid_list = tagid_list;
     }
 }

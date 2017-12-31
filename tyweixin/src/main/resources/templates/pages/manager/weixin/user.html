@@ -38,9 +38,9 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label" >标签</label>
                                 <div class="layui-input-inline">
-                                    <select name="tag_id" lay-filter="tag_id">
+                                    <select name="tagid_list" lay-filter="tagid_list">
                                         <option value="">请选择</option>
-                                        <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id == userInfo?.tag_id}">标签</option>
+                                        <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id == userInfo?.tagid_list}">标签</option>
                                     </select>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                         <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
                         <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
-                        <td th:text="${obj['tags']}==null?'':${obj['tags']['name']}">Win 95+</td>
+                        <td th:text="${obj['tagid_list']}">Win 95+</td>
                         <td th:text="${obj['subscribe']}">Win 95+</td>
                         <td th:text="${obj['sex']}">Win 95+</td>
                         <td th:text="${obj['country']}">Win 95+</td>

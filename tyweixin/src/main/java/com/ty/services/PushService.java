@@ -110,7 +110,7 @@ public class PushService {
             int push_type = push.getPush_type();
             UserInfo userInfo = new UserInfo();
             userInfo.setAppid(push.getAppid());
-            userInfo.setTag_id(push.getTag_id());
+            userInfo.setTagid_list(String.valueOf(push.getTag_id()));
             //推送文字
             if(push_type == 1){
                 List<UserInfo>userInfoList =  weixinUserService.findUserAll(userInfo);
