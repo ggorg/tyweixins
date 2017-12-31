@@ -119,7 +119,7 @@
 
     <delete id="delete" parameterType="com.ty.entity.Tags">
         delete from weixin_tag
-        where id = #{entity.id,jdbcType=INTEGER},
+        where id = #{entity.id,jdbcType=INTEGER}
         and appid = #{entity.appid, jdbcType=VARCHAR}
     </delete>
 

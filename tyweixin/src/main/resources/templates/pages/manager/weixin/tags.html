@@ -67,7 +67,7 @@
                         <td class="center">
                             <div class="layui-btn-group">
                                 <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'340px\',\'修改标签\',\'edit?id='+${obj['id']}+'&appid='+${obj['appid']}+'\')'"  >修 改</button>
-                                <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\')'" >删除</button>
+                                <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\',\''+${obj['appid']}+'\')'" >删除</button>
                             </div>
                         </td>
                     </tr>
@@ -100,9 +100,9 @@
             });
         })
 
-        function del(obj) {
+        function del(obj,obj2) {
             //删除标签
-            jQuery.post("delete",{id:obj},function(data){
+            jQuery.post("delete",{id:obj,appid:obj2},function(data){
                 layer.msg(data.reMsg);
                 window.setTimeout(function(){
                     top.location.href=window.parent.location.href;

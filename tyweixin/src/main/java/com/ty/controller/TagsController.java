@@ -94,12 +94,8 @@ public class TagsController {
 
     @RequestMapping(value = "delete")
     @ResponseBody
-    public ResponseVO delete(Integer id) {
+    public ResponseVO delete(Tags tags) {
         try {
-            String appid = (String) cacheService.get("appid");
-            Tags tags = new Tags();
-            tags.setAppid(appid);
-            tags.setId(id);
             return this.tagsService.delete(tags);
         } catch (Exception e) {
             logger.error("TagsController->delete->系统异常",e);

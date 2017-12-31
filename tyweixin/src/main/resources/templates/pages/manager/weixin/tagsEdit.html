@@ -20,7 +20,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">标签名</label>
     <div class="layui-input-block">
-      <input type="text" name="name" required="required" th:value="${tagsObject?.name}" lay-verify="required" placeholder="请输入标签名" autocomplete="off" class="layui-input" />
+      <input type="text" name="name" required="required" th:value="${tagsObject?.name}" th:maxlength="30" lay-verify="required" placeholder="请输入标签名" autocomplete="off" class="layui-input" />
     </div>
   </div>
 

@@ -117,11 +117,10 @@ public class TagsService {
     public ResponseVO delete(Tags tags) {
         ResponseVO vo = new ResponseVO();
         JSONObject json = weixinInterfaceService.tagsDelete(tags.getAppid(), tags.getId());
-        if(json.containsKey("errcode")){
+        if(json.containsKey("errcode") && json.getInteger("errcode") != 0){
             vo.setReCode(-1);
             vo.setReMsg(json.getString("errmsg"));
         }else{
-            tags.setId(json.getJSONObject("tag").getInteger("id"));
             int res = tagsMapper.delete(tags);
             if(res>0){
                 vo.setReCode(1);
