@@ -3,6 +3,7 @@ package com.ty.services;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.util.Page;
+import com.gen.framework.common.vo.ResponseVO;
 import com.ty.dao.UserInfoMapper;
 import com.ty.entity.UserInfo;
 import org.apache.log4j.Logger;
@@ -89,6 +90,21 @@ public class WeixinUserService {
             ret = userInfoMapper.insert(userInfo);
         }
         return ret;
+    }
+
+    @Transactional(readOnly = false)
+    public ResponseVO update(UserInfo userInfo) {
+        ResponseVO vo = new ResponseVO();
+        int res = 0;
+        res = userInfoMapper.update(userInfo);
+        if(res>0){
+            vo.setReCode(1);
+            vo.setReMsg("成功");
+        }else{
+            vo.setReCode(-2);
+            vo.setReMsg("失败");
+        }
+        return vo;
     }
 
     /**

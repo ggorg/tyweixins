@@ -28,13 +28,13 @@
     <sql id="Base_Column_List">
         openid,
         nickname,
-        (CASE when sex='1' THEN '男性' WHEN sex='2' THEN '女性' else '未知' END) sex,
+        sex,
         language,
         country,
         province,
         city,
         headimgurl,
-        (CASE when subscribe='1' THEN '关注' else '未关注' END) subscribe,
+        subscribe,
         subscribe_time,
         unionid,
         remark,
@@ -164,7 +164,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}
@@ -207,7 +207,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}
@@ -226,6 +226,9 @@
         count(*)
         FROM weixin_user a
         WHERE 1=1
+        <if test="userInfo.appid != null and userInfo.appid != ''">
+            AND a.appid  = #{userInfo.appid}
+        </if>
         <if test="userInfo.nickname != null and userInfo.nickname != ''">
             AND upper(a.nickname)  LIKE
             CONCAT('%', upper(#{userInfo.nickname}), '%')
@@ -254,7 +257,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}

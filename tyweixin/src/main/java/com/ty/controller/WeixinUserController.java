@@ -3,22 +3,23 @@ package com.ty.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.services.CacheService;
 import com.gen.framework.common.util.Page;
+import com.gen.framework.common.vo.ResponseVO;
 import com.ty.entity.Pubweixin;
 import com.ty.entity.Tags;
 import com.ty.entity.UserInfo;
 import com.ty.services.PubWeixinService;
 import com.ty.services.TagsService;
+import com.ty.services.WeixinInterfaceService;
 import com.ty.services.WeixinUserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "weixin/user")
 public class WeixinUserController{
-
+    private static final Logger logger = Logger.getLogger("WeixinUserController");
     @Autowired
     private WeixinUserService weixinUserService;
     @Autowired
@@ -36,6 +37,8 @@ public class WeixinUserController{
     private TagsService tagsService;
     @Autowired
     private CacheService cacheService;
+    @Autowired
+    private WeixinInterfaceService weixinInterfaceService;
 
     @RequestMapping(value = {"list", ""})
     public String list(UserInfo userInfo,@RequestParam(defaultValue = "1") Integer pageNo, String appid, Model model) {
@@ -51,6 +54,8 @@ public class WeixinUserController{
             cacheService.set("appid",appid);
         }
         userInfo.setAppid(appid);
+        cacheService.set("userSearch",userInfo);
+        userInfo.setAppid(appid);
         Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
         Tags tag = new Tags();
         tag.setAppid(appid);
@@ -60,6 +65,62 @@ public class WeixinUserController{
         model.addAttribute("userPage", page);
         model.addAttribute("pubweixinList",pubweixinList);
         return "pages/manager/weixin/user";
+    }
+
+    @GetMapping("edit")
+    public String edit(UserInfo userInfo,String batch,Model model){
+        try {
+            String appid = "";
+            //批量修改微信用户标签
+            if(batch != null && batch.equals("1")) {
+                UserInfo userSearch = (UserInfo) cacheService.get("userSearch");
+                appid = userSearch.getAppid();
+            }else{
+                if(userInfo != null){
+                    userInfo = weixinUserService.selectByopenid(userInfo.getOpenid());
+                    appid = userInfo.getAppid();
+                    model.addAttribute("userInfoObject",userInfo);
+                }
+            }
+            Tags tag = new Tags();
+            tag.setAppid(appid);
+            model.addAttribute("batch",batch);
+            model.addAttribute("tagsList",tagsService.findListAll(tag));
+        }catch (Exception e){
+            logger.error("WeixinUserController->edit->系统异常",e);
+
+        }
+        return "pages/manager/weixin/userEdit";
+    }
+
+    @RequestMapping(value = "save")
+    @ResponseBody
+    public ResponseVO save(UserInfo userInfo,String batch) {
+        try {
+            //批量修改微信用户标签
+            if(batch != null && batch.equals("1")){
+                UserInfo userSearch = (UserInfo)cacheService.get("userSearch");
+                if(userSearch !=null){
+                    List<UserInfo>userInfoList = weixinUserService.findUserAll(userSearch);
+                    List<String>openid = new ArrayList<String>();
+                    for(UserInfo ui:userInfoList){
+                        openid.add(ui.getOpenid());
+                    }
+                    for(String tagid:userInfo.getTagid_list().split(",")){
+                        JSONObject json = weixinInterfaceService.batchTaggingMembers(userSearch.getAppid(),Integer.valueOf(tagid),openid);
+                    }
+                    return new ResponseVO(1,"成功",null);
+                }else{
+                    return new ResponseVO(-2,"查询条件为空",null);
+                }
+            }else{
+                //单个更新微信用户标签
+                return weixinUserService.update(userInfo);
+            }
+        } catch (Exception e) {
+            logger.error("WeixinUserController->save->系统异常",e);
+            return new ResponseVO(-1,"创建失败",null);
+        }
     }
 
     /**

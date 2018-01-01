@@ -115,13 +115,18 @@
                         <th class="head1">头像</th>
                         <th class="head0">昵称</th>
                         <th class="head1">openid</th>
-                        <th class="head0">标签</th>
+                        <th class="head0">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'340px\',\'标签\',\'edit?batch=1\')'"  >修改标签</button>
+                            </div>
+                        </th>
                         <th class="head1">关注状态</th>
                         <th class="head0">性别</th>
                         <th class="head1">国家</th>
                         <th class="head0">省份</th>
                         <th class="head1">城市</th>
                         <th class="head0">关注日期</th>
+                        <th class="head1">操作</th>
                     </tr>
                     </thead>
 
@@ -132,12 +137,24 @@
                         <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
                         <td th:text="${obj['tagid_list']}">Win 95+</td>
-                        <td th:text="${obj['subscribe']}">Win 95+</td>
-                        <td th:text="${obj['sex']}">Win 95+</td>
+                        <td th:switch="${obj['subscribe']}">
+                            <span th:case="1">关注</span>
+                            <span th:case="*">未关注</span>
+                        </td>
+                        <td th:switch="${obj['sex']}">
+                            <span th:case="1">男性</span>
+                            <span th:case="2">女性</span>
+                            <span th:case="*">未知</span>
+                        </td>
                         <td th:text="${obj['country']}">Win 95+</td>
                         <td th:text="${obj['province']}">Win 95+</td>
                         <td th:text="${obj['city']}">Win 95+</td>
                         <td th:text="${obj['subscribe_time']!=null ? #dates.format(obj['subscribe_time'], 'yyyy-MM-dd HH:mm:ss'):''}">Win 95+</td>
+                        <td class="center">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'340px\',\'修改标签\',\'edit?openid='+${obj['openid']}+'&appid='+${obj['appid']}+'\')'"  >修改标签</button>
+                            </div>
+                        </td>
                     </tr>
 
                     </tbody>
