@@ -40,7 +40,7 @@
                                 <div class="layui-input-inline">
                                     <select name="tagid_list" lay-filter="tagid_list">
                                         <option value="">请选择</option>
-                                        <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id == userInfo?.tagid_list}">标签</option>
+                                        <option th:each="tags:${tagsList}" th:value="${tags?.id}" th:text="${tags?.name}" th:selected="${tags?.id+'' == userInfo?.tagid_list}">标签</option>
                                     </select>
                                 </div>
                             </div>

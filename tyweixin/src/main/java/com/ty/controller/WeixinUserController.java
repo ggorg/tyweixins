@@ -59,7 +59,8 @@ public class WeixinUserController{
         Page<UserInfo> page = weixinUserService.findUser(pageNo,userInfo);
         Tags tag = new Tags();
         tag.setAppid(appid);
-        model.addAttribute("tagsList",tagsService.findListAll(tag));
+        List<Tags> tagsList = tagsService.findListAll(tag);
+        model.addAttribute("tagsList",tagsList);
         model.addAttribute("userInfo", userInfo);
         model.addAttribute("appid",appid);
         model.addAttribute("userPage", page);
