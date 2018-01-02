@@ -359,6 +359,7 @@ public final class Tools {
 
 	public static boolean checked(String tagidList,String id){
         boolean res = false;
+        if(StringUtils.isBlank(tagidList))return false;
         if(tagidList.indexOf(",")==-1 && tagidList.equals(id)){
             res = true;
         }else{
