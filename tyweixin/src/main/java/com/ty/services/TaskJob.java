@@ -34,6 +34,8 @@ public class TaskJob {
     private MsgService msgService;
     @Autowired
     private PushService pushService;
+    @Autowired
+    private TagsService tagsService;
 
     /** 每天凌晨两点执行更新微信定时任务 */
     @Scheduled(cron = "0 0 2 * * ?")
@@ -45,6 +47,7 @@ public class TaskJob {
             String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
             for (Pubweixin pubweixin : list) {
                 weixinUserService.updateOrSaveUser(pubweixin.getAppid()); //更新微信用户资料
+                tagsService.getAllTags(pubweixin.getAppid());//更新微信用户标签
                 msgService.deleteUnCollect(); //清除5天前未收藏消息定时任务
             }
         } catch (Exception e) {

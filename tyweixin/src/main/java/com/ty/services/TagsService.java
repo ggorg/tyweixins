@@ -76,7 +76,7 @@ public class TagsService {
         JSONObject json = weixinInterfaceService.tagsUpdate(tags.getAppid(), tags.getId(),tags.getName());
         if(json.containsKey("errcode")){
             vo.setReCode(-1);
-            vo.setReMsg(json.getString("errmsg"));
+            vo.setReMsg(json.getString("errcode")+json.getString("errmsg"));
         }else{
             tags.setId(json.getJSONObject("tag").getInteger("id"));
             int res = tagsMapper.insert(tags);

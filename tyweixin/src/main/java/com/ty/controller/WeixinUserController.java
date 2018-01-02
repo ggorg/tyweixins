@@ -97,13 +97,14 @@ public class WeixinUserController{
     @ResponseBody
     public ResponseVO save(UserInfo userInfo,String batch) {
         try {
+            boolean res = true;
+            String errmsg = "";
             //批量修改微信用户标签
             if(batch != null && batch.equals("1")){
                 UserInfo userSearch = (UserInfo)cacheService.get("userSearch");
                 if(userSearch !=null){
                     List<UserInfo>userInfoList = weixinUserService.findUserAll(userSearch);
                     List<String>openid = new ArrayList<String>();
-                    boolean res = true;
                     for(UserInfo ui:userInfoList){
                         openid.add(ui.getOpenid());
                     }
@@ -111,18 +112,34 @@ public class WeixinUserController{
                         JSONObject json = weixinInterfaceService.batchTaggingMembers(userSearch.getAppid(),Integer.valueOf(tagid),openid);
                         if(json.containsKey("errcode") && json.getInteger("errcode") != 0){
                             res = false;
+                            errmsg = json.getString("errmsg");
                         }
                     }
                     if(res){
                         weixinUserService.batchUpdateTags(userSearch,userInfo.getTagid_list());
+                        return new ResponseVO(1,"成功",null);
+                    }else{
+                        return new ResponseVO(-3,"调用微信接口异常:"+errmsg,null);
                     }
-                    return new ResponseVO(1,"成功",null);
                 }else{
                     return new ResponseVO(-2,"查询条件为空",null);
                 }
             }else{
+                List<String> openid = new ArrayList<String>();
+                openid.add(userInfo.getOpenid());
                 //单个更新微信用户标签
-                return weixinUserService.update(userInfo);
+                for(String tagid:userInfo.getTagid_list().split(",")){
+                    JSONObject json = weixinInterfaceService.batchTaggingMembers(userInfo.getAppid(),Integer.valueOf(tagid),openid);
+                    if(json.containsKey("errcode") && json.getInteger("errcode") != 0){
+                        res = false;
+                        errmsg = json.getString("errmsg");
+                    }
+                }
+                if(res){
+                    return weixinUserService.update(userInfo);
+                }else{
+                    return new ResponseVO(-3,"调用微信接口异常:"+errmsg,null);
+                }
             }
         } catch (Exception e) {
             logger.error("WeixinUserController->save->系统异常",e);

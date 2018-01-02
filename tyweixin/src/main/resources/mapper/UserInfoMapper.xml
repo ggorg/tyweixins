@@ -155,7 +155,7 @@
             AND subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND tagid_list REGEXP CONCAT('(,|^)', #{userInfo.tagid_list}, '(,|$)')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND sex  = #{userInfo.sex}
@@ -206,7 +206,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list REGEXP CONCAT('(,|^)', #{userInfo.tagid_list}, '(,|$)')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}
@@ -249,7 +249,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list REGEXP CONCAT('(,|^)', #{userInfo.tagid_list}, '(,|$)')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}
@@ -299,7 +299,7 @@
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
         <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
-            AND a.tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
+            AND a.tagid_list REGEXP CONCAT('(,|^)', #{userInfo.tagid_list}, '(,|$)')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">
             AND a.sex  = #{userInfo.sex}
