@@ -103,11 +103,18 @@ public class WeixinUserController{
                 if(userSearch !=null){
                     List<UserInfo>userInfoList = weixinUserService.findUserAll(userSearch);
                     List<String>openid = new ArrayList<String>();
+                    boolean res = true;
                     for(UserInfo ui:userInfoList){
                         openid.add(ui.getOpenid());
                     }
                     for(String tagid:userInfo.getTagid_list().split(",")){
                         JSONObject json = weixinInterfaceService.batchTaggingMembers(userSearch.getAppid(),Integer.valueOf(tagid),openid);
+                        if(json.containsKey("errcode") && json.getInteger("errcode") != 0){
+                            res = false;
+                        }
+                    }
+                    if(res){
+                        weixinUserService.batchUpdateTags(userSearch,userInfo.getTagid_list());
                     }
                     return new ResponseVO(1,"成功",null);
                 }else{

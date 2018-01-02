@@ -136,7 +136,7 @@
                         <td><img th:attr="src=${obj['headimgurl']}" th:width="40px" th:height="40px"></td>
                         <td th:text="${obj['nickname']}">Internet Explorer 4.0</td>
                         <td th:text="${obj['openid']}">Win 95+</td>
-                        <td th:text="${obj['tagid_list']}">Win 95+</td>
+                        <td th:text="${#TdTool.showTags(obj['tagid_list'],tagsList)}">Win 95+</td>
                         <td th:switch="${obj['subscribe']}">
                             <span th:case="1">关注</span>
                             <span th:case="*">未关注</span>

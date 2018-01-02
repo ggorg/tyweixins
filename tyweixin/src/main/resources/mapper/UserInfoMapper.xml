@@ -120,6 +120,48 @@
         where openid =  #{openid,jdbcType=VARCHAR}
     </update>
 
+    <update id="batchUpdateTags">
+        update weixin_user
+        SET tagid_list=#{tagid_list, jdbcType=VARCHAR}
+        WHERE 1=1
+        <if test="userInfo.appid != null and userInfo.appid != ''">
+            AND appid  = #{userInfo.appid}
+        </if>
+        <if test="userInfo.nickname != null and userInfo.nickname != ''">
+            AND upper(nickname)  LIKE
+            CONCAT('%', upper(#{userInfo.nickname}), '%')
+        </if>
+        <if test="userInfo.openid != null and userInfo.openid != ''">
+            AND openid  LIKE
+            CONCAT('%', #{userInfo.openid}, '%')
+        </if>
+        <if test="userInfo.remark != null and userInfo.remark != ''">
+            AND remark  LIKE
+            CONCAT('%', #{userInfo.remark}, '%')
+        </if>
+        <if test="userInfo.country != null and userInfo.country != ''">
+            AND country  LIKE
+            CONCAT('%', #{userInfo.country}, '%')
+        </if>
+        <if test="userInfo.province != null and userInfo.province != ''">
+            AND province  LIKE
+            CONCAT('%', #{userInfo.province}, '%')
+        </if>
+        <if test="userInfo.city != null and userInfo.city != ''">
+            AND city  LIKE
+            CONCAT('%', #{userInfo.city}, '%')
+        </if>
+        <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
+            AND subscribe  = #{userInfo.subscribe}
+        </if>
+        <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
+            AND tagid_list LIKE CONCAT('%', #{userInfo.tagid_list}, '%')
+        </if>
+        <if test="userInfo.sex != null and userInfo.sex != ''">
+            AND sex  = #{userInfo.sex}
+        </if>
+    </update>
+
     <select id="selectByopenid" resultMap="BaseResultMap" parameterType="com.ty.entity.UserInfo">
         select
         <include refid="Base_Column_List"/>

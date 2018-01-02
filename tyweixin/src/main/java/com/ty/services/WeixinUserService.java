@@ -108,6 +108,27 @@ public class WeixinUserService {
     }
 
     /**
+     * 批量修改用户标签
+     * @param userInfo 筛选条件
+     * @param tagid_list 标签id
+     * @return
+     */
+    @Transactional(readOnly = false)
+    public ResponseVO batchUpdateTags(UserInfo userInfo,String tagid_list) {
+        ResponseVO vo = new ResponseVO();
+        int res = 0;
+        res = userInfoMapper.batchUpdateTags(userInfo,tagid_list);
+        if(res>0){
+            vo.setReCode(1);
+            vo.setReMsg("成功");
+        }else{
+            vo.setReCode(-2);
+            vo.setReMsg("失败");
+        }
+        return vo;
+    }
+
+    /**
      * 保存微信用户资料入库以及头像保存本地
      * 
      * @param userInfo 微信用户资料实体bean

@@ -19,6 +19,14 @@ public interface UserInfoMapper {
     
     int update(UserInfo userInfo);
 
+    /**
+     * 批量修改用户标签
+     * @param userInfo 筛选条件
+     * @param tagid_list
+     * @return
+     */
+    int batchUpdateTags(@Param("userInfo")UserInfo userInfo,@Param("tagid_list")String tagid_list);
+
     UserInfo selectByopenid(@Param("openid") String openid);
 
     /**

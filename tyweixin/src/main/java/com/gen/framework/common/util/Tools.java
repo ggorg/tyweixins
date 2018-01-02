@@ -1,16 +1,10 @@
 package com.gen.framework.common.util;
 
-import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.beans.SysMenuBean;
 import com.gen.framework.common.services.SysManagerService;
-import com.thoughtworks.xstream.core.util.Base64Encoder;
-import com.ty.util.CommonUtil;
+import com.ty.entity.Tags;
 import com.ty.util.WeiXinTools;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.CacheManager;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -20,8 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -365,4 +357,30 @@ public final class Tools {
 		return MyEncryptUtil.encry(input);
 	}
 
+	public static boolean checked(String tagidList,String id){
+        boolean res = false;
+        if(tagidList.indexOf(",")==-1 && tagidList.equals(id)){
+            res = true;
+        }else{
+            for(String s:tagidList.split(",")){
+                if(s.equals(id)){
+                    res = true;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    public static String showTags(String tagidList,List<Tags> tagsList){
+        StringBuffer tag = new StringBuffer();
+        for(String s:tagidList.split(",")){
+            for(Tags tags:tagsList){
+                if(tags.getId() == Integer.valueOf(s)){
+                    tag = tag.append(tags.getName()).append(" ");
+                }
+            }
+        }
+        return tag.toString();
+    }
 }
