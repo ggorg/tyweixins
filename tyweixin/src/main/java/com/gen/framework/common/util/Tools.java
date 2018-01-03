@@ -373,7 +373,14 @@ public final class Tools {
         return res;
     }
 
+    /**
+     * 用于显示用户标签
+     * @param tagidList 用户标签字段,例如 1,2,3
+     * @param tagsList 微信用户标签
+     * @return
+     */
     public static String showTags(String tagidList,List<Tags> tagsList){
+        if(StringUtils.isBlank(tagidList) || tagsList.size() == 0) return "";
         StringBuffer tag = new StringBuffer();
         for(String s:tagidList.split(",")){
             for(Tags tags:tagsList){
