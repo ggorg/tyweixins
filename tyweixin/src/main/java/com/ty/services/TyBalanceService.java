@@ -46,7 +46,7 @@ public class TyBalanceService extends CommonService {
         String callBackStr=null;
         if(globals.getSearchBalanceUrl().startsWith("http")){
             logger.info("TyBalanceService->getBalance->请求获取余额信息->requestData:{}",param.toJSONString());
-            callBackStr=HttpUtil.doPost(globals.getSearchBalanceUrl(), TydicDES.encodeValue(param.toJSONString()));
+            callBackStr=HttpUtil.sendHtpps(globals.getSearchBalanceUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceUrl()));
         }
@@ -86,7 +86,7 @@ public class TyBalanceService extends CommonService {
         String callBackStr=null;
         if(globals.getSearchBalanceDetailUrl().startsWith("http")){
             logger.info("TyBalanceService->getBalance->请求获取余额明细信息->requestData:{}",param.toJSONString());
-            callBackStr=HttpUtil.doPost(globals.getSearchBalanceDetailUrl(),TydicDES.encodeValue(param.toJSONString()));
+            callBackStr=HttpUtil.sendHtpps(globals.getSearchBalanceDetailUrl(),TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchBalanceDetailUrl()));
         }

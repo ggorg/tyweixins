@@ -45,7 +45,7 @@ public class TyVoucherService extends CommonService {
         String callBackStr=null;
         if(globals.getSearchVoucherUrl().startsWith("http")){
             logger.info("TyVoucherService->saveVoucheies->请求代金卷接口->requestData:{}",param.toJSONString());
-            callBackStr= HttpUtil.doPost(globals.getSearchVoucherUrl(), TydicDES.encodeValue(param.toJSONString()));
+            callBackStr= HttpUtil.sendHtpps(globals.getSearchVoucherUrl(), TydicDES.encodeValue(param.toJSONString()));
         }else{
             callBackStr=FileUtils.readFileToString(new File(globals.getSearchVoucherUrl()));
         }

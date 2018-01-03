@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 public class TyApiTest {
    // private String url="http://222.221.16.170/coupon/webserver/get";
-    private String url="http://222.221.16.170/coupon/webserver/get";
+    private String url="https://222.221.16.170:80/coupon/webserver/get";
     private String telphone="15393944645";
 
     @Test
@@ -25,14 +25,14 @@ public class TyApiTest {
         jsonObject.put("act_code", ActEnum.act6.getCode());
         jsonObject.put("message",ranInt);
 
-        String str= HttpUtil.doPost(url, TydicDES.encodeValue(jsonObject.toJSONString()));
+        String str= HttpUtil.sendHtpps(url, TydicDES.encodeValue(jsonObject.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(str));
     }
     @Test
     public void testPullActivity()throws Exception{
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("act_code", ActEnum.act3.getCode());
-        String callBackStr=HttpUtil.doPost(url,TydicDES.encodeValue(jsonObject.toJSONString()));
+        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(jsonObject.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(callBackStr));
     }
     @Test
@@ -46,7 +46,7 @@ public class TyApiTest {
        // param.put("seqCode",insertMap.get("trSeqCode").toString());
 
 
-        String callBackStr=HttpUtil.doPost(url,TydicDES.encodeValue(param.toJSONString()));
+        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(param.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(callBackStr));
     }
     @Test
@@ -54,7 +54,7 @@ public class TyApiTest {
         JSONObject param=new JSONObject();
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act2.getCode());
-        String callBackStr=HttpUtil.doPost(url,TydicDES.encodeValue(param.toJSONString()));
+        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(param.toJSONString()));
 
         System.out.println(TydicDES.decodedecodeValue(callBackStr)+"----------------"+ callBackStr);
     }
@@ -63,7 +63,7 @@ public class TyApiTest {
         JSONObject param=new JSONObject();
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act1.getCode());
-        String callBackStr=HttpUtil.doPost(url,TydicDES.encodeValue(param.toJSONString()));
+        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(param.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(callBackStr));
     }
     @Test
@@ -72,7 +72,7 @@ public class TyApiTest {
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act5.getCode());
         System.out.println(TydicDES.encodeValue(param.toJSONString()));
-        String callBackStr=HttpUtil.doPost(url,TydicDES.encodeValue(param.toJSONString()));
+        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(param.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(callBackStr));
     }
 }

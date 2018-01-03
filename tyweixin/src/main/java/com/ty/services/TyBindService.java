@@ -80,7 +80,7 @@ public class TyBindService extends CommonService {
         String callBackStr=null;
         if(globals.getVaildCodeUrl().startsWith("http")){
             logger.info("TyBindService->sendVaildCode->请求短信接口->requestData:{}",obj.toJSONString());
-            callBackStr= HttpUtil.doPost(globals.getVaildCodeUrl(), TydicDES.encodeValue(obj.toJSONString()));
+            callBackStr= HttpUtil.sendHtpps(globals.getVaildCodeUrl(), TydicDES.encodeValue(obj.toJSONString()));
         }else{
 
             callBackStr=FileUtils.readFileToString(new File(globals.getVaildCodeUrl()));
@@ -103,7 +103,7 @@ public class TyBindService extends CommonService {
         String callBackStr=null;
         if(globals.getCheckTyTelphoneUrl().startsWith("http")){
             logger.info("TyBindService->checkTyTelphone->请求天翼手机验证->requestData:{}",obj.toJSONString());
-            callBackStr= HttpUtil.doPost(globals.getCheckTyTelphoneUrl(), TydicDES.encodeValue(obj.toJSONString()));
+            callBackStr= HttpUtil.sendHtpps(globals.getCheckTyTelphoneUrl(), TydicDES.encodeValue(obj.toJSONString()));
         }else{
 
             callBackStr=FileUtils.readFileToString(new File(globals.getVaildCodeUrl()));

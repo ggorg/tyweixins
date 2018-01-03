@@ -67,7 +67,7 @@ public class TyActivityRedPacketService extends CommonService {
                     param.put("pay_user",paramMap.get("tuTelphone"));
                     param.put("act_code", ActEnum.act4.getCode());
                     if(globals.getPullRedPacketUrl().startsWith("http")){
-                        callBackStr=HttpUtil.doPost(globals.getPullRedPacketUrl(), TydicDES.encodeValue(param.toJSONString()));
+                        callBackStr=HttpUtil.sendHtpps(globals.getPullRedPacketUrl(), TydicDES.encodeValue(param.toJSONString()));
                     }else{
                         callBackStr= FileUtils.readFileToString(new File(globals.getPullRedPacketUrl()));
                     }
@@ -173,7 +173,7 @@ public class TyActivityRedPacketService extends CommonService {
             param.put("seqCode",insertMap.get("trSeqCode").toString());
             logger.info("TyActivityRedPacketService->openRedPacket->请求红包充值接口->requestData:{}",param.toJSONString());
 
-            String callBackStr=HttpUtil.doPost(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
+            String callBackStr=HttpUtil.sendHtpps(globals.getOpenRedPacketUrl(),TydicDES.encodeValue(param.toJSONString()));
             if(StringUtils.isBlank(callBackStr)){
                 throw new GenException("openRedPacket->充值红包返回参数异常");
             }

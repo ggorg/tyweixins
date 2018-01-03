@@ -46,7 +46,7 @@ public class TyActivityService extends CommonService {
         String callBackStr=null;
         if(globals.getPullActivityUrl().startsWith("http")){
             logger.info("TyActivityService->pullActivity->请求获取活动接口->requestData:{}",jsonObject.toJSONString());
-            callBackStr=HttpUtil.doPost(globals.getPullActivityUrl(),TydicDES.encodeValue(jsonObject.toJSONString()));
+            callBackStr=HttpUtil.sendHtpps(globals.getPullActivityUrl(),TydicDES.encodeValue(jsonObject.toJSONString()));
         }else{
             callBackStr= FileUtils.readFileToString(new File(globals.getPullActivityUrl()));
         }
@@ -163,7 +163,7 @@ public class TyActivityService extends CommonService {
         jsonObject.put("act_code", ActEnum.act6.getCode());
         jsonObject.put("message",ranInt);
 
-        String str=HttpUtil.doPost("http://222.221.16.170/coupon/webserver/get",TydicDES.encodeValue(jsonObject.toJSONString()));
+        String str=HttpUtil.sendHtpps("http://222.221.16.170/coupon/webserver/get",TydicDES.encodeValue(jsonObject.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(str));
     }
 }
