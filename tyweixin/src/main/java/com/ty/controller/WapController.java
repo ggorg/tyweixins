@@ -158,8 +158,9 @@ public class WapController {
             }
         }catch (Exception e){
             logger.error("WapController->doOpenRedPacket->系统异常",e);
-            String[] str=e.getMessage().split("->");
-            return toError(model,str.length>1?str[str.length-1]:"领取红包失败");
+            /*String[] str=e.getMessage().split("->");
+            return toError(model,str.length>1?str[str.length-1]:"领取红包失败");*/
+            return toError(model,"抢红包失败");
         }
         return "pages/wap/cashRedpacket";
     }

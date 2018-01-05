@@ -19,6 +19,7 @@ import com.ty.entity.UserInfo;
 import com.ty.enums.ActEnum;
 import com.ty.util.HttpUtil;
 import com.ty.util.TydicDES;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -134,20 +135,35 @@ public class TyActivityRedPacketService extends CommonService {
         Map insertMap=null;
         Map paramMap=null;
         Map conditionMap=null;
-        for(Map map:tyAct){
+        Object taMinCostObj=null;
+        Object taMaxCostObj=null;
+        Object taUsedObj=null;
+        Object taAmountObj=null;
+        Object taNumberObj=null;
+        Object taUsedNumberObj= null;
 
-            Integer taMinCost=(Integer) map.get("taMinCost");
-            Integer taMaxCost=(Integer)  map.get("taMaxCost");
-            Integer taUsed=(Integer) map.get("taUsed");
-            Integer taAmount=(Integer) map.get("taAmount");
-            Integer taNumber=(Integer) map.get("taNumber");
-            Integer taUsedNumber=(Integer) map.get("taUsedNumber");
+        for(Map map:tyAct){
+            taMinCostObj=map.get("taMinCost");
+            taMaxCostObj=map.get("taMaxCost");
+            taUsedObj= map.get("taUsed");
+            taAmountObj=map.get("taAmount");
+            taNumberObj=map.get("taNumber");
+            taUsedNumberObj= map.get("taUsedNumber");
+
+            Long taMinCost=taMinCostObj instanceof Long?(Long)taMinCostObj:((Integer)taMinCostObj).longValue();
+            Long taMaxCost=taMaxCostObj instanceof Long?(Long)taMaxCostObj:((Integer)taMaxCostObj).longValue();
+            Long taUsed=taUsedObj instanceof Long?(Long)taUsedObj:((Integer)taUsedObj).longValue();
+            Long taAmount=taAmountObj instanceof Long?(Long)taAmountObj:((Integer)taAmountObj).longValue();
+            Long taNumber=taNumberObj instanceof Long?(Long)taNumberObj:((Integer)taNumberObj).longValue();
+            Long taUsedNumber=taUsedNumberObj instanceof Long?(Long)taUsedNumberObj:((Integer)taUsedNumberObj).longValue();
+
             insertMap=new HashMap();
             insertMap.put("tUid",tyUser.getId());
 
-            int randRedPackCost=new Random().nextInt(taMaxCost - taMinCost + 1) + taMaxCost;
+            int randRedPackCost=new Random().nextInt(taMaxCost.intValue() - taMinCost.intValue() + 1) + taMinCost.intValue();
+
             if((taUsed+randRedPackCost)>taAmount){
-                randRedPackCost=taAmount-taUsed;
+                randRedPackCost=taAmount.intValue()-taUsed.intValue();
             }
             insertMap.put("trAmount",randRedPackCost);
             insertMap.put("trActivityId",map.get("id"));
@@ -189,7 +205,7 @@ public class TyActivityRedPacketService extends CommonService {
 
 
         }
-        return new ResponseVO(1,"充值红包领取成功",amount);
+        return new ResponseVO(1,"抢红包成功",amount);
 
 
     }
