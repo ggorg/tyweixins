@@ -5,6 +5,7 @@ import com.gen.framework.common.services.SysManagerService;
 import com.ty.entity.Tags;
 import com.ty.util.WeiXinTools;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -391,4 +392,10 @@ public final class Tools {
         }
         return tag.toString();
     }
+	public static boolean isNumberAndEnglishStr(String input) {
+		if(NumberUtils.isNumber(input)){
+			return false;
+		}
+		return NumberUtils.isNumber(input.replaceAll("(?i)[a-z]", ""));
+	}
 }

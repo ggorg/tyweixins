@@ -93,6 +93,7 @@ public class WapController {
             }
             UserInfo user=weixinUserService.selectByopenid(Tools.getOpenidByThreadLocal());
             model.addAttribute("name",user.getNickname());
+            model.addAttribute("headimgurl",user.getHeadimgurl());
             if(resBlance.getReCode()==1 && resRp.getReCode()==1){
                 Map map=tyBindService.checkIsBind(Tools.getOpenidByThreadLocal());
                 if(map!=null){
@@ -160,7 +161,7 @@ public class WapController {
             logger.error("WapController->doOpenRedPacket->系统异常",e);
             /*String[] str=e.getMessage().split("->");
             return toError(model,str.length>1?str[str.length-1]:"领取红包失败");*/
-            return toError(model,"抢红包失败");
+            return toError(model,"手慢了，继续努力");
         }
         return "pages/wap/cashRedpacket";
     }

@@ -7,7 +7,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import javax.servlet.http.HttpServletRequest;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,8 +54,9 @@ public class HttpUtil {
         return ip;
     }
 
-    public static String jsonPost(String url,String json)throws Exception {
+    public static String jsonHttpsPost(String url,String json)throws Exception {
         OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient=okHttpClient.newBuilder().sslSocketFactory(createSSLSocketFactory()).build();
         HttpUrl httpUrl = HttpUrl.parse(url);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, json);
@@ -117,7 +124,24 @@ public class HttpUtil {
         }
         return url;
     }
+    public static SSLSocketFactory createSSLSocketFactory(){
+        try {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
 
+
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(trustStore);
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(trustStore,null);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(),trustManagerFactory.getTrustManagers(),new SecureRandom());
+            return sslContext.getSocketFactory();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     private static String retString(Response response, String methodStr, HttpUrl url, Object params) throws Exception {
         try {
             if (response.isSuccessful()) {

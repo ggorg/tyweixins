@@ -3,16 +3,14 @@ package com.gen.framework.common.services;
 import com.gen.framework.common.beans.*;
 import com.gen.framework.common.dao.CommonMapper;
 import com.gen.framework.common.dao.MenuPowerMapper;
-import com.gen.framework.common.util.BeanToMapUtil;
-import com.gen.framework.common.util.MenuMapComparator;
-import com.gen.framework.common.util.MyEncryptUtil;
-import com.gen.framework.common.util.Page;
+import com.gen.framework.common.util.*;
 import com.gen.framework.common.vo.ResponseVO;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -54,6 +52,7 @@ public class SysManagerService extends CommonService{
             userBean.setuName((String)map.get("uName"));
             Integer disabled=(Integer)map.get("disabled");
             userBean.setDisabled(disabled==null || disabled==1?false:true);
+            userBean.setuPassword((String)map.get("uPassword"));
         }
 
         return userBean;
@@ -69,6 +68,39 @@ public class SysManagerService extends CommonService{
 
     }
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public ResponseVO modifyPwd(Integer uid,String oldPwd ,String newPwd,String makeSurePwd)throws Exception{
+        ResponseVO vo=new ResponseVO();
+        if(StringUtils.isBlank(oldPwd)){
+            vo.setReCode(-2);
+            vo.setReMsg("密码为空");
+            return vo;
+        }
+        if(StringUtils.isBlank(newPwd)){
+            vo.setReCode(-2);
+            vo.setReMsg("新密码为空");
+            return vo;
+        }
+        if(!newPwd.equals(makeSurePwd)){
+            vo.setReCode(-2);
+            vo.setReMsg("请确保新密码和确认密码一致");
+            return vo;
+        }
+        SysUserBean userBean=this.getUserById(uid);
+        if(userBean.getId()!=null && StringUtils.isNotBlank(userBean.getuPassword())){
+            if(!userBean.getuPassword().equals(oldPwd)){
+                vo.setReCode(-2);
+                vo.setReMsg("密码验证失败");
+                return vo;
+            }
+            Map params=new HashMap();
+            params.put("uPassword",newPwd);
+            return this.commonUpdateBySingleSearchParam("baseUser",params,"id",uid);
+        }
+        vo.setReCode(-2);
+        vo.setReMsg("修改失败");
+        return vo;
+    }
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public ResponseVO saveUser(SysUserBean sysUserBean)throws  Exception{
         ResponseVO vo=new ResponseVO();
         if(StringUtils.isBlank(sysUserBean.getuName())){
@@ -76,6 +108,11 @@ public class SysManagerService extends CommonService{
             vo.setReMsg("用户名为空");
             return vo;
         }
+        /*if(!Tools.isNumberAndEnglishStr(sysUserBean.getuName())){
+            vo.setReCode(-2);
+            vo.setReMsg("用户名必须为数字");
+            return vo;
+        }*/
         if(StringUtils.isBlank(sysUserBean.getuPassword())){
             vo.setReCode(-2);
             vo.setReMsg("密码为空");
@@ -212,6 +249,13 @@ public class SysManagerService extends CommonService{
             }
             if(sysMenuBean.getmParentId()==null || sysMenuBean.getmParentId()==0){
                 sysMenuBean.setmParentId(-1);
+            }else if(sysMenuBean.getmParentId()!=-1){
+                long num=this.commonCountBySingleParam("baseMenu","id",sysMenuBean.getmParentId());
+                if(num==0){
+                    vo.setReCode(-2);
+                    vo.setReMsg("上级菜单ID【"+sysMenuBean.getmParentId()+"】不存在");
+                    return vo;
+                }
             }
             if(sysMenuBean.getmSort()==null || sysMenuBean.getmSort()==0){
                 sysMenuBean.setmSort(1);
@@ -413,10 +457,14 @@ public class SysManagerService extends CommonService{
 
     @Cacheable(value = "commonCache",key = "#uid")
     public List getPowerMenu(Integer uid){
-        Cache cache=cacheManager.getCache("commonCache");
+        //Cache cache=cacheManager.getCache("commonCache");
 
         return this.menuPowerMapper.queryById(uid);
     }
+    /*@Cacheable(value = "commonCache",key = "#uid")
+    public void clearCacheMenuByUid(Integer uid){
+        this.cacheManager.
+    }*/
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     public void resetPowerByRid(Integer rid)throws Exception{
         List<Map> lur=this.commonObjectsBySingleParam("baseUserRole","rid",rid);
