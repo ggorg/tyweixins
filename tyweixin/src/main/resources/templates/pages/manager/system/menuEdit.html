@@ -19,8 +19,16 @@
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">上级菜单ID</label>
-    <div class="layui-input-block">
+
+    <div class="layui-input-block" th:if="${menuObject==null}">
       <input type="text" name="mParentId" th:readonly="${menuObject==null}" th:value="${menuObject!=null?menuObject?.mParentId:#httpServletRequest.getParameter('pid')}" required="required"  lay-verify="required|number" placeholder="请输入上级菜单ID" autocomplete="off" class="layui-input" />
+    </div>
+    <div class="layui-input-inline" th:if="${menuObject!=null}">
+      <select name="mParentId" lay-verify="required" >
+        <option th:each="am:${allMenu}" th:value="${am['id']}" th:text="${am['mName']}" th:if="${am['id']!=menuObject?.id and am['mParentId']==-1}" >普通用户</option>
+
+
+      </select>
     </div>
   </div>
   <div class="layui-form-item">

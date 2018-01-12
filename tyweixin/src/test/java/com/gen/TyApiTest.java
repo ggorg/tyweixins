@@ -72,7 +72,8 @@ public class TyApiTest {
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act5.getCode());
         System.out.println(TydicDES.encodeValue(param.toJSONString()));
-        String callBackStr=HttpUtil.sendHtpps(url,TydicDES.encodeValue(param.toJSONString()));
+        String callBackStr= com.gen.framework.common.util.HttpUtil.jsonHttpsPost(url,TydicDES.encodeValue(param.toJSONString()));
         System.out.println(TydicDES.decodedecodeValue(callBackStr));
     }
+
 }

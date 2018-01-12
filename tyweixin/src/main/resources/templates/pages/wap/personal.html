@@ -17,7 +17,7 @@
         </div>
         <div class="avatar-con">
             <div class="avatar">
-                <img src="/wap/images/avatar.png" alt="">
+                <img th:src="${headimgurl!=null?headimgurl:'/wap/images/avatar.png'}"  alt="">
             </div>
             <p th:inline="text">欢迎您，[[${name}]]（<span th:text="${bind!=null?bind:'未绑定手机'}"></span>）</p>
             <!--已绑定
@@ -28,7 +28,7 @@
         </div>
         <div class="main">
             <div class="con">
-                <span>可用余额</span>
+                <span>账户余额</span>
                 <span th:inline="text">[[${blanceSum}]]<em>元</em></span>
                 <a th:href="'to-balance-detail?token='+${#httpServletRequest.getParameter('token')}">查看余额明细</a>
             </div>

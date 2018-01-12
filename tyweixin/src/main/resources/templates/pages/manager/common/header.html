@@ -36,7 +36,7 @@
 			<div class="userdata">
 				<h4 th:text="${session?.user[uName]}">Juan Dela Cruz</h4>
 				<ul>
-					<li><a href="accountsettings.html">修改密码</a></li>
+					<li><a href="javascript:void(0)" onclick="openDialog('400px','330px','修改密码','/sys/user/to-modify-pwd')">修改密码</a></li>
 					<li><a href="/sys/to-logout">退出</a></li>
 				</ul>
 			</div><!--userdata-->

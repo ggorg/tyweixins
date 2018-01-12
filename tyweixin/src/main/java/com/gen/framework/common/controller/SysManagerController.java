@@ -75,6 +75,32 @@ public class SysManagerController {
             return new ResponseVO(-1,"操作失败",null);
         }
     }
+    @GetMapping("/user/to-modify-pwd")
+    public String toModifyPwd(){
+        return "pages/manager/system/modifyPwd";
+    }
+
+    @PostMapping("/user/do-modify-pwd")
+    @ResponseBody
+    public ResponseVO doModifyPwd(String oldPwd,String newPwd,String makeSurePwd){
+        try {
+            Map map=(Map) Tools.getSession("user");
+            if(map!=null && map.get("id")!=null){
+                ResponseVO vo=this.sysManagerService.modifyPwd((Integer) map.get("id"),oldPwd,newPwd,makeSurePwd);
+                if(vo.getReCode()==1){
+                    toLogout();
+                }
+                return vo;
+               // if(vo.)
+               // return ;
+            }
+        }catch (Exception e){
+            logger.error("SysUserController->doModifyPwd->系统异常",e);
+
+        }
+        return new ResponseVO(-1,"修改失败",null);
+
+    }
 
     @GetMapping("/role/to-edit")
     public String toRoleEdit(Integer rId,Model model){
@@ -119,9 +145,12 @@ public class SysManagerController {
         return "pages/manager/system/menu";
     }
     @GetMapping("/menu/to-edit")
-    public String toMmuEdit(Integer id,Model model){
+    public String toMenuEdit(Integer id,Model model){
         try {
-            if(id!=null && id>0)model.addAttribute("menuObject",this.sysManagerService.getMenuById(id));
+            if(id!=null && id>0){
+                model.addAttribute("allMenu",this.sysManagerService.getAllMenu());
+                model.addAttribute("menuObject",this.sysManagerService.getMenuById(id));
+            }
         }catch (Exception e){
             logger.error("SysUserController->toMemuEdit",e);
         }
@@ -191,7 +220,12 @@ public class SysManagerController {
             List<SysMenuBean> menus=this.sysManagerService.getPowerMenu((Integer)vo.getData().get("id"));
            // Tools.setSession("userPower",menus);
             Map jumpMap=new HashMap();
-            jumpMap.put("jumpUrl",menus.get(0).getmUrl());
+            if(menus!=null && menus.size()>0){
+                jumpMap.put("jumpUrl",menus.get(0).getmUrl());
+            }else{
+                jumpMap.put("jumpUrl","/sys");
+            }
+
             vo.setData(jumpMap);
             return vo;
         }catch (Exception e){
