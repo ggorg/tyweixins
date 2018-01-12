@@ -68,7 +68,7 @@
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'修改菜单\',\'to-edit?id='+${obj['id']}+'\')'"  >修 改</button>
                             <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${#TdTool.encrypt(obj['id'])}+'\')'"  >删 除</button>
                                 <th:block th:if="${obj['mParentId']==-1}">
-                                    <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'创建下级菜单\',\'to-edit?pid='+${obj['id']}+'\')'"  >创建下级菜单</button>
+                                    <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'470px\',\'创建下级菜单\',\'to-edit?pid='+${obj['id']}+'&pName='+${obj['mName']}+'\')'"  >创建下级菜单</button>
 
 
                                 </th:block>

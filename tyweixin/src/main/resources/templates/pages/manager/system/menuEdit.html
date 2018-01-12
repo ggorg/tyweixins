@@ -17,15 +17,16 @@
       <input type="text" name="mName" required="required" th:value="${menuObject?.mName}" lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input" />
     </div>
   </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">上级菜单ID</label>
+  <div class="layui-form-item" th:if="${#httpServletRequest.getParameter('pName')!=null or menuObject!=null}">
+    <label class="layui-form-label">上级菜单</label>
 
-    <div class="layui-input-block" th:if="${menuObject==null}">
-      <input type="text" name="mParentId" th:readonly="${menuObject==null}" th:value="${menuObject!=null?menuObject?.mParentId:#httpServletRequest.getParameter('pid')}" required="required"  lay-verify="required|number" placeholder="请输入上级菜单ID" autocomplete="off" class="layui-input" />
-    </div>
-    <div class="layui-input-inline" th:if="${menuObject!=null}">
-      <select name="mParentId" lay-verify="required" >
-        <option th:each="am:${allMenu}" th:value="${am['id']}" th:text="${am['mName']}" th:if="${am['id']!=menuObject?.id and am['mParentId']==-1}" >普通用户</option>
+
+    <div class="layui-input-block">
+      <input th:if="${menuObject==null}"  type="text" readonly="true" th:value="${#httpServletRequest.getParameter('pName')}" class="layui-input" />
+      <input th:if="${menuObject==null}" type="hidden" name="mParentId"  th:value="${menuObject!=null?menuObject?.mParentId:#httpServletRequest.getParameter('pid')}"  />
+      <select  th:if="${menuObject!=null}" name="mParentId" lay-verify="required" >
+        <option value="-1" >--无上级菜单--</option>
+        <option th:each="am:${allMenu}" th:value="${am['id']}" th:text="${am['mName']}" th:if="${am['id']!=menuObject?.id and am['mParentId']==-1}" th:selected="${menuObject?.mParentId==am['id']}" >普通用户</option>
 
 
       </select>
