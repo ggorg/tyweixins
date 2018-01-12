@@ -101,12 +101,16 @@
         })
 
         function del(obj,obj2) {
-            //删除标签
-            jQuery.post("delete",{id:obj,appid:obj2},function(data){
-                layer.msg(data.reMsg);
-                window.setTimeout(function(){
-                    top.location.href=window.parent.location.href;
-                },500)
+            //删除菜单
+            layer.confirm('确定删除?',{icon:2,title:'删除'}, function(index){
+                layer.close(index);
+                //删除标签
+                jQuery.post("delete",{id:obj,appid:obj2},function(data){
+                    layer.msg(data.reMsg);
+                    window.setTimeout(function(){
+                        top.location.href=window.parent.location.href;
+                    },500)
+                });
             });
         }
 
