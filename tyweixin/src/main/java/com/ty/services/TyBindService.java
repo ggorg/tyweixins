@@ -182,7 +182,7 @@ public class TyBindService extends CommonService {
             vo.setData(tu.getId());
         }
         if(vo.getReCode()==1){
-            tyVoucherService.saveVoucheies(telphone,vo.getData());
+            //tyVoucherService.saveVoucheies(telphone,vo.getData());
             return new ResponseVO(1,"绑定成功",null);
         }
         return new ResponseVO(-2,"绑定失败",null);

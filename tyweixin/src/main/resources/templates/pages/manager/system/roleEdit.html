@@ -21,17 +21,7 @@
       <input type="text" name="rByname" required="required" th:value="${roleObject?.rByname}"  lay-verify="required" placeholder="角色别称" autocomplete="off" class="layui-input" />
     </div>
   </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">角色类型</label>
-    <div class="layui-input-inline">
-      <select name="rType" lay-verify="required" >
-        <option value="1_1" th:selected="${roleObject?.rType=='1_1'}">普通用户</option>
-        <option value="1_2" th:selected="${roleObject?.rType=='1_2'}">管理员</option>
-        <option value="1_3" th:selected="${roleObject?.rType=='1_3'}">超级管理员</option>
 
-      </select>
-    </div>
-  </div>
   <div class="layui-form-item">
     <label class="layui-form-label">选择用户</label>
 

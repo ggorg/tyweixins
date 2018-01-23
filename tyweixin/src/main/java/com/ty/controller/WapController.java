@@ -183,6 +183,7 @@ public class WapController {
             model.addAllAttributes(this.tyVoucherService.findVoucheies(Tools.getOpenidByThreadLocal()));
         }catch (Exception e){
             logger.error("WapController->toVoucher->系统异常",e);
+            return toError(model,"查看代金卷失败!");
         }
         return "pages/wap/voucherQuery";
 

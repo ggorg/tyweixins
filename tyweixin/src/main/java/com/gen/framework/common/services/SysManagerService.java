@@ -113,7 +113,7 @@ public class SysManagerService extends CommonService{
             vo.setReMsg("用户名必须为数字");
             return vo;
         }*/
-        if(StringUtils.isBlank(sysUserBean.getuPassword())){
+        if(sysUserBean.getId()==null && StringUtils.isBlank(sysUserBean.getuPassword())){
             vo.setReCode(-2);
             vo.setReMsg("密码为空");
             return vo;
@@ -393,18 +393,26 @@ public class SysManagerService extends CommonService{
         Map searchMap=new HashMap();
         searchMap.put("uName",sysUserBean.getuName());
         searchMap.put("uPassword",sysUserBean.getuPassword());
-        searchMap.put("disabled",false);
+        //searchMap.put("disabled",false);
 
         List list=this.commonList("baseUser",null,null,null,searchMap);
         if(list!=null && !list.isEmpty()){
+            Map user=(Map) list.get(0);
+            if(user.containsKey("disabled")){
+               Integer disabled=(Integer) user.get("disabled");
+               if(disabled==1){
+                   vo.setReCode(-2);
+                   vo.setReMsg("用户已经禁用，请与管理员联系");
+                   return vo;
+               }
+            }
             vo.setReCode(1);
             vo.setReMsg("登录成功");
-            Map user=(Map) list.get(0);
             vo.setData(user);
             return vo;
         }
         vo.setReCode(-2);
-        vo.setReMsg("登录失败");
+        vo.setReMsg("用户名或密码错误");
         return vo;
     }
 

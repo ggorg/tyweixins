@@ -34,7 +34,7 @@
                     <h3>角色列表</h3>
                 </div><!--contenttitle-->
                 <div class="tableoptions">
-                    <button class="radius3" id="createBtn" title="table2" onclick="openDialog('500px','530px','创建角色','to-edit')">新建</button> &nbsp;
+                    <button class="radius3" id="createBtn" title="table2" onclick="openDialog('500px','500px','创建角色','to-edit')">新建</button> &nbsp;
                     <!-- <select class="radius3">
                          <option value="">Show All</option>
                          <option value="">Rendering Engine</option>
@@ -72,7 +72,7 @@
 
                         <td class="center">
                             <div class="layui-btn-group">
-                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'530px\',\'修改角色\',\'to-edit?rId='+${obj['id']}+'\')'" >修 改</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'500px\',\'修改角色\',\'to-edit?rId='+${obj['id']}+'\')'" >修 改</button>
                             <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'600px\',\'380px\',\'菜单授权\',\'to-menu-power?rId='+${obj['id']}+'\')'"  >授 权</button>
                             <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${#TdTool.encrypt(obj['id'])}+'\')'"  >删 除</button>
 

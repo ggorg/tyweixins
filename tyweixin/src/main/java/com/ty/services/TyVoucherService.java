@@ -22,10 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @EnableAsync
@@ -35,9 +32,12 @@ public class TyVoucherService extends CommonService {
     @Autowired
     private Globals globals;
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void saveVoucheies(String telphone,Integer id)throws Exception{
+    @Autowired
+    private TyBindService tyBindService;
+
+   // @Async
+    //@Transactional(propagation = Propagation.REQUIRED)
+    public List pullVoucheies(String telphone,Integer id)throws Exception{
         JSONObject param=new JSONObject();
         param.put("pay_user",telphone);
         param.put("act_code", ActEnum.act5.getCode());
@@ -57,26 +57,50 @@ public class TyVoucherService extends CommonService {
                     JSONArray jsonArray=callBackJson.getJSONArray("data");
                     JSONObject json=null;
                     Map obj=null;
+                    List datalist=new ArrayList();
                     for(int i=0;i<jsonArray.size();i++){
                         obj=new HashMap();
                         json=jsonArray.getJSONObject(i);
                         obj.put("tvCode",json.getString("code"));
-                        obj.put("tvSendDate",DateUtils.parseDate(json.getString("sendDate"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                       // obj.put("tvSendDate",DateUtils.parseDate(,"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                        obj.put("tvSendDate",json.getString("sendDate"));
                         obj.put("tvBusinessType",json.getString("businessType").replace("null",""));
                         obj.put("tvRemark",json.getString("remark").replace("null",""));
                         obj.put("tvValue",Integer.parseInt(json.containsKey("value")?json.getString("value"):"0"));
-                        obj.put("tvBeginTime",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
-                        obj.put("tvEndTime",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                        obj.put("tvBeginTime",json.getString("beginTime").replace(" 00:00:00",""));
+                        obj.put("tvEndTime",json.getString("endTime").replace(" 00:00:00",""));
+                        obj.put("tvBeginTimeFlag",DateUtils.parseDate(json.getString("beginTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
+                        obj.put("tvEndTimeFlag",DateUtils.parseDate(json.getString("endTime"),"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm:ss.S"));
                         obj.put("createTime",new Date());
                         obj.put("tuid",id);
-                        this.commonInsertMap("ty_voucher",obj);
+                        datalist.add(obj);
+                        //this.commonInsertMap("ty_voucher",obj);
                     }
+                    return datalist;
                 }
             }
         }
-
+        return null;
     }
-    public Map findVoucheies(String openid){
+    public Map findVoucheies(String openid)throws Exception{
+
+        Map tyUserMap=this.tyBindService.checkIsBind(openid);
+        if(tyUserMap!=null && tyUserMap.size()>0){
+            List<Map> dataList=this.pullVoucheies((String)tyUserMap.get("tuTelphone"),(Integer) tyUserMap.get("id"));
+            if(dataList!=null && !dataList.isEmpty()){
+                Date currentDate=new Date();
+
+                List noExpire=dataList.stream().filter(k->currentDate.before((Date)k.get("tvEndTimeFlag"))).collect(Collectors.toList());
+                List expire=dataList.stream().filter(k->currentDate.after((Date)k.get("tvEndTimeFlag"))).collect(Collectors.toList());
+                Map map=new HashMap();
+                map.put("noExpire",noExpire);
+                map.put("expire",expire);
+                return map;
+            }
+        }
+      return null;
+    }
+    /*public Map findVoucheies_db(String openid){
         Map childCondition=new HashMap();
         childCondition.put("tuOpenId",openid);
 
@@ -94,7 +118,7 @@ public class TyVoucherService extends CommonService {
             return map;
         }
         return null;
-    }
+    }*/
 
 
 }
