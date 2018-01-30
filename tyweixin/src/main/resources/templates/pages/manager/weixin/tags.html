@@ -65,7 +65,7 @@
                         <td th:text="${obj['count']}">Win 95+</td>
                         <td th:text="${obj['create_date']!=null ? #dates.format(obj['create_date'], 'yyyy-MM-dd HH:mm:ss'):''}">Win 95+</td>
                         <td class="center">
-                            <div class="layui-btn-group">
+                            <div class="layui-btn-group" th:if="${obj['name']} != '星标组'">
                                 <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'340px\',\'修改标签\',\'edit?id='+${obj['id']}+'&appid='+${obj['appid']}+'\')'"  >修 改</button>
                                 <button class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'del(\''+${obj['id']}+'\',\''+${obj['appid']}+'\')'" >删除</button>
                             </div>
