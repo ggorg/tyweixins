@@ -87,7 +87,7 @@
                  push_state=#{push_state, jdbcType=INTEGER},
 		      </if>
              <if test="push_time != null" >
-                 push_time=#{push_time, jdbcType=DATE},
+                 push_time=#{push_time},
 		      </if>
              <if test="tag_id != null" >
                  tag_id=#{tag_id, jdbcType=INTEGER},
