@@ -73,20 +73,28 @@ public class TagsService {
 
     public ResponseVO update(Tags tags) {
         ResponseVO vo = new ResponseVO();
-        JSONObject json = weixinInterfaceService.tagsUpdate(tags.getAppid(), tags.getId(),tags.getName());
-        if(json.containsKey("errcode")){
-            vo.setReCode(-1);
-            vo.setReMsg(json.getString("errcode")+json.getString("errmsg"));
+        Tags t = new Tags();
+        t.setAppid(tags.getAppid());
+        t.setName(tags.getName());
+        int count = tagsMapper.findListCountByName(t);
+        if(count>0){
+            vo.setReCode(-2);
+            vo.setReMsg("该标签名字已存在，请重新输入");
         }else{
-            tags.setId(json.getJSONObject("tag").getInteger("id"));
-            int res = tagsMapper.insert(tags);
-            if(res>0){
-                vo.setReCode(1);
-                vo.setReMsg("成功");
-                vo.setData(tags);
+            JSONObject json = weixinInterfaceService.tagsUpdate(tags.getAppid(), tags.getId(),tags.getName());
+            if(json.containsKey("errcode") && json.getInteger("errcode") != 0){
+                vo.setReCode(-1);
+                vo.setReMsg(json.getString("errcode")+json.getString("errmsg"));
             }else{
-                vo.setReCode(-2);
-                vo.setReMsg("入库失败");
+                int res = tagsMapper.update(tags);
+                if(res>0){
+                    vo.setReCode(1);
+                    vo.setReMsg("成功");
+                    vo.setData(tags);
+                }else{
+                    vo.setReCode(-2);
+                    vo.setReMsg("入库失败");
+                }
             }
         }
         return vo;

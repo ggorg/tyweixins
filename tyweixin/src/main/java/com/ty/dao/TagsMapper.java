@@ -16,6 +16,7 @@ public interface TagsMapper {
     List<Tags> findList(@Param("page")Page page,@Param("entity")Tags entity);
     List<Tags> findListAll(@Param("entity")Tags entity);
     int findListCount(@Param("entity")Tags entity);
+    int findListCountByName(@Param("entity")Tags entity);
     int insert(@Param("entity")Tags entity);
     int delete(@Param("entity")Tags entity);
     int deleteByAppid(@Param("appid")String appid);

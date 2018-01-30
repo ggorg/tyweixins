@@ -46,6 +46,7 @@
 		      </if>
 		    </set>
         where id =  #{id,jdbcType=INTEGER}
+        AND  appid = #{appid, jdbcType=VARCHAR}
     </update>
 
     <select id="selectById" resultMap="BaseResultMap" parameterType="com.ty.entity.Tags">
@@ -115,6 +116,14 @@
         <if test="entity.id != null and entity.id != ''">
             AND id  = #{entity.id}
         </if>
+    </select>
+
+    <select id="findListCountByName" resultType="int">
+        SELECT
+        count(*)
+        FROM weixin_tag
+        WHERE appid  = #{entity.appid}
+        AND `name` = #{entity.name}
     </select>
 
     <delete id="delete" parameterType="com.ty.entity.Tags">
