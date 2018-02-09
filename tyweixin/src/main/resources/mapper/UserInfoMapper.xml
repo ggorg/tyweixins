@@ -205,7 +205,7 @@
         <if test="userInfo.subscribe != null and userInfo.subscribe != ''">
             AND a.subscribe  = #{userInfo.subscribe}
         </if>
-        <if test="userInfo.tagid_list != null and userInfo.tagid_list != ''">
+        <if test="userInfo.tagid_list != null and userInfo.tagid_list != '' and userInfo.tagid_list !=0">
             AND a.tagid_list REGEXP CONCAT('(,|^)', #{userInfo.tagid_list}, '(,|$)')
         </if>
         <if test="userInfo.sex != null and userInfo.sex != ''">

@@ -41,11 +41,11 @@
     </sql>
 
     <sql id="baseJoins">
-        LEFT JOIN weixin_message m ON m.id = a.push_messageid
+        LEFT JOIN weixin_message m ON m.id = a.push_messageid and m.appid=a.appid
     </sql>
 
     <sql id="tagJoins">
-        LEFT JOIN weixin_tag t ON t.id = a.tag_id
+        LEFT JOIN weixin_tag t ON t.id = a.tag_id and t.appid=a.appid
     </sql>
 
     <insert id="insert" parameterType="com.ty.entity.Push">
