@@ -54,5 +54,6 @@ public class CommonUtil {
         JSONObject json=new JSONObject();
         json.put("param",builder);
         System.out.println(json.getString("param"));
+        System.out.println(createOauthUrl("wxac4072fc723524ff","123","pro-page"));
     }
 }

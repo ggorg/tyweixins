@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+        <th:block th:include="pages/manager/common/cssResources::syscssresources"></th:block>
+        <th:block th:include="pages/manager/common/jsResources::sysjsresources"></th:block>
+        <script type="text/javascript"  th:inline="javascript">
+           initPage(/*[[${proPage!=null?proPage.total:0}]]*/ );
+        </script>
+	</head>
+    <body class="withvernav">
+    <div class="bodywrapper">
+
+        <th:block th:include="pages/manager/common/header::sysheader"></th:block>
+        <th:block th:include="pages/manager/common/menus::sysmenus"></th:block>
+       <div class="centercontent tables">
+
+           <!-- <div class="pageheader notab">
+           <h1 class="pagetitle">Tables</h1>
+           <span class="pagedesc">This is a sample description of a page</span>
+
+       </div>--><!--pageheader-->
+
+            <div id="contentwrapper" class="contentwrapper">
+                <div class="contenttitle2">
+                    <h3>活动宣传页列表</h3>
+
+                </div><!--contenttitle-->
+
+
+                <div class="tableoptions">
+
+                    <button class="radius3" id="createBtn" onclick="openDialog('500px','480px','新建宣传页','to-eidt-propagate')" title="table2">创建宣传页</button> &nbsp;
+
+                </div>
+                <table cellpadding="0" cellspacing="0" border="0" id="table2" class="stdtable stdtablecb">
+                    <colgroup>
+                        <!--<col class="con0" style="width: 4%" />-->
+                        <col class="con1" />
+                        <col class="con0" />
+                        <col class="con1" />
+
+                        <col class="con0" />
+                    </colgroup>
+                    <thead>
+
+                    <tr>
+                       
+                        <th class="head1">标题</th>
+                        <th class="head0">创建时间</th>
+                        <th class="head1">修改时间</th>
+
+                        <th class="head0">操作</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="obj:${proPage?.result}">
+                       
+                        <td th:text="${obj['topTitle']}">Trident</td>
+                        <td th:text="${obj['createTime']}">Win 95+</td>
+                        <td th:text="${obj['updateTime']}">Win 95+</td>
+
+                        <td class="center">
+                            <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'660px\',\'预览\',\'to-preview-propagate?proid='+${obj['id']}+'\')'"  >预 览</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'480px\',\'修改\',\'to-eidt-propagate?id='+${obj['id']}+'\')'"  >修 改</button>
+                            <button class="layui-btn layui-btn-sm" th:onclick="'openDialog(\'500px\',\'370px\',\'绑定图文和活动\',\'/manager/to-push-info?id='+${obj['id']}+'\')'"  >绑定图文和活动</button>
+                            <button  class="layui-btn layui-btn-sm layui-btn-danger" th:onclick="'confirmDisabled('+${obj['id']}+')'" >删 除</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div id="pages"></div>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+
+        function confirmDisabled(id){
+            layer.confirm("是否删除", {icon: 3, title:'提示'}, function(index){
+                if(index>0){
+                    jQueryCommonSubmit("do-del-propagate",null,{id:id});
+
+                }
+                //layer.close(index);
+            });
+        }
+        layui.use('form', function(){
+            var form = layui.form;
+
+        })
+
+    </script>
+	</body>
+
+</html>

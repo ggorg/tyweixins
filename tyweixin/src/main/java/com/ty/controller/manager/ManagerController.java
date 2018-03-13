@@ -1,8 +1,11 @@
 package com.ty.controller.manager;
 
+import com.gen.framework.common.util.MyEncryptUtil;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.config.Globals;
+import com.ty.controller.WapController;
 import com.ty.entity.Message;
+import com.ty.entity.PropagateVO;
 import com.ty.entity.TyActivity;
 import com.ty.services.*;
 import com.ty.timer.TyTimer;
@@ -39,6 +42,9 @@ public class ManagerController {
 
     @Autowired
     private Globals globals;
+
+    @Autowired
+    private WapController wapController;
     @GetMapping("/to-count-red-packet")
     public String toCountRedPacket(Model model){
         try {
@@ -75,7 +81,11 @@ public class ManagerController {
     @GetMapping("/to-activity")
     public String toActivity(String idStr,Model model){
         try {
-            model.addAttribute("act",tyActivityService.getActivity(idStr).getData());
+            String ids= MyEncryptUtil.getRealValue(idStr);
+            if(ids!=null){
+                model.addAttribute("act",tyActivityService.getActivity(Integer.parseInt(ids)).getData());
+            }
+
 
         }catch (Exception e){
             logger.error("WapController->toActivity->系统异常",e);
@@ -106,9 +116,15 @@ public class ManagerController {
         }
     }
     @GetMapping("/to-push-info")
-    public String getPushInfo(Model mode){
+    public String getPushInfo(Model mode,Integer id){
         try {
             mode.addAttribute("apps",pubWeixinService.findPubweixinAll());
+            mode.addAttribute("pros",this.tyActivityService.getAllActivity());
+            Map map=this.tyActivityService.getPropagateById(id);
+            if(map!=null && map.size()>0){
+
+                mode.addAttribute("actid",map.get("actId"));
+            }
 
         }catch (Exception e){
 
@@ -132,14 +148,19 @@ public class ManagerController {
     }
     @PostMapping("/do-activity-bind-msg")
     @ResponseBody
-    public ResponseVO doActivityBindMsg(String actid,Integer msgid){
+    public ResponseVO doActivityBindMsg(Integer actid,Integer msgid,Integer proid){
         try {
            ResponseVO<TyActivity> responseAct= this.tyActivityService.getActivity(actid);
+
            if(responseAct.getReCode()==1){
-               TyActivity tyActivity=responseAct.getData();
-               Message msg=this.messageService.selectById(msgid);
-               msg.setUrl(CommonUtil.createOauthUrl(msg.getAppid(),globals.getRedirectUri(),"open-red-packet",tyActivity.getId()));
-               ResponseVO re=this.messageService.saveOrUpdate(msg);
+               ResponseVO retPro=this.tyActivityService.updatePropagateAct(proid,actid);
+               if(retPro.getReCode()==1){
+                  // TyActivity tyActivity=responseAct.getData();
+                   Message msg=this.messageService.selectById(msgid);
+                   msg.setUrl(CommonUtil.createOauthUrl(msg.getAppid(),globals.getRedirectUri(),"pro-page",proid));
+                   ResponseVO re=this.messageService.saveOrUpdate(msg);
+               }
+
 
                return new ResponseVO(1,"绑定消息成功",null);
            }
@@ -152,9 +173,9 @@ public class ManagerController {
 
     @PostMapping("/do-activity-bind-msg-and-Push")
     @ResponseBody
-    public ResponseVO doActivityBindMsgAndPush(String actid,Integer msgid){
+    public ResponseVO doActivityBindMsgAndPush(Integer actid,Integer msgid,Integer proid){
         try {
-            ResponseVO rv=this.doActivityBindMsg(actid,msgid);
+            ResponseVO rv=this.doActivityBindMsg(actid,msgid,proid);
             if(rv.getReCode()==1){
                 List<Map> list=this.tyUserService.getAllUser();
                 if(list!=null && list.size()>0){
@@ -189,5 +210,58 @@ public class ManagerController {
             logger.error("SysUserController->toUserList",e);
         }
         return "pages/manager/tyuser/user";
+    }
+
+    @GetMapping("/activity/to-propagate-list")
+    public String toPropagateList(@RequestParam(defaultValue = "1") Integer pageNo, Model model){
+        try {
+
+            model.addAttribute("proPage",this.tyActivityService.getPropagatePage(pageNo));
+        }catch (Exception e){
+            logger.error("SysUserController->toPropagatePage",e);
+        }
+        return "pages/manager/propagates/list";
+    }
+    @GetMapping("/activity/to-eidt-propagate")
+    public String toEditPropagate(Integer id, Model model){
+        try{
+            model.addAttribute("pro",this.tyActivityService.getPropagateById(id));
+        }catch (Exception e){
+            logger.error("SysUserController->toEditPropagate",e);
+        }
+        return "pages/manager/propagates/edit";
+    }
+    @PostMapping("/activity/do-eidt-propagate")
+    @ResponseBody
+    public ResponseVO doEditPropagate(PropagateVO propagateVO){
+        try {
+            this.tyActivityService.editPropagate(propagateVO);
+            return new ResponseVO(1,"提交成功",null);
+        }catch (Exception e){
+            logger.error("SysUserController->doEditPropagate",e);
+            return new ResponseVO(-1,"提交失败",null);
+        }
+
+    }
+    @PostMapping("/activity/do-del-propagate")
+    @ResponseBody
+    public ResponseVO doDelPropagate(Integer id){
+        try {
+            this.tyActivityService.deletePropagate(id);
+            return new ResponseVO(1,"删除成功",null);
+        }catch (Exception e){
+            logger.error("SysUserController->doDelPropagate",e);
+            return new ResponseVO(-1,"删除失败",null);
+        }
+    }
+    @GetMapping("/activity/to-preview-propagate")
+    public String toPreviewPropagate(String proid,Model model){
+        try {
+           this.wapController.toPropagate(model,proid);
+        }catch (Exception e){
+            logger.error("SysUserController->toPreviewPropagate",e);
+
+        }
+        return "pages/manager/propagates/preview";
     }
 }

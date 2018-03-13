@@ -16,5 +16,12 @@
 
       </if>
    </select>
+   <select id="getAllActivity"  resultType="java.util.HashMap" >
+
+      select ta.* from ty_activity ta
+      where (ta.taAmount>ta.taUsed or ta.taUsed is null) and ta.taDisabled=1
+      and (now() &gt;=ta.taBeginDate and now()&lt;=ta.taEndDate) and ta.taNumber > ta.taUsedNumber
+      order by updateTime desc
+   </select>
 
 </mapper>

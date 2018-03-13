@@ -1,5 +1,6 @@
 package com.ty.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gen.framework.common.util.Tools;
 import com.gen.framework.common.vo.ResponseVO;
 import com.ty.entity.UserInfo;
@@ -37,6 +38,9 @@ public class WapController {
 
     @Autowired
     private WeixinUserService weixinUserService;
+
+    @Autowired
+    private TyActivityService tyActivityService;
 
 
     @GetMapping("/to-bind-telphone")
@@ -118,6 +122,10 @@ public class WapController {
         }
         return "pages/wap/balanceInquiries";
     }
+   /* @GetMapping("/to-propagate")
+    public String toPropagate(){
+
+    }*/
 
     @GetMapping("/to-open-red-packet")
     public String toOpenRedPacket(Model model,String param){
@@ -188,7 +196,27 @@ public class WapController {
         return "pages/wap/voucherQuery";
 
     }
-
+    @GetMapping("/to-propagate")
+    public String toPropagate(Model model,String param){
+        try {
+            Integer proid=null;
+            if(StringUtils.isNotBlank(param) && param.split("_").length>0){
+                proid=Integer.parseInt(param.split("_")[0]);
+               // model.addAttribute("actid",actid);
+            }
+            Map prodata=null;
+            if(proid==null){
+                prodata=this.tyActivityService.getNewPropagate();
+            }else {
+                prodata=this.tyActivityService.getPropagateById(proid);
+            }
+            model.addAttribute("pro",prodata);
+            return "pages/wap/propagate";
+        }catch (Exception e){
+            logger.error("WapController->toPropagate->系统异常",e);
+            return toError(model,"打开宣传页失败!");
+        }
+    }
     @GetMapping("/to-error")
     public String toError(Model model,String msg){
         model.addAttribute("msg",msg);

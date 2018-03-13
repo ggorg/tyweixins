@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>翼支付-公众号-活动宣传</title>
+    <th:block th:include="pages/wap/common/resources::wapresources-head"></th:block>
+
+    <link rel="stylesheet" href="/wap/css/redpacketList.css">
+
+</head>
+
+<body>
+<div class="scroll scroll-active">
+    <div class="content bg-grey">
+        <div class="pd-tabs">
+            <div class="containers">
+                <div class="top-banner">
+                    <p th:text="${pro['topTitle']}">热烈庆祝新的一年到来热烈庆祝新的一年到来</p>
+                    <img th:src="'/rs/'+${pro['topImgSrc']}" alt="">
+                </div>
+
+                <div class="txt-con">
+                    <p th:text="${pro['mainDesc']}">电信业目前普遍面临着收入停滞而流量激增的问题。面对网络中的流量暴涨，运营商一方面要确保用户体验，另一方面也需要控制成本，不可能任由成本飞涨。电信业目前普遍面临着收入停滞而流量激增的问题。面对网络中的流量暴涨，运营商一方面要确保用户体验，另一方面也需要控制成本，不可能任由成本飞涨。</p>
+                    <a  th:href="'to-open-red-packet?token='+${#httpServletRequest.getParameter('token')}+'&param='+${pro['actId']}" >去抢红包</a>
+                </div>
+
+                <div class="list-wrap">
+                    <ul class="list-con">
+                        <li th:if="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['title1']!=null}">
+                            <div class="list">
+                                <div class="icon">
+                                    <img th:src="'/rs/'+${pro['jsonObj']['img1']}" alt="">
+                                </div>
+                                <span class="title" th:text="${pro['jsonObj']['title1']}">新年抢红包</span>
+                                <span class="des" th:text="${pro['jsonObj']['desc1']}">迎接新的一年，恭祝大家新年快乐！身体健康，阖家新房。阖家新房阖家新房阖家新房阖家新房阖家新房阖家新房</span>
+                                <span class="date" th:text="${pro['jsonObj']['updateTime1']}">2018.03.04</span>
+                            </div>
+                        </li>
+                        <li th:if="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['title2']!=null}">
+                            <div class="list">
+                                <div class="icon">
+                                    <img th:src="'/rs/'+${pro['jsonObj']['img2']}" alt="">
+                                </div>
+                                <span class="title" th:text="${pro['jsonObj']['title2']}">新年抢红包</span>
+                                <span class="des" th:text="${pro['jsonObj']['desc2']}">迎接新的一年，恭祝大家新年快乐！身体健康，阖家新房。阖家新房阖家新房阖家新房阖家新房阖家新房阖家新房</span>
+                                <span class="date" th:text="${pro['jsonObj']['updateTime2']}">2018.03.04</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script src="/wap/js/lib/fastclick-jquery.js"></script>
+</html>

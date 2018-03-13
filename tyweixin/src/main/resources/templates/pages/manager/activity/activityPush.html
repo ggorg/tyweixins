@@ -10,14 +10,14 @@
 </head>
 <body style="padding:30px 60px 10px 10px">
 <form class="layui-form" >
-  <input type="hidden" name="actid" th:value="${#httpServletRequest.getParameter('idStr')}" />
+  <input type="hidden" name="proid" th:value="${#httpServletRequest.getParameter('id')}" />
 
   <div class="layui-form-item">
     <label class="layui-form-label">应用</label>
     <div class="layui-input-inline">
       <select name="appid" lay-verify="required" lay-filter="appObj" >
         <option>请选择</option>
-        <option th:each="app:${apps}" th:value="${app.appid}" th:text="${app.name}"></option>
+        <option th:each="app:${apps}" th:value="${app.appid}" th:text="${app.name}" ></option>
 
       </select>
     </div>
@@ -27,6 +27,17 @@
     <div class="layui-input-inline" >
       <select name="msgid" id="msgSelect" lay-verify="required"  >
         <option>请选择</option>
+
+
+      </select>
+  </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">活动选择</label>
+    <div class="layui-input-inline" >
+      <select name="actid" id="acts"  >
+        <option >请选择</option>
+        <option th:each="obj:${pros}" th:value="${obj['id']}" th:text="${obj['taName']}" th:selected="${actid==obj['id']}">请选择</option>
 
 
       </select>

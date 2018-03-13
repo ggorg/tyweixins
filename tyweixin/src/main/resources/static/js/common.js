@@ -68,15 +68,15 @@ function jQueryCommonSubmit(url,formObject,reqData){
     return false;
 }
 var index =null;
-function commonAjaxFunction(url,data){
-
+function commonAjaxFunction(url,data,isUpload){
     return {
-        timeout: 20 * 1000,
+        timeout: isUpload==undefined?20 * 1000:120*1000,
             url: url,
         type: "post",
         data:data,
         dataType: "JSON",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        processData: isUpload==undefined?true:false,
+        contentType: isUpload==undefined?'application/x-www-form-urlencoded; charset=UTF-8':false,
         beforeSend: function(xhr, settings) {
         // xhr.setRequestHeader("If-Modified-Since", "0");
         index= layer.load();
@@ -84,6 +84,7 @@ function commonAjaxFunction(url,data){
     },
         success: function(data, textStatus, jqXHR) {
             layer.msg(data.reMsg);
+
             if(data.reCode==1){
 
                 window.setTimeout(function(){

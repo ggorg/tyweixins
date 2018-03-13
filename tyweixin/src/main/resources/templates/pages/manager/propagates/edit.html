@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+  <meta charset="UTF-8" />
+  <th:block th:include="pages/manager/common/editResources::syseditjsresources"></th:block>
+  <style type="text/css">
+    .topimg{z-index:10;width: 353px;height: 93.83px;position:absolute;top:0;left:0}
+    .actimg{z-index:10;width: 143.52px;height: 93.83px;position:absolute;top:0;left:0}
+
+  </style>
+</head>
+<body style="padding:10px 10px 10px 10px">
+<form class="layui-form layui-form-pane" >
+  <input th:if="${pro!=null and pro['id']!=null}" th:name="id" th:value="${pro['id']}" type="hidden"/>
+  <div class="layui-form-item">
+    <label class="layui-form-label">大标题</label>
+    <div class="layui-input-block">
+      <input type="text" name="topTitle" required="required" title="大标题"  lay-verify="required|max20" th:value="${pro!=null? pro['topTitle']:''}" placeholder="请输入大标题" autocomplete="off" class="layui-input" />
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">顶部图片</label>
+    <div class="layui-input-block">
+      <button type="button" class="layui-btn myupload1"  style="width: 353px;height: 93.83px;" >
+        <span  style="z-index: 1000;position: relative">上传活动图片</span>
+        <img th:if="${pro!=null and pro['topImgSrc']!=null}" th:src="'/rs/'+${pro['topImgSrc']}" class="topimg" />
+        <input th:if="${pro!=null and pro['id']!=null}" type="hidden" name="isUpdateImg" value="topimg"/>
+      </button>
+    </div>
+  </div>
+  <div class="layui-form-item ">
+    <label class="layui-form-label">描述</label>
+    <div class="layui-input-block">
+      <textarea placeholder="请输入描述" name="mainDesc" th:text="${pro!=null?pro['mainDesc']:''}" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item ">
+    <label class="layui-form-label">活动1</label>
+    <div class="layui-input-block">
+      <input type="text" name="title1" required="required" title="标题"  lay-verify="required|max20" th:value="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['title1']!=null?pro['jsonObj']['title1']:''}" placeholder="请输入标题" autocomplete="off" class="layui-input" />
+    </div>
+    <div class="layui-input-block">
+      <button type="button" class="layui-btn myupload2" style="width: 143.52px;height: 93.83px;">
+        <span  style="z-index: 1000;position: relative">上传活动图片</span>
+        <img th:if="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['img1']!=null}" th:src="'/rs/'+${pro['jsonObj']['img1']}" class="actimg" />
+        <input th:if="${pro!=null and pro['id']!=null}" type="hidden" name="isUpdateImg" value="img1"/>
+      </button>
+    </div>
+
+    <div class="layui-input-block">
+      <textarea placeholder="请输入内容" lay-verify="max200"  name="desc1" th:text="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['desc1']!=null?pro['jsonObj']['desc1']:''}"  class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item ">
+    <label class="layui-form-label">活动2</label>
+    <div class="layui-input-block">
+      <input type="text" name="title2" required="required" title="标题"  lay-verify="required|max20" th:value="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['title2']!=null?pro['jsonObj']['title2']:''}" placeholder="请输入标题" autocomplete="off" class="layui-input" />
+    </div>
+    <div class="layui-input-block">
+      <button type="button" class="layui-btn myupload3"  style="width: 143.52px;height: 93.83px;">
+        <span  style="z-index: 1000;position: relative">上传活动图片</span>
+        <img th:if="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['img2']!=null}" th:src="'/rs/'+${pro['jsonObj']['img2']}" class="actimg" />
+        <input th:if="${pro!=null and pro['id']!=null}" type="hidden" name="isUpdateImg" value="img2"/>
+
+      </button>
+
+    </div>
+
+
+    <div class="layui-input-block">
+      <textarea placeholder="请输入内容" lay-verify="max200" name="desc2" th:text="${pro!=null and pro['jsonObj']!=null and pro['jsonObj']['desc2']!=null?pro['jsonObj']['desc2']:''}" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="lay-submit" lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script type="text/javascript">
+    //initForm("do-edit-user",".layui-form")
+    layui.use(['upload','form','layer'], function(){
+        var upload = layui.upload;
+        layer=layui.layer;
+        initProForm(layui);
+
+        //执行实例
+        var uploadInst1 = upload.render(initUpload(".myupload1","topImg","topimg"));
+        var uploadInst2 = upload.render(initUpload(".myupload2","img1","actimg"));
+        var uploadInst3 = upload.render(initUpload(".myupload3","img2","actimg"));
+
+    });
+    function initProForm(layui){
+        var form = layui.form;
+        form.verify({
+            required:function(value,item){
+                var msg=item.getAttribute("placeholder");
+                if(value!=null && value.replace(/[ ]/g,"")==""){
+                    return msg==null?"请输入必填项":msg;
+                }else{
+                    return false;
+                }
+                return msg==null?"请输入必填项":msg;
+            },
+            max20:function(value,item){
+                if(value.length>20){
+                    return '标题至多得20个字符啊';
+                }
+            },
+            max200:function(value,item){
+                if(value.length>200){
+                    return '活动描述至多得200个字符啊';
+                }
+            }
+        })
+        $(".layui-form").submit(function(){
+            $.ajax(commonAjaxFunction("/manager/activity/do-eidt-propagate",new FormData($('form')[0]),true));
+            //return  commonSubmit(url,formObject);
+            return false;
+        })
+    }
+    function initUpload(classname,filename,imgcn){
+        return {
+            elem: classname, //绑定元素
+            url: '/upload/', //上传接口
+            accept:'images',
+            auto:false,
+            field:filename,
+            choose:function(obj){
+
+                obj.preview(function(index, file, result){
+                    $(classname).find("."+imgcn).remove()
+                    $(classname).find("[name='isUpdateImg']").remove();
+                    $(classname).append("<img src=\""+result+"\" class=\""+imgcn+"\"/>")
+                });
+            },
+            done: function(res){
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        }
+    }
+</script>
+</body>
+</html>

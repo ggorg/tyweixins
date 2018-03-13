@@ -169,7 +169,7 @@ public class TyActivityRedPacketService extends CommonService {
             insertMap.put("trActivityId",map.get("id"));
             //insertMap.put("trFromId",dataJson.getString("packetId"));
             insertMap.put("updateTime",new Date());
-            insertMap.put("trSeqCode", DateFormatUtils.format(new Date(),"yyyyMMddHHmmssSSS")+01);
+            insertMap.put("trSeqCode", DateFormatUtils.format(new Date(),"u")+01);
             ResponseVO reIsert=this.commonInsertMap("ty_activity_red_packet",insertMap);
 
              paramMap=new HashMap();
