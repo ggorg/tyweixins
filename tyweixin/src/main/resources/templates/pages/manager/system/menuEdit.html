@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" th:w>
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" th:w>
 <head>
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <link type="text/css" rel="stylesheet" href="/font-awesome/css/font-awesome.min.css"/>
   <link type="text/css" rel="stylesheet" href="/css/common.css"/>
   <th:block th:include="pages/manager/common/editResources::syseditjsresources"></th:block>
@@ -32,10 +32,10 @@
       </select>
     </div>
   </div>
-  <div class="layui-form-item">
+  <div class="layui-form-item" th:if="${#httpServletRequest.getParameter('pid')!='-1'}">
     <label class="layui-form-label">url地址</label>
     <div class="layui-input-block">
-      <input type="text" name="mUrl" required="required" th:value="${menuObject?.mUrl}"  lay-verify="required" placeholder="请输入url地址" autocomplete="off" class="layui-input" />
+      <input type="text" name="mUrl"  th:value="${menuObject?.mUrl}"   placeholder="请输入url地址" autocomplete="off" class="layui-input" />
     </div>
   </div>
   <div class="layui-form-item">
@@ -44,24 +44,25 @@
       <input type="text" name="mSort" required="required" th:value="${menuObject?.mSort}"   lay-verify="required|number" placeholder="排序" autocomplete="off" class="layui-input" />
     </div>
   </div>  <div class="layui-form-item">
-    <label class="layui-form-label">图标</label>
-    <div class="layui-input-block">
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-desktop'}" value="fa-desktop" title="<span class='fa fa-desktop fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-weixin'}" value="fa-weixin"  title="<span class='fa fa-weixin fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-user'}" value="fa-user"  title="<span class='fa fa-user fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-users'}" value="fa-users"  title="<span class='fa fa-users fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-list'}" value="fa-list"  title="<span class='fa fa-list fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-list-alt'}" value="fa-list-alt"  title="<span class='fa fa-list-alt fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-file-text-o'}" value="fa-file-text-o"  title="<span class='fa fa-file-text-o fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-table'}" value="fa-table"  title="<span class='fa fa-table fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-bar-chart'}" value="fa-bar-chart"  title="<span class='fa fa-bar-chart fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-clock-o'}" value="fa-clock-o"  title="<span class='fa fa-clock-o fa-3x'></span>" >
-      <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-envelope'}" value="fa-envelope"  title="<span class='fa fa-envelope fa-3x'></span>" >
+  <label class="layui-form-label">图标</label>
+  <div class="layui-input-block">
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-desktop'}" value="fa-desktop" title="<span class='fa fa-desktop fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-weixin'}" value="fa-weixin"  title="<span class='fa fa-weixin fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-user'}" value="fa-user"  title="<span class='fa fa-user fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-users'}" value="fa-users"  title="<span class='fa fa-users fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-list'}" value="fa-list"  title="<span class='fa fa-list fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-list-alt'}" value="fa-list-alt"  title="<span class='fa fa-list-alt fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-file-text-o'}" value="fa-file-text-o"  title="<span class='fa fa-file-text-o fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-table'}" value="fa-table"  title="<span class='fa fa-table fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-bar-chart'}" value="fa-bar-chart"  title="<span class='fa fa-bar-chart fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-clock-o'}" value="fa-clock-o"  title="<span class='fa fa-clock-o fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-envelope'}" value="fa-envelope"  title="<span class='fa fa-envelope fa-3x'></span>" >
+    <input type="radio" name="mIcon" th:checked="${menuObject?.mIcon=='fa-cubes'}" value="fa-cubes"  title="<span class='fa fa-cubes fa-3x'></span>" >
 
 
 
-    </div>
   </div>
+</div>
 
   <div class="layui-form-item">
     <div class="layui-input-block">
@@ -71,7 +72,7 @@
   </div>
 </form>
 <script type="text/javascript">
-  initForm("do-edit-menu",".layui-form")
+    initForm("do-edit-menu",".layui-form")
 </script>
 </body>
 </html>

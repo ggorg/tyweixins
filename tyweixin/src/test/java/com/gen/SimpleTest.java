@@ -13,5 +13,7 @@ public class SimpleTest {
         //int maxCostBalance=
         System.out.println(randRedPackCost);
 
+        System.out.println("/rs/".matches("(.*)(/rs/.*)"));
+
     }
 }
